@@ -1,0 +1,44 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "DSP Lecture Notes",
+    "section": "",
+    "text": "Preface\nThis is a Quarto book.\nTo learn more about Quarto books visit https://quarto.org/docs/books."
+  },
+  {
+    "objectID": "01_Intro.html",
+    "href": "01_Intro.html",
+    "title": "1  Introduction",
+    "section": "",
+    "text": "This is a book created from markdown and executable code.\nSee Knuth (1984) for additional discussion of literate programming.\n\n\n\n\nKnuth, Donald E. 1984. “Literate Programming.” Comput. J. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
+  },
+  {
+    "objectID": "04_FourierTransform.html#example-a-sinusoidal-signal",
+    "href": "04_FourierTransform.html#example-a-sinusoidal-signal",
+    "title": "2  DTFT and DFT",
+    "section": "2.1 Example: a sinusoidal signal",
+    "text": "2.1 Example: a sinusoidal signal\nConsider a cosine signal: \\[x(t) = \\cos(2 \\pi f n)\\] with \\(f = 0.01\\)\nThis is how the signal looks like:\n\n# Create the signal\nf = 0.02\nN = 30\n#fmax = fmax * (N-10)/N\nn = np.arange(N)\nx = np.cos(2*np.pi*f*n)\n\n# Plot the signal\nplt.figure(figsize=(6, 3))\nplt.plot(x, '-o')\nplt.title('The signal $x(t) = \\cos(2 \\pi f n)$')\nplt.xlabel('Discrete time $n$')\nplt.ylabel('Signal $x[n]$')\nplt.show()\n\n\n\n\n\n\n\n\nNow let’s compute the Discrete-Time Fourier transform. This assumes that the signal is infinitely long.\nIf the cosine signal would be infinitely long, the DTFT contains only two Dirac impulses at the corresponding frequency.\n\n# Regenerate the signal so that it fits in one period\nperiod = 10000*f\nninf = np.arange(period)\nxinf = np.cos(2*np.pi*f*ninf)\n\n# Compute the DTFT\nSinf = fft(xinf)\n\n# Create the frequency axis\nfreqinf = np.linspace(fmin, fmax, len(Sinf))\n\n# Plot the magnitude of the DTFT\nplt.figure(figsize=(6, 3))\nplt.title('DTFT of infinitely-long periodic signal')\nplt.stem(freqinf, np.abs(Sinf), linefmt='b')\nplt.xlabel('Frequency')\nplt.ylabel('Magnitude')\nplt.show()\n\n\n\n\n\n\n\n\nIf the signal is assumed to be only the segment we defined, and is surrounded by infinitely-long zeros, i.e. a truncated cosine, then the spectrum is convoluted with the spectrum of a rectangular window, and the DTFT looks as follows:\n\n# Compute the DTFT\nFFT_points = 10000*n.size\nS1 = fft(x, FFT_points)\n\n# Create the frequency axis\nfreq1 = np.linspace(fmin, fmax, len(S1))\n\n# Plot the magnitude of the DTFT\nplt.figure(figsize=(6, 3))\nplt.title('DTFT of windowed signal')\nplt.plot(freq1, np.abs(S1), 'b')\n#plt.stem(freqinf, np.abs(Sinf), 'b')\nplt.xlabel('Frequency')\nplt.ylabel('Magnitude')\nplt.show()\n\n\n\n\n\n\n\n\nWhen computing the Discrete Fourier Transform (DFT), this assumes that the given piece of the signal is would be repeated periodically. The DFT is not continous, it is discrete.\n\n# Compute the DFT\nS2 = fft(x)\n\n# Create the frequency axis\nfreq2 = np.linspace(fmin, fmax, len(S2))\n#freq2 = np.fft.fftfreq(x.size)\n\n# Plot the magnitude of the DTFT\nplt.figure(figsize=(6, 3))\nplt.title('Its DFT')\nplt.stem(freq2, np.abs(S2), linefmt='ro')\nplt.xlabel('Frequency')\nplt.ylabel('Magnitude')\nplt.show()\n\n\n\n\n\n\n\n\nThe DFT is just sampled from the DTFT:\n\n# Plot the DTFT and DFT overlaid\nfreq2 = np.linspace(fmin, fmax, len(S2)+1)\nplt.figure(figsize=(6, 3))\nplt.plot(freq1, np.abs(S1), 'b')\nplt.stem(freq2[:-1], np.abs(S2), linefmt='ro')\nplt.title('The DFT is just sampled from the DTFT')\nplt.xlabel('Frequency')\nplt.ylabel('Magnitude')\nplt.show()"
+  },
+  {
+    "objectID": "04_FourierTransform.html#example-rectangle-pulse",
+    "href": "04_FourierTransform.html#example-rectangle-pulse",
+    "title": "2  DTFT and DFT",
+    "section": "2.2 Example: rectangle pulse",
+    "text": "2.2 Example: rectangle pulse\nConsider a rectangle pulse signal as below:\n\n# Create the signal\nlen_1 = 100\nlen_0 = 100\nx = np.hstack((np.ones(len_1), np.zeros(len_1)))\nx = np.hstack((x, x))\n\n# Plot the signal\nplt.figure()\nplt.plot(x)\nplt.xlabel('Discrete time $n$')\nplt.ylabel('Signal $x[n]$')\nplt.show()\n\n\n\n\n\n\n\n\nThe DTFT is:\n\n# Compute the DTFT of the rectangle window\nFFT_points = 2000\nW = fft(x, FFT_points)\n\n# Create the frequency axis\nfreq = np.linspace(fmin, fmax, len(W))\n\n# Plot the magnitude of the DTFT\nplt.figure()\nplt.plot(freq, np.abs(W))\nplt.xlabel('Frequency')\nplt.ylabel('Magnitude')\nplt.show()"
+  },
+  {
+    "objectID": "Shiny.html",
+    "href": "Shiny.html",
+    "title": "3  Shinylive in Quarto example",
+    "section": "",
+    "text": "This is a Shinylive application embedded in a Quarto doc.\n#| standalone: true\n#| viewerHeight: 2000\n# components: [editor, viewer]\n#| components: [viewer]\n#| layout: vertical\n\nfrom shiny import *\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nfft = np.fft.fft\nfmin, fmax = 0, 1\n\napp_ui = ui.page_fluid(\n    ui.layout_sidebar(\n        ui.panel_sidebar(\n            ui.input_slider(\"freq\", \"Frequency\", 0, 0.5, 0.1, step=0.001),\n            ui.input_slider(\"N\", \"Length\", 10, 200, 30, step=1),\n        ),\n        ui.panel_main(\n            ui.output_plot(\"plot_signal\"),\n            #ui.output_plot(\"plot_DTFT_per\"),\n            ui.output_plot(\"plot_DTFT_rect\"),\n            ui.output_plot(\"plot_DFT\"),\n            ui.output_plot(\"plot_DTFT_DFT\")\n\n        ),\n    ),)\n\ndef server(input, output, session):\n\n    def prepare():\n        global f, N, n, x\n\n        # Read inputs\n        f = input.freq()\n        N = input.N()\n\n        # Create the signal\n        n = np.arange(N)\n        x = np.cos(2*np.pi*f*n)\n\n    @output\n    @render.plot(alt=\"Sine wave\")\n    def plot_signal():\n        prepare()\n        fig = plt.figure(figsize=(6, 3))\n        plt.plot(x, '-o')\n        plt.title('The signal $x(t) = \\cos(2 \\pi f n)$')\n        plt.xlabel('Discrete time $n$')\n        plt.ylabel('Signal $x[n]$')\n        plt.show()\n\n    @output\n    @render.plot(alt=\"Sine wave\")\n    def plot_DTFT_per():\n        prepare()\n\n        # Regenerate the signal so that it fits in one period\n        period = 1000*f\n        ninf = np.arange(period)\n        xinf = np.cos(2*np.pi*f*ninf)\n\n        # Compute the DTFT\n        Sinf = fft(xinf)\n\n        # Create the frequency axis\n        freqinf = np.linspace(fmin, fmax, len(Sinf))\n\n        # Plot the magnitude of the DTFT\n        plt.figure(figsize=(6, 3))\n        plt.title('DTFT of infinitely-long periodic signal')\n        plt.stem(freqinf, np.abs(Sinf), linefmt='b')\n        plt.xlabel('Frequency')\n        plt.ylabel('Magnitude')\n        plt.show()\n\n    @output\n    @render.plot(alt=\"Sine wave\")\n    def plot_DTFT_rect():\n        prepare()\n\n        # Compute the DTFT\n        FFT_points = 10000*n.size\n        S1 = fft(x, FFT_points)\n\n        # Create the frequency axis\n        freq1 = np.linspace(fmin, fmax, len(S1))\n\n        # Plot the magnitude of the DTFT\n        plt.figure(figsize=(6, 3))\n        plt.title('DTFT of windowed signal')\n        plt.plot(freq1, np.abs(S1), 'b')\n        #plt.stem(freqinf, np.abs(Sinf), 'b')\n        plt.xlabel('Frequency')\n        plt.ylabel('Magnitude')\n        plt.show()\n\n\n    @output\n    @render.plot(alt=\"Sine wave\")\n    def plot_DFT():\n        prepare()\n        \n        # Compute the DFT\n        S2 = fft(x)\n\n        # Create the frequency axis\n        freq2 = np.linspace(fmin, fmax, len(S2))\n        #freq2 = np.fft.fftfreq(x.size)\n\n        # Plot the magnitude of the DFT\n        plt.figure(figsize=(6, 3))\n        plt.title('Its DFT')\n        plt.stem(freq2, np.abs(S2), linefmt='ro')\n        plt.xlabel('Frequency')\n        plt.ylabel('Magnitude')\n        plt.show()\n\n    @output\n    @render.plot(alt=\"Sine wave\")\n    def plot_DTFT_DFT():\n        prepare()\n\n        # Compute the DTFT\n        FFT_points = 10000*n.size\n        S1 = fft(x, FFT_points)\n        freq1 = np.linspace(fmin, fmax, len(S1))\n\n        # Compute the DFT\n        S2 = fft(x)\n\n        # Plot the DTFT and DFT overlaid\n        freq2 = np.linspace(fmin, fmax, len(S2)+1)\n        plt.figure(figsize=(6, 3))\n        plt.plot(freq1, np.abs(S1), 'b')\n        plt.stem(freq2[:-1], np.abs(S2), linefmt='ro')\n        plt.title('The DFT is just sampled from the DTFT')\n        plt.xlabel('Frequency')\n        plt.ylabel('Magnitude')\n        plt.show()        \napp = App(app_ui, server)"
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "References",
+    "section": "",
+    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97."
+  }
+]
