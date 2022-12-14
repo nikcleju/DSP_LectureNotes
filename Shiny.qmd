@@ -1,0 +1,154 @@
+---
+title: Shinylive in Quarto example
+format: html
+filters:
+  - shinylive
+---
+
+This is a Shinylive application embedded in a Quarto doc.
+
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 2000
+# components: [editor, viewer]
+#| components: [viewer]
+#| layout: vertical
+
+from shiny import *
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+fft = np.fft.fft
+fmin, fmax = 0, 1
+
+app_ui = ui.page_fluid(
+    ui.layout_sidebar(
+        ui.panel_sidebar(
+            ui.input_slider("freq", "Frequency", 0, 0.5, 0.1, step=0.001),
+            ui.input_slider("N", "Length", 10, 200, 30, step=1),
+        ),
+        ui.panel_main(
+            ui.output_plot("plot_signal"),
+            #ui.output_plot("plot_DTFT_per"),
+            ui.output_plot("plot_DTFT_rect"),
+            ui.output_plot("plot_DFT"),
+            ui.output_plot("plot_DTFT_DFT")
+
+        ),
+    ),)
+
+def server(input, output, session):
+
+    def prepare():
+        global f, N, n, x
+
+        # Read inputs
+        f = input.freq()
+        N = input.N()
+
+        # Create the signal
+        n = np.arange(N)
+        x = np.cos(2*np.pi*f*n)
+
+    @output
+    @render.plot(alt="Sine wave")
+    def plot_signal():
+        prepare()
+        fig = plt.figure(figsize=(6, 3))
+        plt.plot(x, '-o')
+        plt.title('The signal $x(t) = \cos(2 \pi f n)$')
+        plt.xlabel('Discrete time $n$')
+        plt.ylabel('Signal $x[n]$')
+        plt.show()
+
+    @output
+    @render.plot(alt="Sine wave")
+    def plot_DTFT_per():
+        prepare()
+
+        # Regenerate the signal so that it fits in one period
+        period = 1000*f
+        ninf = np.arange(period)
+        xinf = np.cos(2*np.pi*f*ninf)
+
+        # Compute the DTFT
+        Sinf = fft(xinf)
+
+        # Create the frequency axis
+        freqinf = np.linspace(fmin, fmax, len(Sinf))
+
+        # Plot the magnitude of the DTFT
+        plt.figure(figsize=(6, 3))
+        plt.title('DTFT of infinitely-long periodic signal')
+        plt.stem(freqinf, np.abs(Sinf), linefmt='b')
+        plt.xlabel('Frequency')
+        plt.ylabel('Magnitude')
+        plt.show()
+
+    @output
+    @render.plot(alt="Sine wave")
+    def plot_DTFT_rect():
+        prepare()
+
+        # Compute the DTFT
+        FFT_points = 10000*n.size
+        S1 = fft(x, FFT_points)
+
+        # Create the frequency axis
+        freq1 = np.linspace(fmin, fmax, len(S1))
+
+        # Plot the magnitude of the DTFT
+        plt.figure(figsize=(6, 3))
+        plt.title('DTFT of windowed signal')
+        plt.plot(freq1, np.abs(S1), 'b')
+        #plt.stem(freqinf, np.abs(Sinf), 'b')
+        plt.xlabel('Frequency')
+        plt.ylabel('Magnitude')
+        plt.show()
+
+
+    @output
+    @render.plot(alt="Sine wave")
+    def plot_DFT():
+        prepare()
+        
+        # Compute the DFT
+        S2 = fft(x)
+
+        # Create the frequency axis
+        freq2 = np.linspace(fmin, fmax, len(S2))
+        #freq2 = np.fft.fftfreq(x.size)
+
+        # Plot the magnitude of the DFT
+        plt.figure(figsize=(6, 3))
+        plt.title('Its DFT')
+        plt.stem(freq2, np.abs(S2), linefmt='ro')
+        plt.xlabel('Frequency')
+        plt.ylabel('Magnitude')
+        plt.show()
+
+    @output
+    @render.plot(alt="Sine wave")
+    def plot_DTFT_DFT():
+        prepare()
+
+        # Compute the DTFT
+        FFT_points = 10000*n.size
+        S1 = fft(x, FFT_points)
+        freq1 = np.linspace(fmin, fmax, len(S1))
+
+        # Compute the DFT
+        S2 = fft(x)
+
+        # Plot the DTFT and DFT overlaid
+        freq2 = np.linspace(fmin, fmax, len(S2)+1)
+        plt.figure(figsize=(6, 3))
+        plt.plot(freq1, np.abs(S1), 'b')
+        plt.stem(freq2[:-1], np.abs(S2), linefmt='ro')
+        plt.title('The DFT is just sampled from the DTFT')
+        plt.xlabel('Frequency')
+        plt.ylabel('Magnitude')
+        plt.show()        
+app = App(app_ui, server)
+```

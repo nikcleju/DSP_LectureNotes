@@ -2,13 +2,15 @@ project:
   type: book
 
 book:
-  title: "Quarto Template"
-  subtitle: "Subtitle"
-  author: "Author Here"
-  date: "9/14/2022"
+  title: "DSP Lecture Notes"
+  author: "Nicolae Cleju"
+  date: "12/14/2022"
   chapters:
     - index.qmd
-    - Overview.qmd
+    - 01_Intro.qmd
+    - 04_FourierTransform.qmd
+    - Shiny.qmd
+    - references.qmd
 
 bibliography: references.bib
 
@@ -19,5 +21,10 @@ format:
   # pdf:
   #   documentclass: scrreprt
 
+jupyter: python3
+
+filters:
+  - shinylive
+  
 execute: 
   cache: true
