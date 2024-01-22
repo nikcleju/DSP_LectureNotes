@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>DSP Lecture Notes - 4&nbsp; Exercises Chapter 01: Sampling</title>
+<title>DSP Lecture Notes - 4&nbsp; Exercises 01: Sampling</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,6 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./Ex02_Systems.html" rel="next">
 <link href="./references.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -70,7 +71,7 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exercises Chapter 01: Sampling</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exercises 01: Sampling</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -128,7 +129,12 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Ex01_Sampling.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exercises Chapter 01: Sampling</span></a>
+  <a href="./Ex01_Sampling.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exercises 01: Sampling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Ex02_Systems.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Exercises 02: Systems</span></a>
   </div>
 </li>
       </ul>
@@ -158,7 +164,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exercises Chapter 01: Sampling</span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exercises 01: Sampling</span></h1>
 </div>
 
 
@@ -241,7 +247,7 @@ N &amp;= \frac{8}{3} k' \\
 </ul>
 <section id="solution-1" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="solution-1">Solution</h3>
-<p>a). Compute the minimum sampling frequency necessary for avoiding alias;</p>
+<p>a). <em>Compute the minimum sampling frequency necessary for avoiding alias;</em></p>
 <p>The minimum sampling frequency necessary for avoiding alias is the double of the maximum frequency in the signal, so we need to identify the maximum frequency in the signal.</p>
 <p>For this we need to convert the multiplication of the two cosines into a sum of cosines, because a multiplication of two cosines produces a frequency which is higher than the starting frequencies.</p>
 <p>Using the trigonometric identity: <span class="math display">\[\begin{aligned}
@@ -262,7 +268,7 @@ Frequent error
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If the signal is already given as a sum of cosines, we don’t need to do anything else, just leave it as it is.</p>
+<p>If the signal is already given as a sum of sinusoidal components, we don’t need to do anything else, just leave it as it is.</p>
 </div>
 </div>
 <p>Next, we identify the frequencies in the signal, which are: <span class="math display">\[\begin{aligned}
@@ -277,14 +283,14 @@ f_3 &amp;= 4200Hz \\
 </figure>
 </div>
 <p>The minimum sampling frequency for avoiding alias is therefore twice the maximum frequency, which is <span class="math inline">\(f_3 = 4200Hz\)</span>, i.e.: <span class="math display">\[F_{s_{min}} = 2 \cdot 4200Hz = 8400Hz\]</span></p>
-<p>b). The signal is sampled with 8000Hz. Write the discrete signal obtained via sampling;</p>
+<p>b). <em>The signal is sampled with 8000Hz. Write the discrete signal obtained via sampling;</em></p>
 <p>Sampling the signal amounts to applying the variable transformation <span class="math inline">\(t = \frac{n}{F_s}\)</span>, i.e.: <span class="math display">\[\begin{aligned}
 x[n] &amp;= x_a(t) \Big|_{t = \frac{n}{F_s}} \\
 &amp;= \cos(8000 \pi \frac{n}{F_s}) + 0.25 \cos(7600 \pi \frac{n}{F_s}) + 0.25 \cos(8400 \pi \frac{n}{F_s}) \\
 &amp;= \cos(8000 \pi \frac{n}{8000}) + 0.25 \cos(7600 \pi \frac{n}{8000}) + 0.25 \cos(8400 \pi \frac{n}{8000}) \\
 &amp;= \cos(\pi n) + 0.25 \cos(\frac{19}{20} \pi n) + 0.25 \cos(\frac{21}{20} \pi n) \\
 \end{aligned}\]</span></p>
-<p>c). Does alias occur? If yes, identify the frequencies in the signal which are aliased;</p>
+<p>c). <em>Does alias occur? If yes, identify the frequencies in the signal which are aliased;</em></p>
 <p>The sampling frequency is <span class="math inline">\(F_s = 8000Hz\)</span>, which is lower than required for avoiding alias of the third component. Therefore we expect the third component to be aliased, while the first and second, for which <span class="math inline">\(F_s\)</span> is more than double, are not aliased.</p>
 <p>Indeed, let’s identify the frequencies in the discrete signal obtained: <span class="math display">\[\begin{aligned}
 \pi n = 2 \pi f_1 n \Rightarrow f_1 &amp;= \frac{1}{2} = 0.5 \\
@@ -292,7 +298,7 @@ x[n] &amp;= x_a(t) \Big|_{t = \frac{n}{F_s}} \\
 \frac{21}{20} \pi n = 2 \pi f_3 n \Rightarrow f_3 &amp;= \frac{21}{40} = 0.525 \\
 \end{aligned}\]</span></p>
 <p>We have <span class="math inline">\(f_1 &lt; 0.5\)</span>, <span class="math inline">\(f_2 &lt; 0.5\)</span>, which means they are not aliased, and <span class="math inline">\(f_3 &gt; 0.5\)</span>, which is aliased. The frequency <span class="math inline">\(f_3\)</span> is aliased to: <span class="math display">\[f_3' = f_3 - 1 = 0.525 - 1 = -0.475 = -\frac{19}{40}\]</span> which means that: <span class="math display">\[\cos(2 \pi \frac{21}{40} n) = \cos(- 2 \pi \frac{19}{40} n), \forall n\]</span></p>
-<p>d). What is the analog signal reconstructed from the samples via ideal D/A reconstruction?</p>
+<p>d). <em>What is the analog signal reconstructed from the samples via ideal D/A reconstruction?</em></p>
 <p>Ideal A/D reconstruction means that we need to apply the inverse variable transformation <span class="math inline">\(n = t \cdot F_s\)</span>, but starting from the aliased frequencies in the signal, if any.</p>
 <p>With the aliased frequency <span class="math inline">\(f_3'\)</span>, the discrete signal is: <span class="math display">\[x[n] = \cos(\pi n) + 0.25 \cos(\frac{19}{20} \pi n) + 0.25 \cos(-\frac{19}{20} \pi n)\]</span></p>
 <p>The analog signal reconstructed via ideal D/A reconstruction is: <span class="math display">\[\begin{aligned}
@@ -448,6 +454,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./Ex02_Systems.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Exercises 02: Systems</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
