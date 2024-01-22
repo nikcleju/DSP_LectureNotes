@@ -1,0 +1,53 @@
+
+# Exercises 02: Systems
+
+::: {.hidden}
+$$
+\newcommand{\underuparrow}[1]{\underset{\uparrow}{#1}}$$
+$$
+:::
+
+## Exercise 1
+
+Consider the following discrete signal $x[n]$:
+$$x[n] =
+\begin{cases}
+1 + \frac{n}{3}, &-3 \leq n \leq -1\\
+1, &0 \leq n \leq 3\\
+0, &\text{elsewhere}
+\end{cases}
+$$
+
+- a. Find the values of $x[n]$ and represent the signal graphically
+- b. Represent graphically the signal $x[-n + 4]$
+- c. Write the expression of $x[n]$ based on the signal $\delta[n]$
+- d. Write the expression of $x[n]$ based on the signal $u[n]$
+
+### Solution {.unnumbered}
+
+a). *Find the values of $x[n]$ and represent the signal graphically*
+
+Giving values for $n$ in the range $-3 \leq n \leq 3$, we obtain the following values for $x[n]$:
+$$x[n] = \{..., 0, \frac{1}{3}, \frac{2}{3}, \underuparrow{1}, 1, 1, 1, 0, ...\}$$
+The graphical representation of the signal is:
+
+![](img/Ex02_01_01.png){width=75%}
+
+b). *Represent graphically the signal $x[-n + 4]$*
+
+Let's give a name to the signal $x[-n + 4]$, say $a[n]$. We have:
+$$a[n] = x[-n + 4]$$
+
+To understand visually what this means, let's compute a few values of $a[n]$:
+$$\begin{aligned}
+a[0]=x[-0+4] &= x[4] = 0 \\
+a[1]=x[-1+4] &= x[3] = 1 \\
+a[2]=x[-2+4] &= x[2] = 1 \\
+\end{aligned}$$
+
+We have $x[4]$ moving to $a[0]$, $x[3]$ moving to $a[1]$, $x[2]$ moving to $a[2]$, which means that the signal $x[n]$ is reversed and then shifted.
+
+We can continue and extend the signal $a[n]$ to the left and to the right, obtaining the full signal $a[n]$:
+$$a[n] = \{..., \underuparrow{0}, 1, 1, 1, 1, \frac{2}{3}, \frac{1}{3}, 0, ...\}$$
+
+![The signal $a[n] = x[-n + 4]$](img/Ex02_01_02.png){width=75%}

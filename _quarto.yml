@@ -11,6 +11,13 @@ book:
     - 04_FourierTransform.qmd
     - Shiny.qmd
     - references.qmd
+    - part: "Solved Exercises"
+      chapters:
+      - Ex01_Sampling.qmd
+      - Ex02_Systems.qmd
+      # - 01_02_ProceseAleatoare.qmd
+      # - 01_03_Autocorelatia.qmd
+
 
 bibliography: references.bib
 
@@ -25,6 +32,6 @@ jupyter: python3
 
 filters:
   - shinylive
-  
-execute: 
+
+execute:
   cache: true
