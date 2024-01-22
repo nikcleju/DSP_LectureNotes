@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>DSP Lecture Notes - 4&nbsp; Exercises Chapter 01: Sampling</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exercises Chapter 01: Sampling</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">DSP Lecture Notes</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_Intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_FourierTransform.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">DTFT and DFT</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Shiny.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Shinylive in Quarto example</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Solved Exercises</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Ex01_Sampling.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exercises Chapter 01: Sampling</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#exercise-1" id="toc-exercise-1" class="nav-link active" data-scroll-target="#exercise-1"><span class="toc-section-number">4.1</span>  Exercise 1</a>
+  <ul class="collapse">
+  <li><a href="#solution" id="toc-solution" class="nav-link" data-scroll-target="#solution">Solution</a></li>
+  </ul></li>
+  <li><a href="#exercise-2" id="toc-exercise-2" class="nav-link" data-scroll-target="#exercise-2"><span class="toc-section-number">4.2</span>  Exercise 2</a>
+  <ul class="collapse">
+  <li><a href="#solution-1" id="toc-solution-1" class="nav-link" data-scroll-target="#solution-1">Solution</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exercises Chapter 01: Sampling</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="exercise-1" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="exercise-1"><span class="header-section-number">4.1</span> Exercise 1</h2>
+<p>Are the following signals periodic? If yes, compute their period.</p>
+<ul>
+<li>a). <span class="math inline">\(x[n] = \cos(\pi \frac{3}{10} n)\)</span></li>
+<li>b). <span class="math inline">\(x[n] = \cos(7.2 \pi n)\)</span></li>
+<li>c). <span class="math inline">\(x[n] = \sin(3n)\)</span></li>
+<li>d). <span class="math inline">\(x[n] = \sin(\frac{\pi n}{2}) + \cos(\frac{3 \pi n}{4})\)</span></li>
+</ul>
+<section id="solution" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="solution">Solution</h3>
+<p>a). We want to find the smallest positive integer <span class="math inline">\(N\)</span> such that <span class="math inline">\(x[n] = x[n+N]\)</span>, i.e. <span class="math display">\[\begin{aligned}
+\cos(\pi \frac{3}{10} n) &amp;= \cos(\pi \frac{3}{10} (n+N)) \\
+&amp;= \cos(\pi \frac{3}{10} n + \pi \frac{3}{10} N) \\
+\end{aligned}\]</span></p>
+<p>This is true if the extraterm <span class="math inline">\(\pi \frac{3}{10} N\)</span> is <span class="math inline">\(2 \pi k\)</span>, i.e.: <span class="math display">\[\begin{aligned}
+\pi \frac{3}{10} N &amp;= 2 \pi k \\
+\frac{3}{10} N &amp;= 2 k \\
+N &amp;= \frac{20}{3} k
+\end{aligned}\]</span> with <span class="math inline">\(k\)</span> integer. The smallest positive integer <span class="math inline">\(N\)</span> is <span class="math inline">\(N=20\)</span> (when <span class="math inline">\(k=3\)</span>). Therefore the signal is periodic with period <span class="math inline">\(N=20\)</span>.</p>
+<p>b). We want to find the smallest positive integer <span class="math inline">\(N\)</span> such that <span class="math inline">\(x[n] = x[n+N]\)</span>, i.e. <span class="math display">\[\begin{aligned}
+\cos(7.2 \pi n) &amp;= \cos(7.2 \pi (n+N)) \\
+&amp;= \cos(7.2 \pi n + 7.2 \pi N) \\
+\end{aligned}\]</span></p>
+<p>This is true if <span class="math inline">\(7.2 \pi N = 2 \pi k\)</span>, i.e.: <span class="math display">\[\begin{aligned}
+7.2 \pi N &amp;= 2 \pi k \\
+3.6 N &amp;= k \\
+\end{aligned}\]</span> with <span class="math inline">\(k\)</span> integer. The smallest positive integer <span class="math inline">\(N\)</span> is <span class="math inline">\(N=5\)</span>.</p>
+<p>An alternative way is to to treat this as a continuous signal and identify the frequency of the cosine: <span class="math display">\[\begin{aligned}
+\cos(7.2 \pi n) &amp;= \cos(2 \pi f n) \\
+f &amp;= 3.6Hz
+\end{aligned}\]</span> The period should be <span class="math inline">\(N=\frac{1}{f} = \frac{1}{3.6} = \frac{5}{18}\)</span>, but since we need <span class="math inline">\(N\)</span> to be an integer because our signal ia actually discrete, we consider the smallest integer multiple of this, which is: <span class="math display">\[N = \frac{5}{18} \cdot 18 = 5\]</span> Therefore the signal is periodic with period <span class="math inline">\(N=5\)</span>.</p>
+<p>c). We want to find the smallest positive integer <span class="math inline">\(N\)</span> such that <span class="math inline">\(x[n] = x[n+N]\)</span>, i.e. <span class="math display">\[\begin{aligned}
+\sin(3 n) &amp;= \sin(3 (n+N)) \\
+&amp;= \sin(3 n + 3 N) \\
+\end{aligned}\]</span></p>
+<p>This is true if <span class="math inline">\(3 N = 2 \pi k\)</span>, i.e.: <span class="math display">\[\begin{aligned}
+3 N &amp;= 2 \pi k \\
+N &amp;= \frac{2}{3} \pi k \\
+\end{aligned}\]</span> with <span class="math inline">\(k\)</span> integer.</p>
+<p>This is impossible, because <span class="math inline">\(k\)</span> is an <strong>irrational number</strong> which means that multiplying and dividing it by the integer numbers 2, 3, <span class="math inline">\(k\)</span> will never become an integer as we need <span class="math inline">\(N\)</span> to be.</p>
+<p>Therefore the signal is not periodic.</p>
+<p>d). We want to find the smallest positive integer <span class="math inline">\(N\)</span> such that <span class="math inline">\(x[n] = x[n+N]\)</span>, i.e. <span class="math display">\[\begin{aligned}
+\sin(\frac{\pi n}{2}) + \cos(\frac{3 \pi n}{4}) &amp;= \sin(\frac{\pi}{2} (n+N)) + \cos(\frac{3 \pi}{4} (n+N)) \\
+&amp;= \sin(\frac{\pi}{2} n + \frac{\pi}{2} N) + \cos(\frac{3 \pi}{4} n + \frac{3 \pi}{4} N) \\
+\end{aligned}\]</span></p>
+<p>This is true if <span class="math inline">\(\frac{\pi}{2} N = 2 \pi k\)</span> and <span class="math inline">\(\frac{3 \pi}{4} N = 2 \pi k'\)</span>, i.e.: <span class="math display">\[\begin{aligned}
+\frac{\pi}{2} N &amp;= 2 \pi k \\
+\frac{3 \pi}{4} N &amp;= 2 \pi k' \\
+\end{aligned}\]</span> with <span class="math inline">\(k\)</span>, <span class="math inline">\(k'\)</span> being integers.</p>
+<p>This means: <span class="math display">\[\begin{aligned}
+N &amp;= 4 k \\
+N &amp;= \frac{8}{3} k' \\
+\end{aligned}\]</span></p>
+<p>The smallest positive integer <span class="math inline">\(N\)</span> is <span class="math inline">\(N=8\)</span> (when <span class="math inline">\(k=2\)</span> and <span class="math inline">\(k'=3\)</span>). Therefore the signal is periodic with period <span class="math inline">\(N=8\)</span>.</p>
+</section>
+</section>
+<section id="exercise-2" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="exercise-2"><span class="header-section-number">4.2</span> Exercise 2</h2>
+<p>Consider the following signal: <span class="math display">\[x_a(t) = (1 + 0.5 cos(400 \pi t)) \cdot cos(8000 \pi t)\]</span></p>
+<ul>
+<li>a). Compute the minimum sampling frequency necessary for avoiding alias;</li>
+<li>b). The signal is sampled with 8000Hz. Write the discrete signal obtained via sampling;</li>
+<li>c). Does alias occur? If yes, identify the frequencies in the signal which are aliased;</li>
+<li>d). What is the analog signal reconstructed from the samples via ideal D/A.reconstruction?</li>
+</ul>
+<section id="solution-1" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="solution-1">Solution</h3>
+<p>a). Compute the minimum sampling frequency necessary for avoiding alias;</p>
+<p>The minimum sampling frequency necessary for avoiding alias is the double of the maximum frequency in the signal, so we need to identify the maximum frequency in the signal.</p>
+<p>For this we need to convert the multiplication of the two cosines into a sum of cosines, because a multiplication of two cosines produces a frequency which is higher than the starting frequencies.</p>
+<p>Using the trigonometric identity: <span class="math display">\[\begin{aligned}
+\cos(\alpha) \cos(\beta) &amp;= \frac{1}{2} \left( \cos(\alpha - \beta) + \cos(\alpha + \beta) \right)
+\end{aligned}\]</span> we have: <span class="math display">\[\begin{aligned}
+x_a(t) &amp;= (1 + 0.5 \cos(400 \pi t)) \cdot \cos(8000 \pi t) \\
+&amp;=\cos(8000 \pi t) + 0.5 \cos(8000 \pi t) \cos(400 \pi t) \\
+&amp;=\cos(8000 \pi t) + 0.5 \frac{1}{2} \left( \cos(8000 \pi t - 400 \pi t) + \cos(8000 \pi t + 400 \pi t) \right) \\
+&amp;=\cos(8000 \pi t) + 0.25 \cos(7600 \pi t) + 0.25 \cos(8400 \pi t) \\
+\end{aligned}\]</span></p>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Frequent error
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If the signal is already given as a sum of cosines, we don’t need to do anything else, just leave it as it is.</p>
+</div>
+</div>
+<p>Next, we identify the frequencies in the signal, which are: <span class="math display">\[\begin{aligned}
+f_1 &amp;= 4000Hz \\
+f_2 &amp;= 3800Hz \\
+f_3 &amp;= 4200Hz \\
+\end{aligned}\]</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/Ex01_Sampling_02.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<p></p><figcaption class="figure-caption">Frequencies in the signal</figcaption><p></p>
+</figure>
+</div>
+<p>The minimum sampling frequency for avoiding alias is therefore twice the maximum frequency, which is <span class="math inline">\(f_3 = 4200Hz\)</span>, i.e.: <span class="math display">\[F_{s_{min}} = 2 \cdot 4200Hz = 8400Hz\]</span></p>
+<p>b). The signal is sampled with 8000Hz. Write the discrete signal obtained via sampling;</p>
+<p>Sampling the signal amounts to applying the variable transformation <span class="math inline">\(t = \frac{n}{F_s}\)</span>, i.e.: <span class="math display">\[\begin{aligned}
+x[n] &amp;= x_a(t) \Big|_{t = \frac{n}{F_s}} \\
+&amp;= \cos(8000 \pi \frac{n}{F_s}) + 0.25 \cos(7600 \pi \frac{n}{F_s}) + 0.25 \cos(8400 \pi \frac{n}{F_s}) \\
+&amp;= \cos(8000 \pi \frac{n}{8000}) + 0.25 \cos(7600 \pi \frac{n}{8000}) + 0.25 \cos(8400 \pi \frac{n}{8000}) \\
+&amp;= \cos(\pi n) + 0.25 \cos(\frac{19}{20} \pi n) + 0.25 \cos(\frac{21}{20} \pi n) \\
+\end{aligned}\]</span></p>
+<p>c). Does alias occur? If yes, identify the frequencies in the signal which are aliased;</p>
+<p>The sampling frequency is <span class="math inline">\(F_s = 8000Hz\)</span>, which is lower than required for avoiding alias of the third component. Therefore we expect the third component to be aliased, while the first and second, for which <span class="math inline">\(F_s\)</span> is more than double, are not aliased.</p>
+<p>Indeed, let’s identify the frequencies in the discrete signal obtained: <span class="math display">\[\begin{aligned}
+\pi n = 2 \pi f_1 n \Rightarrow f_1 &amp;= \frac{1}{2} = 0.5 \\
+\frac{19}{20} \pi n = 2 \pi f_2 n \Rightarrow f_2 &amp;= \frac{19}{40} = 0.475 \\
+\frac{21}{20} \pi n = 2 \pi f_3 n \Rightarrow f_3 &amp;= \frac{21}{40} = 0.525 \\
+\end{aligned}\]</span></p>
+<p>We have <span class="math inline">\(f_1 &lt; 0.5\)</span>, <span class="math inline">\(f_2 &lt; 0.5\)</span>, which means they are not aliased, and <span class="math inline">\(f_3 &gt; 0.5\)</span>, which is aliased. The frequency <span class="math inline">\(f_3\)</span> is aliased to: <span class="math display">\[f_3' = f_3 - 1 = 0.525 - 1 = -0.475 = -\frac{19}{40}\]</span> which means that: <span class="math display">\[\cos(2 \pi \frac{21}{40} n) = \cos(- 2 \pi \frac{19}{40} n), \forall n\]</span></p>
+<p>d). What is the analog signal reconstructed from the samples via ideal D/A reconstruction?</p>
+<p>Ideal A/D reconstruction means that we need to apply the inverse variable transformation <span class="math inline">\(n = t \cdot F_s\)</span>, but starting from the aliased frequencies in the signal, if any.</p>
+<p>With the aliased frequency <span class="math inline">\(f_3'\)</span>, the discrete signal is: <span class="math display">\[x[n] = \cos(\pi n) + 0.25 \cos(\frac{19}{20} \pi n) + 0.25 \cos(-\frac{19}{20} \pi n)\]</span></p>
+<p>The analog signal reconstructed via ideal D/A reconstruction is: <span class="math display">\[\begin{aligned}
+x_r(t) &amp;= \cos(\pi \cdot t \cdot F_s) + 0.25 \cos(\frac{19}{20} \pi \cdot t \cdot F_s) + 0.25 \cos(-\frac{19}{20} \pi \cdot t \cdot F_s) \\
+&amp;= \cos(8000 \pi t) + 0.25 \cos(7600 \pi t) + 0.25 \cos(- 7600 \pi t) \\
+&amp;= \cos(8000 \pi t) + 0.25 \cos(7600 \pi t) + 0.25 \cos(7600 \pi t) \\
+&amp;= \cos(8000 \pi t) + 0.5 \cos(7600 \pi t)
+\end{aligned}\]</span></p>
+<p>Due to aliasing, the reconstructed signal is not the same as the original signal.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./references.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">References</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
