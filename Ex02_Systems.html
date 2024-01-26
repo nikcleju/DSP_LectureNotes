@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>DSP Lecture Notes - 5&nbsp; Exercises 02: Systems</title>
+<title>DSP Lecture Notes - 5&nbsp; Exercises 02: Signals and Systems</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -70,7 +70,7 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Exercises 02: Systems</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Exercises 02: Signals and Systems</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -133,7 +133,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Ex02_Systems.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Exercises 02: Systems</span></a>
+  <a href="./Ex02_Systems.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Exercises 02: Signals and Systems</span></a>
   </div>
 </li>
       </ul>
@@ -151,6 +151,23 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#solution" id="toc-solution" class="nav-link" data-scroll-target="#solution">Solution</a></li>
   </ul></li>
+  <li><a href="#exercise-2" id="toc-exercise-2" class="nav-link" data-scroll-target="#exercise-2"><span class="toc-section-number">5.2</span>  Exercise 2</a>
+  <ul class="collapse">
+  <li><a href="#solution-1" id="toc-solution-1" class="nav-link" data-scroll-target="#solution-1">Solution</a></li>
+  </ul></li>
+  <li><a href="#exercise-3" id="toc-exercise-3" class="nav-link" data-scroll-target="#exercise-3"><span class="toc-section-number">5.3</span>  Exercise 3</a>
+  <ul class="collapse">
+  <li><a href="#solution-2" id="toc-solution-2" class="nav-link" data-scroll-target="#solution-2">Solution</a></li>
+  </ul></li>
+  <li><a href="#exercise-4" id="toc-exercise-4" class="nav-link" data-scroll-target="#exercise-4"><span class="toc-section-number">5.4</span>  Exercise 4</a>
+  <ul class="collapse">
+  <li><a href="#solution-3" id="toc-solution-3" class="nav-link" data-scroll-target="#solution-3">Solution</a></li>
+  <li><a href="#method-3-using-the-z-transform-polynomials" id="toc-method-3-using-the-z-transform-polynomials" class="nav-link" data-scroll-target="#method-3-using-the-z-transform-polynomials"><span class="toc-section-number">5.4.1</span>  Method 3: using the Z transform (polynomials)</a></li>
+  </ul></li>
+  <li><a href="#exercise-5" id="toc-exercise-5" class="nav-link" data-scroll-target="#exercise-5"><span class="toc-section-number">5.5</span>  Exercise 5</a>
+  <ul class="collapse">
+  <li><a href="#solution-4" id="toc-solution-4" class="nav-link" data-scroll-target="#solution-4">Solution</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -159,7 +176,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Exercises 02: Systems</span></h1>
+<h1 class="title d-none d-lg-block"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Exercises 02: Signals and Systems</span></h1>
 </div>
 
 
@@ -219,6 +236,379 @@ a[2]=x[-2+4] &amp;= x[2] = 1 \\
 <figure class="figure">
 <p><img src="img/Ex02_01_02.png" class="img-fluid figure-img" style="width:75.0%"></p>
 <p></p><figcaption class="figure-caption">The signal <span class="math inline">\(a[n] = x[-n + 4]\)</span></figcaption><p></p>
+</figure>
+</div>
+<p>c). <em>Write the expression of <span class="math inline">\(x[n]\)</span> based on the signal <span class="math inline">\(\delta[n]\)</span></em></p>
+<p>Each Dirac in the graphical representation of <span class="math inline">\(x[n]\)</span>, taken separately, is a shifted impulse, having a certain shift and a certain amplitude.</p>
+<p>Each Dirac line located at position <span class="math inline">\(k\)</span> with amplitude <span class="math inline">\(A\)</span> can be written as <span class="math inline">\(A \cdot \delta[n - k]\)</span>. For example, the Dirac line located at position <span class="math inline">\(-2\)</span> with amplitude <span class="math inline">\(\frac{1}{3}\)</span> can be written as the signal <span class="math inline">\(\frac{1}{3} \cdot \delta[n + 2]\)</span>.</p>
+<p><img src="img/Ex02_01_03.png" class="img-fluid" style="width:75.0%"></p>
+<p>Therefore, we can write any signal as as sum of impulse signals. In this case, we have: <span class="math display">\[x[n] = \frac{1}{3} \delta[n + 2] + \frac{2}{3} \delta[n + 1] + \delta[n] + \delta[n - 1] + \delta[n - 2] + \delta[n - 3]\]</span></p>
+<p>d). <em>Write the expression of <span class="math inline">\(x[n]\)</span> based on the signal <span class="math inline">\(u[n]\)</span></em></p>
+<p>There are two ways to write the signal <span class="math inline">\(x[n]\)</span> based on the signal <span class="math inline">\(u[n]\)</span>.</p>
+<p>In the first method, note that we can write any impulse signal as a difference of two step signals, the second one being one step delayed with resoect to the first. For example, the signal <span class="math inline">\(\delta[n]\)</span> can be written as <span class="math inline">\(u[n] - u[n-1]\)</span>, as illustrated in the following figure:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/Ex02_01_04.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<p></p><figcaption class="figure-caption">The signal <span class="math inline">\(\delta[n]\)</span> as a difference of two step signals</figcaption><p></p>
+</figure>
+</div>
+<p>Therefore we can start from the sum of impulses and write each impulse as a difference of two step signals: <span class="math display">\[\begin{aligned}
+x[n] &amp;= \frac{1}{3} \delta[n + 2] + \frac{2}{3} \delta[n + 1] + \delta[n] + \delta[n - 1] + \delta[n - 2] + \delta[n - 3] \\
+&amp;= \frac{1}{3} (u[n + 2] - u[n + 1]) + \frac{2}{3} (u[n + 1] - u[n]) + (u[n] - u[n - 1]) + (u[n - 1] - u[n - 2]) + (u[n - 2] - u[n - 3]) + (u[n - 3] - u[n-4]) \\
+&amp;= \frac{1}{3} u[n + 2] + \frac{1}{3} u[n + 1] + \frac{1}{3}u[n] - u[n - 4]
+\end{aligned}\]</span></p>
+<p>A second, more visually intuitive way, relies on visually decomposing the signal <span class="math inline">\(x[n]\)</span> into a sum of step signals. Observe the figure below and how we can decompose the signal <span class="math inline">\(x[n]\)</span> as a staircase with several steps:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/Ex02_01_05.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p></p><figcaption class="figure-caption">The signal <span class="math inline">\(x[n]\)</span> as a sum of step signals</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li>The first step starts at <span class="math inline">\(n = -2\)</span> and has a height of <span class="math inline">\(\frac{1}{3}\)</span>, so it can be written as <span class="math inline">\(\frac{1}{3} u[n + 2]\)</span></li>
+<li>On top of this we have a second step starting at <span class="math inline">\(n = -1\)</span> and having a height of <span class="math inline">\(\frac{1}{3}\)</span>, so it can be written as <span class="math inline">\(\frac{1}{3} u[n + 1]\)</span></li>
+<li>On top of these we have a third step starting at <span class="math inline">\(n = 0\)</span> and having a height of <span class="math inline">\(\frac{1}{3}\)</span>, so it can be written as <span class="math inline">\(\frac{1}{3} u[n]\)</span></li>
+<li>On top of these we have a fourth negative step starting at <span class="math inline">\(n = 4\)</span> and having a height of <span class="math inline">\(-1\)</span>, so it can be written as <span class="math inline">\(-u[n - 4]\)</span>. This one will cancel all the first three, from this point onwards.</li>
+</ul>
+<p>The result can therefore be written as: <span class="math display">\[x[n] = \frac{1}{3} u[n + 2] + \frac{1}{3} u[n + 1] + \frac{1}{3}u[n] - u[n - 4]\]</span></p>
+</section>
+</section>
+<section id="exercise-2" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="exercise-2"><span class="header-section-number">5.2</span> Exercise 2</h2>
+<p>Consider the following signal: <span class="math display">\[x[n] =
+\begin{cases}
+1, &amp;-1 \leq n \leq 2\\
+\frac{1}{2}, &amp;3 \leq n \leq 4\\
+0, &amp;elsewhere
+\end{cases}
+\]</span></p>
+<p>Represent graphically the following signals:</p>
+<ul>
+<li>a). <span class="math inline">\(x[n-2]\)</span></li>
+<li>b). <span class="math inline">\(x[n+2]\)</span></li>
+<li>c). <span class="math inline">\(x[4-n]\)</span></li>
+<li>d). <span class="math inline">\(x[n] \cdot u[2-n]\)</span></li>
+<li>e). <span class="math inline">\(x[n-1] \cdot \delta[n-3]\)</span></li>
+<li>f). <span class="math inline">\(x[n^2]\)</span></li>
+<li>g). The even part of <span class="math inline">\(x[n]\)</span></li>
+<li>h). The odd part of <span class="math inline">\(x[n]\)</span></li>
+</ul>
+<section id="solution-1" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="solution-1">Solution</h3>
+<p>That’s way too much drawing for me, so I’ll just write in words what needs to be done.</p>
+<p>a). <em><span class="math inline">\(x[n-2]\)</span></em></p>
+<p>This is the signal <span class="math inline">\(x[n]\)</span> shifted to the <strong>right</strong> by 2 steps (i.e.&nbsp;shifted to the future).</p>
+<p>b). <em><span class="math inline">\(x[n+2]\)</span></em></p>
+<p>This is the signal <span class="math inline">\(x[n]\)</span> shifted to the <strong>left</strong> by 2 steps (i.e.&nbsp;shifted to the past).</p>
+<p>c). <em><span class="math inline">\(x[4-n]\)</span></em></p>
+<p>Do this just like in Exercise 1.</p>
+<p>d). <em><span class="math inline">\(x[n] \cdot u[2-n]\)</span></em></p>
+<p>This is the signal <span class="math inline">\(x[n]\)</span> multiplied by the signal <span class="math inline">\(u[2-n]\)</span>.</p>
+<p>Draw first the signal <span class="math inline">\(u[2-n]\)</span>, like in Exercise 1. This is a step signal (<span class="math inline">\(u[n]\)</span>) that starts at <span class="math inline">\(n = 2\)</span> and goes towards the <strong>left</strong> with 1’s (is reversed), and has 0’s towards the right.</p>
+<p>Then, multiply the two signals, point by point. The right part of the signal <span class="math inline">\(x[n]\)</span> will be multiplied by 0’s, so it will vanish, while the left part of the signal <span class="math inline">\(x[n]\)</span> will be multiplied by 1’s, so it will remain.</p>
+<p>e). <em><span class="math inline">\(x[n-1] \cdot \delta[n-3]\)</span></em></p>
+<p>This is the signal <span class="math inline">\(x[n-1]\)</span> multiplied by the signal <span class="math inline">\(\delta[n-3]\)</span>.</p>
+<p>The signal <span class="math inline">\(\delta[n-3]\)</span> is a shifted impulse, located at <span class="math inline">\(n = 3\)</span>. Therefore it has a single value of 1 at position <span class="math inline">\(n = 3\)</span>, and 0’s everywhere else.</p>
+<p>Multiplication with <span class="math inline">\(x[n-1]\)</span> will produce a signal that is 0 everywhere, except at position <span class="math inline">\(n = 3\)</span>, where it will have the value of <span class="math inline">\(x[n-1]\)</span> at that position, which should be <span class="math inline">\(x[2] = 1\)</span>.</p>
+<p>f). <em><span class="math inline">\(x[n^2]\)</span></em></p>
+<p>Give this signal a new name and compute its values for all <span class="math inline">\(n\)</span>, like in Exercise 1. <span class="math display">\[a[n] = x[n^2]\]</span> <span class="math display">\[a[0] = x[0^2] = x[0] = 1\]</span> <span class="math display">\[a[1] = x[1^2] = x[1] = 1\]</span> <span class="math display">\[a[-1] = x[(-1)^2] = x[1] = 1\]</span> <span class="math display">\[...\]</span></p>
+<p>g). <em>The even part of <span class="math inline">\(x[n]\)</span></em></p>
+<p>The even part of a signal is defined as (see Lectures): <span class="math display">\[x_e[n] = \frac{1}{2} (x[n] + x[-n])\]</span></p>
+<p>The signal <span class="math inline">\(x[-n]\)</span> is the signal <span class="math inline">\(x[n]\)</span> reversed (horizontal flip). Compute the values of <span class="math inline">\(x_e[n]\)</span> for all <span class="math inline">\(n\)</span>, one by one, according to this definition.</p>
+<p>h). <em>The odd part of <span class="math inline">\(x[n]\)</span></em></p>
+<p>The odd part of a signal is defined as (see Lectures): <span class="math display">\[x_o[n] = \frac{1}{2} (x[n] - x[-n])\]</span></p>
+<p>The signal <span class="math inline">\(x[-n]\)</span> is the signal <span class="math inline">\(x[n]\)</span> reversed (horizontal flip). Compute the values of <span class="math inline">\(x_o[n]\)</span> for all <span class="math inline">\(n\)</span>, one by one, according to this definition.</p>
+</section>
+</section>
+<section id="exercise-3" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="exercise-3"><span class="header-section-number">5.3</span> Exercise 3</h2>
+<p>Characterize the following systems with respect to:</p>
+<ul>
+<li>Memory</li>
+<li>Linearity</li>
+<li>Time invariance</li>
+<li>Causality</li>
+<li>Stability</li>
+</ul>
+<p>The systems are:</p>
+<ul>
+<li>a). <span class="math inline">\(y[n] = n \cdot x[n^2]\)</span></li>
+<li>b). <span class="math inline">\(y[n] = x[n] \cdot cos(\omega_0 n)\)</span></li>
+<li>c). <span class="math inline">\(y[n] = \sin(x[n])\)</span></li>
+<li>d). <span class="math inline">\(y[n] = x[n] + n \cdot x[n+1]\)</span></li>
+</ul>
+<section id="solution-2" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="solution-2">Solution</h3>
+<p>Let us consider each property in turn.</p>
+<section id="memory" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="memory">Memory</h4>
+<p>A system is memoryless if the output at time <span class="math inline">\(n\)</span> depends only on the input at time <span class="math inline">\(n\)</span>. This means <span class="math inline">\(y[n]\)</span> depends only on <span class="math inline">\(x[n]\)</span>, for any <span class="math inline">\(n\)</span>, without any delays (no <span class="math inline">\(x[n-1]\)</span>, <span class="math inline">\(x[n+1]\)</span> etc).</p>
+<p>Otherwise, the system has memory.</p>
+<p>Let’s see the systems one by one:</p>
+<ul>
+<li><p>a). <span class="math inline">\(y[n] = n \cdot x[n^2]\)</span></p>
+<p>Has memory, because, for example, <span class="math inline">\(y[2] = 2 x[4]\)</span>, so it depends on <span class="math inline">\(x[4]\)</span>, not just on <span class="math inline">\(x[2]\)</span>.</p></li>
+<li><p>b). <span class="math inline">\(y[n] = x[n] \cdot \cos(\omega_0 n)\)</span></p>
+<p>Is memoryless, because <span class="math inline">\(y[2] = x[2] \cdot \cos(\omega_0 \cdot 2)\)</span>, <span class="math inline">\(y[3] = x[3] \cdot \cos(\omega_0 \cdot 3)\)</span>, etc. so every <span class="math inline">\(y[n]\)</span> depends only on <span class="math inline">\(x[n]\)</span> and never on <span class="math inline">\(x[n-1]\)</span>, <span class="math inline">\(x[n+1]\)</span> etc.</p></li>
+<li><p>c). <span class="math inline">\(y[n] = \sin(x[n])\)</span></p>
+<p>Is memoryless, because <span class="math inline">\(y[2] = \sin(x[2])\)</span>, <span class="math inline">\(y[3] = \sin(x[3])\)</span>, etc. so every <span class="math inline">\(y[n]\)</span> depends only on <span class="math inline">\(x[n]\)</span> and never on <span class="math inline">\(x[n-1]\)</span>, <span class="math inline">\(x[n+1]\)</span> etc.</p></li>
+<li><p>d). <span class="math inline">\(y[n] = x[n] + n \cdot x[n+1]\)</span></p>
+<p>Has memory because <span class="math inline">\(y[n]\)</span> depends on <span class="math inline">\(x[n+1]\)</span>, according to the second term.</p></li>
+</ul>
+</section>
+<section id="linearity" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="linearity">Linearity</h4>
+<p>A system is linear if it satisfies the superposition principle, i.e.&nbsp;if the output of the sum of two inputs is equal to the sum of the outputs of the two inputs taken separately. <span class="math display">\[\mathcal{H}\left\{a_1 x_1[n] + a_2 x_2[n]\right\} = a_1 \mathcal{H}\left\{x_1[n]\right\} + a_2 \mathcal{H}\left\{x_2[n]\right\}\]</span></p>
+<p>This means that if we replace <span class="math inline">\(x[n]\)</span> with <span class="math inline">\(a_1 x_1[n] + a_2 x_2[n]\)</span> in the equation, we obtain the same result as if we would have applied the system to <span class="math inline">\(x_1[n]\)</span> and <span class="math inline">\(x_2[n]\)</span> separately and then added the results.</p>
+<p>Let’s see the systems one by one:</p>
+<ul>
+<li><p>a). <span class="math inline">\(y[n] = n \cdot x[n^2]\)</span></p>
+<p>Is linear, because:</p>
+<ul>
+<li><p>with <span class="math inline">\(x_1[n]\)</span> we have <span class="math inline">\(\mathcal{H}\left\{x_1[n]\right\} = n \cdot x_1[n^2]\)</span></p></li>
+<li><p>with <span class="math inline">\(x_2[n]\)</span> we have <span class="math inline">\(\mathcal{H}\left\{x_2[n]\right\} = n \cdot x_2[n^2]\)</span></p></li>
+<li><p>with <span class="math inline">\(a x_1[n] + b x_2[n]\)</span> we have:</p>
+<p><span class="math display">\[\begin{aligned}
+\mathcal{H}\left\{a x_1[n] + b x_2[n]\right\} &amp;=
+n \cdot (a x_1[n^2] + b x_2[n^2]) \\
+&amp;= a n \cdot x_1[n^2] + b n \cdot x_2[n^2] \\
+&amp;= a \mathcal{H}\left\{x_1[n]\right\} + b \mathcal{H}\left\{x_2[n]\right\}
+\end{aligned}\]</span></p>
+<p>Note that it’s not the signal <span class="math inline">\(x[n]\)</span> which is raised to power, but the index <span class="math inline">\(n\)</span>. The signal <span class="math inline">\(x[n]\)</span> does therefore not undergo any nonlinear operation.</p></li>
+</ul></li>
+<li><p>b). <span class="math inline">\(y[n] = x[n] \cdot \cos(\omega_0 n)\)</span></p>
+<p>Is linear, because:</p>
+<ul>
+<li><p>with <span class="math inline">\(x_1[n]\)</span> we have <span class="math inline">\(\mathcal{H}\left\{x_1[n]\right\} = x_1[n] \cdot \cos(\omega_0 n)\)</span></p></li>
+<li><p>with <span class="math inline">\(x_2[n]\)</span> we have <span class="math inline">\(\mathcal{H}\left\{x_2[n]\right\} = x_2[n] \cdot \cos(\omega_0 n)\)</span></p></li>
+<li><p>with <span class="math inline">\(a x_1[n] + b x_2[n]\)</span> we have:</p>
+<p><span class="math display">\[\begin{aligned}
+\mathcal{H}\left\{a x_1[n] + b x_2[n]\right\} &amp;=
+(a x_1[n] + b x_2[n]) \cdot \cos(\omega_0 n) \\
+&amp;= a x_1[n] \cdot \cos(\omega_0 n) + b x_2[n] \cdot \cos(\omega_0 n) \\
+&amp;= a \mathcal{H}\left\{x_1[n]\right\} + b \mathcal{H}\left\{x_2[n]\right\}
+\end{aligned}\]</span></p></li>
+</ul></li>
+<li><p>c). <span class="math inline">\(y[n] = \sin(x[n])\)</span></p>
+<p>Is <strong>not</strong> linear, because:</p>
+<ul>
+<li><p>with <span class="math inline">\(x_1[n]\)</span> we have <span class="math inline">\(\mathcal{H}\left\{x_1[n]\right\} = \sin(x_1[n])\)</span></p></li>
+<li><p>with <span class="math inline">\(x_2[n]\)</span> we have <span class="math inline">\(\mathcal{H}\left\{x_2[n]\right\} = \sin(x_2[n])\)</span></p></li>
+<li><p>with <span class="math inline">\(a x_1[n] + b x_2[n]\)</span> we have:</p>
+<p><span class="math display">\[\begin{aligned}
+\mathcal{H}\left\{a x_1[n] + b x_2[n]\right\} &amp;=
+\sin(a x_1[n] + b x_2[n]) \\
+&amp;\neq a \sin(x_1[n]) + b \sin(x_2[n]) \\
+&amp;= a \mathcal{H}\left\{x_1[n]\right\} + b \mathcal{H}\left\{x_2[n]\right\}
+\end{aligned}\]</span></p>
+<p>This is not equal to the sum of the previous two.</p></li>
+</ul></li>
+<li><p>d). <span class="math inline">\(y[n] = x[n] + n \cdot x[n+1]\)</span></p>
+<p>Is linear, because:</p>
+<ul>
+<li><p>with <span class="math inline">\(x_1[n]\)</span> we have <span class="math inline">\(\mathcal{H}\left\{x_1[n]\right\} = x_1[n] + n \cdot x_1[n+1]\)</span></p></li>
+<li><p>with <span class="math inline">\(x_2[n]\)</span> we have <span class="math inline">\(\mathcal{H}\left\{x_2[n]\right\} = x_2[n] + n \cdot x_2[n+1]\)</span></p></li>
+<li><p>with <span class="math inline">\(a x_1[n] + b x_2[n]\)</span> we have:</p>
+<p><span class="math display">\[\begin{aligned}
+\mathcal{H}\left\{a x_1[n] + b x_2[n]\right\} &amp;=
+(a x_1[n] + b x_2[n]) + n \cdot (a x_1[n+1] + b x_2[n+1]) \\
+&amp;= a x_1[n] + a n \cdot x_1[n+1] + b x_2[n] + b n \cdot x_2[n+1] \\
+&amp;= a \mathcal{H}\left\{x_1[n]\right\} + b \mathcal{H}\left\{x_2[n]\right\}
+\end{aligned}\]</span></p></li>
+</ul></li>
+</ul>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Quick way of checking linearity
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To be linear, any signal which appears in the equation (<span class="math inline">\(x[n]\)</span>, <span class="math inline">\(x[n-1]\)</span>, <span class="math inline">\(y[n]\)</span> etc.) should <strong>not</strong> undergo any nonlinear operation, such as raising to power, trigonometric functions etc. Any such operation will make the system <strong>nonlinear</strong>, because for example: <span class="math display">\[sin(x_1[n] + x_2[n]) \neq \sin(x_1[n]) + \sin(x_2[n])\]</span> <span class="math display">\[(x_1[n] + x_2[n])^2 \neq x_1[n]^2 + x_2[n]^2\]</span> <span class="math display">\[...\]</span></p>
+<p>The only operations allowed which preserve linearity are:</p>
+<ul>
+<li>multiplication by something which is not a signal (i.e.&nbsp;<span class="math inline">\(x[n] \cdot x[n+1]\)</span> is not linear, but <span class="math inline">\(x[n] \cdot 3\)</span> is linear, <span class="math inline">\(x[n] \cdot \cos(\omega_0 n)\)</span> is linear)</li>
+<li>delay (shift) by a constant, i.e.&nbsp;<span class="math inline">\(x[n+3]\)</span>, <span class="math inline">\(y[n-1]\)</span> etc.</li>
+<li>sums between the above</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="time-invariance" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="time-invariance">Time invariance</h4>
+<p>A system is time-invariant if a time shift in the input signal, <span class="math inline">\(x[n-k]\)</span>, produces a corresponding time shift in the output signal, but no other change, i.e.: <span class="math display">\[\mathcal{H}\left\{x[n - k]\right\} = y[n - k]\]</span></p>
+<p>Let’s see the systems one by one:</p>
+<ul>
+<li><p>a). <span class="math inline">\(y[n] = n \cdot x[n^2]\)</span></p>
+<p>Is <strong>not</strong> time-invariant, because:</p>
+<ul>
+<li>with <span class="math inline">\(x[n-k]\)</span> we have <span class="math inline">\(\mathcal{H}\left\{x[n-k]\right\} = n \cdot x[(n-k)^2]\)</span></li>
+<li>delaying the output by <span class="math inline">\(k\)</span> we have <span class="math inline">\(y[n-k] = (n-k) \cdot x[(n-k)^2]\)</span></li>
+<li>they are not the same</li>
+</ul></li>
+<li><p>b). <span class="math inline">\(y[n] = x[n] \cdot \cos(\omega_0 n)\)</span></p>
+<p>Is <strong>not</strong> time-invariant, because:</p>
+<ul>
+<li>with <span class="math inline">\(x[n-k]\)</span> we have <span class="math inline">\(\mathcal{H}\left\{x[n-k]\right\} = x[n-k] \cdot \cos(\omega_0 n)\)</span></li>
+<li>delaying the output by <span class="math inline">\(k\)</span> we have <span class="math inline">\(y[n-k] = x[n-k] \cdot \cos(\omega_0 (n-k))\)</span></li>
+<li>they are not the same</li>
+</ul></li>
+<li><p>c). <span class="math inline">\(y[n] = \sin(x[n])\)</span></p>
+<p>Is time-invariant, because:</p>
+<ul>
+<li>with <span class="math inline">\(x[n-k]\)</span> we have <span class="math inline">\(\mathcal{H}\left\{x[n-k]\right\} = \sin(x[n-k])\)</span></li>
+<li>delaying the output by <span class="math inline">\(k\)</span> we have <span class="math inline">\(y[n-k] = \sin(x[n-k])\)</span></li>
+<li>they are the same</li>
+</ul></li>
+<li><p>d). <span class="math inline">\(y[n] = x[n] + n \cdot x[n+1]\)</span></p>
+<p>Is <strong>not</strong> time-invariant, because:</p>
+<ul>
+<li>with <span class="math inline">\(x[n-k]\)</span> we have <span class="math inline">\(\mathcal{H}\left\{x[n-k]\right\} = x[n-k] + n \cdot x[(n-k)+1]\)</span></li>
+<li>delaying the output by <span class="math inline">\(k\)</span> we have <span class="math inline">\(y[n-k] = x[n-k] + (n-k) \cdot x[(n-k)+1]\)</span></li>
+<li>they are not the same</li>
+</ul></li>
+</ul>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Quick way of checking time invariance
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To be time invariant, there should be no <span class="math inline">\(n\)</span> outside the signals <span class="math inline">\(x[n]\)</span>, <span class="math inline">\(x[n-1]\)</span>, <span class="math inline">\(y[n]\)</span>, <span class="math inline">\(y[n-1]\)</span> etc.</p>
+<p>If there is any <span class="math inline">\(n\)</span> outside the signals, then the system depends on absolute time, and is therefore not time invariant.</p>
+<p>Examples:</p>
+<ul>
+<li><span class="math inline">\(y[n] = x[n] + n \cdot x[n+1]\)</span> is <strong>not</strong> time invariant, because of the <span class="math inline">\(n\)</span> outside the signals</li>
+<li><span class="math inline">\(y[n] = \sin(x[n])\)</span> is time invariant, because there is no <span class="math inline">\(n\)</span> outside the signals, only within parantheses of <span class="math inline">\(x[n]\)</span></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="causality" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="causality">Causality</h4>
+<p>A system is causal if the output at time <span class="math inline">\(n\)</span> depends only on the input at time <span class="math inline">\(n\)</span> and in the past, i.e.&nbsp;<span class="math inline">\(x[n-k]\)</span>, but never on the future, i.e.&nbsp;<span class="math inline">\(x[n+1]\)</span>.</p>
+<p>Let’s see the systems one by one:</p>
+<ul>
+<li><p>a). <span class="math inline">\(y[n] = n \cdot x[n^2]\)</span></p>
+<p>Is <strong>not</strong> causal, because <span class="math inline">\(y[2] = 2 x[4]\)</span>, so <span class="math inline">\(y[2]\)</span> depends on <span class="math inline">\(x[4]\)</span> which is in the future.</p></li>
+<li><p>b). <span class="math inline">\(y[n] = x[n] \cdot \cos(\omega_0 n)\)</span></p>
+<p>Is causal, because <span class="math inline">\(y[2] = x[2] \cdot \cos(\omega_0 \cdot 2)\)</span>, <span class="math inline">\(y[3] = x[3] \cdot \cos(\omega_0 \cdot 3)\)</span>, etc. so every <span class="math inline">\(y[n]\)</span> depends only on <span class="math inline">\(x[n]\)</span> and never on the future.</p></li>
+<li><p>c). <span class="math inline">\(y[n] = \sin(x[n])\)</span></p>
+<p>Is causal, because <span class="math inline">\(y[2] = \sin(x[2])\)</span> etc. so every <span class="math inline">\(y[n]\)</span> depends only on <span class="math inline">\(x[n]\)</span> and never on the future.</p></li>
+<li><p>d). <span class="math inline">\(y[n] = x[n] + n \cdot x[n+1]\)</span></p>
+<p>Is <strong>not</strong> causal, because <span class="math inline">\(y[n]\)</span> depends on <span class="math inline">\(x[n+1]\)</span>, so it depends on the future.</p></li>
+</ul>
+</section>
+<section id="stability" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="stability">Stability</h4>
+<p>A system is stable if the output is bounded for any bounded input. This means that if the input is not going to infinity, then the output must not go to infinity either.</p>
+<p>(Bounded = it does not go to infinity)</p>
+<p>This is a bit more difficult to check. Basically we look for counterexamples, i.e.&nbsp;when the inputs are bounded (like the unit step 1, 1, 1, 1, … ) but the output goes to infinity. If we can’t find any counterexample, we must find an argument showing that the output never goes to infinity.</p>
+<p>Let’s see the systems one by one:</p>
+<ul>
+<li><p>a). <span class="math inline">\(y[n] = n \cdot x[n^2]\)</span></p>
+<p>Is <strong>not</strong> stable because of <span class="math inline">\(n\)</span>.</p>
+<p>Assume that the input is <span class="math inline">\(x[n] = 1, 1, 1, 1, ...\)</span>. Let’s compute some outputs: <span class="math display">\[y[1] = 1 \cdot x[1^2] = 1\]</span> <span class="math display">\[y[100] = 100 \cdot x[100^2] = 100\]</span> <span class="math display">\[y[1000000] = 1000000\]</span></p>
+<p>Even though the input is always <span class="math inline">\(1\)</span>, when <span class="math inline">\(n \to \infty\)</span>, the output goes to infinity because of <span class="math inline">\(n\)</span>.</p></li>
+<li><p>b). <span class="math inline">\(y[n] = x[n] \cdot \cos(\omega_0 n)\)</span></p>
+<p>Is stable, because:</p>
+<ul>
+<li><span class="math inline">\(\cos(\omega_0 n)\)</span> is always between -1 and 1</li>
+<li><span class="math inline">\(x[n]\)</span> is bounded$</li>
+<li>so the output <span class="math inline">\(y[n] = x[n] \cdot \cos(\omega_0 n)\)</span> is always bounded if <span class="math inline">\(x[n]\)</span> is bounded.</li>
+</ul></li>
+<li><p>c). <span class="math inline">\(y[n] = \sin(x[n])\)</span></p>
+<p>Is stable, because the values of a <span class="math inline">\(\sin\)</span> are always between -1 and 1, no matter what the input is.</p></li>
+<li><p>d). <span class="math inline">\(y[n] = x[n] + n \cdot x[n+1]\)</span></p>
+<p>Is <strong>not</strong> stable because of <span class="math inline">\(n\)</span>, same argument as in a).</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="exercise-4" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="exercise-4"><span class="header-section-number">5.4</span> Exercise 4</h2>
+<p>Compute the convolution of the signals: <span class="math inline">\(x_1[n] = \{ ...,0,1,2,\underuparrow{3},4,0,...\}\)</span> and <span class="math inline">\(x_2[n] = \{...,0,2,\underuparrow{2},3,3,0,...\}\)</span></p>
+<section id="solution-3" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="solution-3">Solution</h3>
+<p>There are three ways of computing the convolution of short signals like these ones.</p>
+<section id="method-1-using-linearity-and-time-invariance" class="level4" data-number="5.4.0.1">
+<h4 data-number="5.4.0.1" class="anchored" data-anchor-id="method-1-using-linearity-and-time-invariance"><span class="header-section-number">5.4.0.1</span> Method 1: using linearity and time invariance</h4>
+<p>Each individual value from one signal triggers a copy of the other signal, having the same amplitude and shift as the trigger value.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/Ex02_04_01.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<p></p><figcaption class="figure-caption">Convolution using linearity and time invariance</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li>the first value from <span class="math inline">\(x_1[n]\)</span>, which is <span class="math inline">\(1\)</span>, triggers a copy of <span class="math inline">\(x_2[n]\)</span> multipled by <span class="math inline">\(1\)</span></li>
+<li>the second value from <span class="math inline">\(x_1[n]\)</span>, which is <span class="math inline">\(2\)</span> and shifted by one step, triggers a copy of <span class="math inline">\(x_2[n]\)</span> multipled by <span class="math inline">\(2\)</span> and shifted by one step</li>
+<li>the third value from <span class="math inline">\(x_1[n]\)</span>, which is <span class="math inline">\(3\)</span> and shifted by two steps, triggers a copy of <span class="math inline">\(x_2[n]\)</span> multipled by <span class="math inline">\(3\)</span> and shifted by two steps</li>
+<li>the fourth value from <span class="math inline">\(x_1[n]\)</span>, which is <span class="math inline">\(4\)</span> and shifted by three steps, triggers a copy of <span class="math inline">\(x_2[n]\)</span> multipled by <span class="math inline">\(4\)</span> and shifted by three steps</li>
+</ul>
+<p>The convolution result is the sum of all these copies, which is: <span class="math display">\[y[n] = \{..., 2, 6, 13, \underuparrow{23}, 23, 21, 12, ... \}\]</span></p>
+<p>The origin of time in the resulting sequence is at the value which corresponds to the origin of time in the two input sequences (see the light blue arrows).</p>
+</section>
+<section id="method-2-using-the-definition" class="level4" data-number="5.4.0.2">
+<h4 data-number="5.4.0.2" class="anchored" data-anchor-id="method-2-using-the-definition"><span class="header-section-number">5.4.0.2</span> Method 2: using the definition</h4>
+<p>The convolution of two signals is defined as: <span class="math display">\[y[n] = \sum_{k=-\infty}^{\infty} x_1[k] \cdot x_2[n-k]\]</span></p>
+<ul>
+<li><span class="math inline">\(x_1[k]\)</span> is the first signal</li>
+<li><span class="math inline">\(x_2[n-k]\)</span> is the second signal, reversed and then shifted by <span class="math inline">\(n\)</span> steps to the right</li>
+<li>for every shift <span class="math inline">\(n\)</span>, multiply these two and sum</li>
+</ul>
+<p>We write <span class="math inline">\(x_1[k]\)</span> once, and then we write all the shifted and reversed copies of <span class="math inline">\(x_2[n-k]\)</span>, we multiply them point by point with <span class="math inline">\(x_1[k]\)</span> and sum the result. In this way we compute all the values <span class="math inline">\(y[n]\)</span>, one by one.</p>
+<p>The origin of time in <span class="math inline">\(y[n]\)</span> corresponds to the value calculated when the time origins of the two signals are aligned.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/Ex02_04_02.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p></p><figcaption class="figure-caption">Convolution using the definition</figcaption><p></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="method-3-using-the-z-transform-polynomials" class="level3" data-number="5.4.1">
+<h3 data-number="5.4.1" class="anchored" data-anchor-id="method-3-using-the-z-transform-polynomials"><span class="header-section-number">5.4.1</span> Method 3: using the Z transform (polynomials)</h3>
+<p>We can write the convolution as a product of the Z transforms of the two signals: <span class="math display">\[x_1[n] \leftrightarrow X_1(z) = 1z^2 + 2z^1 + 3 + 4z^{-1}\]</span> <span class="math display">\[x_2[n] \leftrightarrow X_2(z) = 2z^1 + 2 + 3z^{-1} + 3z^{-2}\]</span> <span class="math display">\[\begin{aligned}
+x_1[n] \ast x_2[n] \leftrightarrow X_1 \cdot X_2(z) &amp;= (1z^2 + 2z^1 + 3 + 4z^{-1}) \cdot (2z^1 + 2 + 3z^{-1} + 3z^{-2}) \\
+&amp;= 2z^3 + 6z^2 + 13z + 23 + 23z^{-1} + 21z^{-2} + 12z^{-3}
+\end{aligned}
+\]</span></p>
+</section>
+</section>
+<section id="exercise-5" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="exercise-5"><span class="header-section-number">5.5</span> Exercise 5</h2>
+<p>Compute the 2D convolution of the image <span class="math display">\[I = \begin{bmatrix}
+1 &amp; 1 &amp; 1 &amp; 1 &amp; 1 \\
+2 &amp; 2 &amp; 2 &amp; 2 &amp; 2 \\
+3 &amp; 3 &amp; 3 &amp; 3 &amp; 3 \\
+\end{bmatrix}\]</span> with the kernel image: <span class="math display">\[H = \begin{bmatrix}
+0 &amp; 1 &amp; 0 \\
+1 &amp; -4 &amp; 1 \\
+0 &amp; 1 &amp; 0 \\
+\end{bmatrix}\]</span></p>
+<p>Note: the result must be the same shape as the input signal.</p>
+<section id="solution-4" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="solution-4">Solution</h3>
+<p>We proceed similarly to Method 2 in the previous exercise.</p>
+<p>We write the input matrix <span class="math inline">\(I\)</span> once, then reverse <span class="math inline">\(H\)</span> (flip horizontally and vertically), then we shift <span class="math inline">\(H\)</span> across all the positions of <span class="math inline">\(I\)</span>, multiply point by point and sum.</p>
+<p>Here, because <span class="math inline">\(H\)</span> is symmetric, flipping it horizontally and vertically makes no difference.</p>
+<p>The resulting matrix is: <span class="math display">\[\begin{bmatrix}
+-1 &amp; 0 &amp; 0 &amp; 0 &amp; -1 \\
+-2 &amp; 0 &amp; 0 &amp; 0 &amp; -2 \\
+-7 &amp; -4 &amp; -4 &amp; -4 &amp; -7 \\
+\end{bmatrix}\]</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/Ex02_05_01.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<p></p><figcaption class="figure-caption">2D convolution</figcaption><p></p>
 </figure>
 </div>
 
