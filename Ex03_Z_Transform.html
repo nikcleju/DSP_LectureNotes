@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>DSP Lecture Notes - 6&nbsp; Exercises 03: Z Transform</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./Ex02_Systems.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Exercises 03: Z Transform</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">DSP Lecture Notes</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_Intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_FourierTransform.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">DTFT and DFT</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Shiny.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Shinylive in Quarto example</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Solved Exercises</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Ex01_Sampling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Exercises 01: Sampling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Ex02_Systems.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Exercises 02: Signals and Systems</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Ex03_Z_Transform.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Exercises 03: Z Transform</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#exercise-1" id="toc-exercise-1" class="nav-link active" data-scroll-target="#exercise-1"><span class="toc-section-number">6.1</span>  Exercise 1</a>
+  <ul class="collapse">
+  <li><a href="#solution" id="toc-solution" class="nav-link" data-scroll-target="#solution">Solution</a></li>
+  </ul></li>
+  <li><a href="#exercise-2" id="toc-exercise-2" class="nav-link" data-scroll-target="#exercise-2"><span class="toc-section-number">6.2</span>  Exercise 2</a>
+  <ul class="collapse">
+  <li><a href="#solution-1" id="toc-solution-1" class="nav-link" data-scroll-target="#solution-1">Solution</a></li>
+  </ul></li>
+  <li><a href="#exercise-3" id="toc-exercise-3" class="nav-link" data-scroll-target="#exercise-3"><span class="toc-section-number">6.3</span>  Exercise 3</a>
+  <ul class="collapse">
+  <li><a href="#solution-2" id="toc-solution-2" class="nav-link" data-scroll-target="#solution-2">Solution</a></li>
+  </ul></li>
+  <li><a href="#exercise-4" id="toc-exercise-4" class="nav-link" data-scroll-target="#exercise-4"><span class="toc-section-number">6.4</span>  Exercise 4</a>
+  <ul class="collapse">
+  <li><a href="#solution-3" id="toc-solution-3" class="nav-link" data-scroll-target="#solution-3">Solution</a></li>
+  </ul></li>
+  <li><a href="#exercise-5" id="toc-exercise-5" class="nav-link" data-scroll-target="#exercise-5"><span class="toc-section-number">6.5</span>  Exercise 5</a>
+  <ul class="collapse">
+  <li><a href="#solution-4" id="toc-solution-4" class="nav-link" data-scroll-target="#solution-4">Solution</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Exercises 03: Z Transform</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="hidden">
+<p><span class="math display">\[
+\newcommand{\underuparrow}[1]{\underset{\uparrow}{#1}}\]</span> $$</p>
+</div>
+<section id="exercise-1" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="exercise-1"><span class="header-section-number">6.1</span> Exercise 1</h2>
+<p>Compute the convolution of the signals: <span class="math inline">\(x_1[n] = \{ ...,0,1,2,\underuparrow{3},4,0,...\}\)</span> and <span class="math inline">\(x_2[n] = \{...,0,2,\underuparrow{2},3,3,0,...\}\)</span></p>
+<ul>
+<li><p>a). using the Z transform</p></li>
+<li><p>b). as a product of polynomials</p></li>
+</ul>
+<section id="solution" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="solution">Solution</h3>
+<p>a). <em>Using the Z transform</em></p>
+<p>We can write the convolution as a product of the Z transforms of the two signals: <span class="math display">\[x_1[n] \leftrightarrow X_1(z) = 1z^2 + 2z^1 + 3 + 4z^{-1}\]</span> <span class="math display">\[x_2[n] \leftrightarrow X_2(z) = 2z^1 + 2 + 3z^{-1} + 3z^{-2}\]</span> <span class="math display">\[\begin{aligned}
+x_1[n] \ast x_2[n] \leftrightarrow X_1 \cdot X_2(z) &amp;= (1z^2 + 2z^1 + 3 + 4z^{-1}) \cdot (2z^1 + 2 + 3z^{-1} + 3z^{-2}) \\
+&amp;= 2z^3 + 6z^2 + 13z + 23 + 23z^{-1} + 21z^{-2} + 12z^{-3} \\
+&amp;= \{2, 6, 13, \underuparrow{23}, 23, 21, 12\} \\
+\end{aligned}
+\]</span></p>
+<p>b). <em>As a product of polynomials</em></p>
+<p>The Z transform is simply associating a polynomial to a signal, according to some rules (variable is <span class="math inline">\(z\)</span>, powers are in decreasing order). Convolution is a polynomial multiplication, irrespective of how we define the polynomials (like in Z transform, or in some other way).</p>
+<p>We could also associate any polynomials and compute the convolution as a product of those polynomials. <span class="math display">\[\{1, 2, 3, 4\} \rightarrow 1 + 2X + 3X^2 + 4X^3\]</span> <span class="math display">\[\{2, 2, 3, 3\} \rightarrow 2 + 2X + 3X^2 + 3X^3\]</span> <span class="math display">\[\begin{aligned}
+x_1[n] \ast x_2[n] &amp;\rightarrow (1 + 2X + 3X^2 + 4X^3) \cdot (2 + 2X + 3X^2 + 3X^3) \\
+&amp;= 2 + 6X + 13X^2 + 23X^3 + 23X^4 + 21X^5 + 12X^6 \\
+&amp;= \{2, 6, 13, 23, 23, 21, 12\} \\
+\end{aligned}\]</span></p>
+<p>The origin of time is at the element containing the product of the two values at the origin of time in the two input signals, i.e.&nbsp;<span class="math inline">\(3X^2\)</span> from <span class="math inline">\(x_1[n]\)</span> and <span class="math inline">\(2X\)</span> from <span class="math inline">\(x_2[n]\)</span> is <span class="math inline">\(6X^3\)</span>, so it’s the element with <span class="math inline">\(X^3\)</span> in the output signal.</p>
+</section>
+</section>
+<section id="exercise-2" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="exercise-2"><span class="header-section-number">6.2</span> Exercise 2</h2>
+<p>Find the Z transform of the following signals:</p>
+<ul>
+<li><p>a). <span class="math display">\[x[n] = \left( \frac{1}{3} \right)^n u[n]\]</span></p></li>
+<li><p>b). <span class="math display">\[x[n] = \begin{cases}
+  \left( \frac{1}{3} \right)^n, &amp; n \geq 0 \\
+  \left( \frac{1}{2} \right)^{-n}, &amp; n &lt; 0
+  \end{cases}\]</span></p></li>
+<li><p>c). <span class="math display">\[x[n] = \left( \frac{1}{2} \right)^n \sin (\frac{\pi}{3}n) u[n]\]</span></p></li>
+</ul>
+<section id="solution-1" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="solution-1">Solution</h3>
+<p>a). We use the definition of the Z transform: <span class="math display">\[X(z) = \sum_{n=-\infty}^{\infty} x[n] z^{-n}\]</span></p>
+<p>In our case, <span class="math inline">\(x[n] = \left( \frac{1}{3} \right)^n u[n]\)</span>, so it has only zeros on the left side, because of <span class="math inline">\(u[n]\)</span>. Therefore we only need to sum from <span class="math inline">\(n=0\)</span> to <span class="math inline">\(\infty\)</span>: <span class="math display">\[\begin{aligned}
+X(z) &amp;= \sum_{n=0}^{\infty} x[n] z^{-n} \\
+&amp;= \sum_{n=0}^{\infty} \left( \frac{1}{3} \right)^n z^{-n} \\
+&amp;= \sum_{n=0}^{\infty} \left( \frac{1}{3z} \right)^n \\
+\end{aligned}\]</span></p>
+<p>Denoting <span class="math inline">\(q = \frac{1}{3z}\)</span>, we have here the sum of a geometric series: <span class="math display">\[X(z) = \sum_{n=0}^{\infty} q^n  = 1 + q + q^2 +...\]</span></p>
+<p>It is known that the sum of a geometric series with element <span class="math inline">\(q\)</span> is: <span class="math display">\[\sum_{n=0}^{\infty} q^n = \frac{1}{1-q}\]</span> if <span class="math inline">\(|q| &lt; 1\)</span>. The sum in infinite otherwise (<span class="math inline">\(|q| \geq 1\)</span>).</p>
+<p>Therefore in our case, <span class="math inline">\(q = \frac{1}{3z}\)</span>, so if we have <span class="math inline">\(|\frac{1}{3z}| &lt; 1\)</span>, the sum is: <span class="math display">\[X(z) = \frac{1}{1-q} = \frac{1}{1-\frac{1}{3z}} = \frac{3z}{3z-1} = \frac{z}{z-\frac{1}{3}}\]</span></p>
+<p>The condition <span class="math inline">\(|\frac{1}{3z}| &lt; 1\)</span> defines the Region of Convergence (ROC). We can more conveniently write it as: <span class="math display">\[|\frac{1}{3z}| &lt; 1 \rightarrow |z| &gt; \frac{1}{3}\]</span></p>
+<p>Therefore the answer is: <span class="math display">\[X(z) = \frac{z}{z-\frac{1}{3}}, \quad \text{ROC:}|z| &gt; \frac{1}{3}\]</span></p>
+<p>b). We use the definition of the Z transform, but now we also have values on the left side of <span class="math inline">\(x[n]\)</span>. We split the sum in two parts: <span class="math display">\[\begin{aligned}
+X(z) &amp;= \sum_{n=-\infty}^{\infty} x[n] z^{-n} \\
+&amp;= \sum_{n=-\infty}^{-1} x[n] z^{-n} + \sum_{n=0}^{\infty} x[n] z^{-n} \\
+&amp;= \sum_{n=-\infty}^{-1} \left( \frac{1}{2} \right)^{-n} z^{-n} + \sum_{n=0}^{\infty} \left( \frac{1}{3} \right)^n z^{-n} \\
+&amp;= \sum_{n=-\infty}^{-1} \left( \frac{z}{2} \right)^{-n} + \sum_{n=0}^{\infty} \left( \frac{1}{3z} \right)^n \\
+\end{aligned}\]</span></p>
+<p>The second sum is similar to the one in the previous exercise, so it results in: <span class="math display">\[\sum_{n=0}^{\infty} \left( \frac{1}{3z} \right)^n = \frac{z}{z-\frac{1}{3}}
+\quad \text{if} \quad |z| &gt; \frac{1}{3}\]</span></p>
+<p>The first sum is also a geometric series. First, we can do a variable change <span class="math inline">\(n = -m\)</span>, so that we have a sum from <span class="math inline">\(m=1\)</span> to <span class="math inline">\(\infty\)</span> instead: <span class="math display">\[\sum_{n=-\infty}^{-1} \left( \frac{z}{2} \right)^{-n} = \sum_{m=1}^{\infty} \left( \frac{z}{2} \right)^{m}\]</span></p>
+<p>This is a geometric series with element <span class="math inline">\(q = \frac{z}{2}\)</span>, but the first element <span class="math inline">\(q^0 = 1\)</span> is missing, so we have to remove it from the sum: <span class="math display">\[\begin{aligned}
+\sum_{m=1}^{\infty} \left( \frac{z}{2} \right)^{m} &amp;= \sum_{m=0}^{\infty} \left( \frac{z}{2} \right)^{m} - 1 \\
+&amp;= \frac{1}{1-\frac{z}{2}} - 1 \\
+&amp;= \frac{1}{1-\frac{z}{2}} - \frac{1-\frac{z}{2}}{1-\frac{z}{2}} \\
+&amp;= \frac{\frac{z}{2}}{1-\frac{z}{2}} \\
+&amp;= - \frac{z}{z-2}
+\end{aligned}\]</span></p>
+<p>The condition is <span class="math inline">\(|\frac{z}{2}| &lt; 1\)</span>, which is equivalent to <span class="math inline">\(|z| &lt; 2\)</span>.</p>
+<p>Adding the two sums, we have: <span class="math display">\[\begin{aligned}
+X(z) &amp;= - \frac{z}{z-2} + \frac{z}{z-\frac{1}{3}} \\
+&amp;= \frac{-z(z-\frac{1}{3}) + z(z-2)}{(z-2)(z-\frac{1}{3})} \\
+&amp;= \frac{-\frac{5}{3}z}{(z-2)(z-\frac{1}{3})} \\
+\end{aligned}\]</span></p>
+<p>The ROC is the intersection of the ROCs of the two sums, which is: <span class="math display">\[\text{ROC:} \quad |z| &gt; \frac{1}{3} \quad \text{and} \quad |z| &lt; 2\]</span> <span class="math display">\[\text{ROC:} \quad \frac{1}{3} &lt; |z| &lt; 2\]</span></p>
+<p>c). We can write the <span class="math inline">\(\sin\)</span> using the Euler formula: <span class="math display">\[\sin(x) = \frac{e^{jx} - e^{-jx}}{2j}\]</span> <span class="math display">\[\sin (\frac{\pi}{3}n) = \frac{e^{j\frac{\pi}{3}n} - e^{-j\frac{\pi}{3}n}}{2j}\]</span></p>
+<p>The <span class="math inline">\(u[n]\)</span> cancels the left part of the signal, so the Z transform sum starts from 0: <span class="math display">\[\begin{aligned}
+X(z) &amp;= \sum_{n=0}^{\infty} \left( \frac{1}{2} \right)^n \frac{e^{j\frac{\pi}{3}n} - e^{-j\frac{\pi}{3}n}}{2j} z^{-n} \\
+&amp;= \frac{1}{2j} \sum_{n=0}^{\infty} \left( \frac{e^{j\frac{\pi}{3}}}{2z} \right)^n - \frac{1}{2j} \sum_{n=0}^{\infty} \left( \frac{e^{-j\frac{\pi}{3}}}{2z} \right)^n \\
+\end{aligned}\]</span> (since <span class="math inline">\(e^{j\frac{\pi}{3}n} = (e^{j\frac{\pi}{3}})^n\)</span>).</p>
+<p>From now on, we use the same geometric series formula: <span class="math display">\[\frac{1}{2j} \sum_{n=0}^{\infty} \left( \frac{e^{j\frac{\pi}{3}}}{2z} \right)^n = \frac{1}{2j} \frac{1}{1 - q} = \frac{1}{2j} \frac{1}{1 - \frac{e^{j\frac{\pi}{3}}}{2z}}\]</span> <span class="math display">\[\frac{1}{2j} \sum_{n=0}^{\infty} \left( \frac{e^{-j\frac{\pi}{3}}}{2z} \right)^n = \frac{1}{2j} \frac{1}{1 - q} = \frac{1}{2j} \frac{1}{1 - \frac{e^{-j\frac{\pi}{3}}}{2z}}\]</span> with the conditions <span class="math inline">\(|\frac{e^{j\frac{\pi}{3}}}{2z}| &lt; 1\)</span> and <span class="math inline">\(|\frac{e^{-j\frac{\pi}{3}}}{2z}| &lt; 1\)</span>, which are equivalent to <span class="math inline">\(|z| &gt; \frac{1}{2}\)</span>.</p>
+<p>Adding the two sums, we have: <span class="math display">\[\begin{aligned}
+X(z) &amp;= \frac{1}{2j} \frac{1}{1 - \frac{e^{j\frac{\pi}{3}}}{2z}} - \frac{1}{2j} \frac{1}{1 - \frac{e^{-j\frac{\pi}{3}}}{2z}} \\
+&amp;= \frac{1}{2j} \frac{\frac{e^{j\frac{\pi}{3}} - e^{-j\frac{\pi}{3}}}{2z}}{(1 - \frac{e^{j\frac{\pi}{3}}}{2z})(1 - \frac{e^{-j\frac{\pi}{3}}}{2z})} \\
+&amp;= \frac{\frac{1}{2z}\sin(\frac{\pi}{3})}{(1 - \frac{e^{j\frac{\pi}{3}}}{2z})(1 - \frac{e^{-j\frac{\pi}{3}}}{2z})} \\
+&amp;= \frac{\sin(\frac{\pi}{3})}{(2z - e^{j\frac{\pi}{3}})(2z - e^{-j\frac{\pi}{3}})} \\
+&amp;= \frac{\sin(\frac{\pi}{3})}{4z^2 - 2ze^{j\frac{\pi}{3}} - 2ze^{-j\frac{\pi}{3}} + 1} \\
+&amp;= \frac{\sin(\frac{\pi}{3})}{4z^2 - 2z(e^{j\frac{\pi}{3}} + e^{-j\frac{\pi}{3}}) + 1} \\
+&amp;= \frac{\sin(\frac{\pi}{3})}{4z^2 - 2z(2\cos(\frac{\pi}{3})) + 1} \\
+&amp;= \frac{\sin(\frac{\pi}{3})}{4z^2 - 4\cos(\frac{\pi}{3})z + 1} \\
+&amp;= \frac{\frac{\sqrt{3}}{2}}{4z^2 - 2z + 1} \\
+&amp;= \frac{\sqrt{3}}{8} \frac{1}{z^2 - \frac{1}{2}z + \frac{1}{4}} \\
+\end{aligned}\]</span> <span class="math display">\[\text{ROC:} \quad |z| &gt; \frac{1}{2}\]</span></p>
+</section>
+</section>
+<section id="exercise-3" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="exercise-3"><span class="header-section-number">6.3</span> Exercise 3</h2>
+<p>Find all the signals <span class="math inline">\(x[n]\)</span> which have the Z transform <span class="math display">\[X(z) = \frac{7}{(1 - 2z^{-1})(1+0.5z^{-1})}\]</span></p>
+<section id="solution-2" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="solution-2">Solution</h3>
+<p>Because we don’t specify the ROC, we will have multiple signals which have the same expression of the Z transform, but with different ROCs.</p>
+<p>We find the <strong>inverse Z transform</strong> by using the partial fraction expansion.</p>
+<p>First we get rid of the negative powers of <span class="math inline">\(z\)</span>, to make calculations easier: <span class="math display">\[X(z) = \frac{7}{(1 - 2z^{-1})(1+0.5z^{-1})} = \frac{7z^2}{(z - 2)(z+0.5)}\]</span></p>
+<p>Then we write <span class="math inline">\(X(z)/z\)</span>: <span class="math display">\[\frac{X(z)}{z} = \frac{7z}{(z - 2)(z+0.5)}\]</span></p>
+<p>Then we write the partial fractions: <span class="math display">\[\frac{X(z)}{z} = \frac{7z}{(z - 2)(z+0.5)} = \frac{A}{z-2} + \frac{B}{z+0.5}\]</span></p>
+<p>We can find <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> now, or leave them for later. <span class="math display">\[A = \frac{7z}{z+0.5} \Big|_{z=2} = \frac{7 \cdot 2}{2 + 0.5} = \frac{14}{2.5}\]</span> <span class="math display">\[B = \frac{7z}{z-2} \Big|_{z=-0.5} = \frac{7 \cdot (-0.5)}{-0.5 - 2} = \frac{-3.5}{-2.5}\]</span></p>
+<p>Next we multiply back with <span class="math inline">\(z\)</span>: <span class="math display">\[X(z) = A \frac{z}{z-2} + B \frac{z}{z+0.5}\]</span></p>
+<p>Now we use the inverse Z transform table to invert the partial fractions: <span class="math display">\[\begin{aligned}
+a^n u[n] &amp;\leftrightarrow \frac{z}{z-a}, \text{ for } |z| &gt; |a| \\
+-a^n u[-n-1] &amp;\leftrightarrow \frac{z}{z-a}, \text{ for } |z| &lt; |a| \\
+\end{aligned}\]</span></p>
+<p>Because the ROC is not specified, we will have multiple possible signals for each of the partial fractions.</p>
+<ol type="1">
+<li><p><strong>Case 1</strong>: if <span class="math inline">\(|z| &lt; 0.5 &lt; 2\)</span>, we use the variant with <span class="math inline">\(u[-n-1]\)</span> for both fractions: <span class="math display">\[\begin{aligned}
+\frac{z}{z-2} &amp;\leftrightarrow -2^n u[-n-1] \\
+\frac{z}{z+0.5} &amp;\leftrightarrow -(-0.5)^n u[-n-1]
+\end{aligned}\]</span> Therefore the signal is: <span class="math display">\[x_1[n] = - \frac{14}{2.5} 2^n u[-n-1] - \frac{3.5}{2.5} (-0.5)^n u[-n-1]\]</span></p></li>
+<li><p><strong>Case 2</strong>: if <span class="math inline">\(0.5 &lt; |z| &lt; 2\)</span>, we use the variant with <span class="math inline">\(u[n]\)</span> for the fraction with <span class="math inline">\(0.5\)</span> and <span class="math inline">\(u[-n-1]\)</span> for the fraction with <span class="math inline">\(2\)</span>: <span class="math display">\[\begin{aligned}
+\frac{z}{z-2} &amp;\leftrightarrow -2^n u[-n-1] \\
+\frac{z}{z+0.5} &amp;\leftrightarrow (-0.5)^n u[n]
+\end{aligned}\]</span> Therefore the signal is: <span class="math display">\[x_2[n] = - \frac{14}{2.5} 2^n u[-n-1] + \frac{3.5}{2.5} (-0.5)^n u[n]\]</span></p></li>
+<li><p><strong>Case 3</strong>: if <span class="math inline">\(|z| &gt; 2 &gt; 0.5\)</span>, we use the variant with <span class="math inline">\(u[n]\)</span> for both fractions: <span class="math display">\[\begin{aligned}
+\frac{z}{z-2} &amp;\leftrightarrow 2^n u[n] \\
+\frac{z}{z+0.5} &amp;\leftrightarrow (-0.5)^n u[n]
+\end{aligned}\]</span> Therefore the signal is: <span class="math display">\[x_3[n] = \frac{14}{2.5} 2^n u[n] + \frac{3.5}{2.5} (-0.5)^n u[n]\]</span></p></li>
+</ol>
+</section>
+</section>
+<section id="exercise-4" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="exercise-4"><span class="header-section-number">6.4</span> Exercise 4</h2>
+<p>Consider the system with the following system equation: <span class="math display">\[y[n] = -0.1 y[n-1] + 0.2 y[n-2] + x[n] + x[n-1]\]</span></p>
+<ul>
+<li>a). Find the system function H(z), draw the pole-zero diagram, and specify if the system is stable</li>
+<li>b). Compute the impulse response <span class="math inline">\(h[n]\)</span> of the system</li>
+<li>c). Compute the response of the system to the unit step <span class="math inline">\(x[n] = u[n]\)</span></li>
+<li>d). Compute the response of the system to the input signal <span class="math inline">\(x[n] = \left(\frac{1}{3}\right)^n u[n]\)</span></li>
+</ul>
+<section id="solution-3" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="solution-3">Solution</h3>
+<p>a). <em>Find the system function H(z), draw the pole-zero diagram, and specify if the system is stable</em></p>
+<p>We can find H(z) by taking the Z transform of the system equation: <span class="math display">\[\begin{aligned}
+Y(z) &amp;= -0.1 z^{-1} Y(z) + 0.2 z^{-2} Y(z) + X(z) + z^{-1} X(z) \\
+Y(z) (1 + 0.1 z^{-1} - 0.2 z^{-2}) &amp;= X(z) (1 + z^{-1}) \\
+H(z) = \frac{Y(z)}{X(z)} &amp;= \frac{1 + z^{-1}}{1 + 0.1 z^{-1} - 0.2 z^{-2}} \\
+&amp;= \frac{z(z + 1)}{z^2 + 0.1 z - 0.2} \\
+\end{aligned}\]</span></p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Quick way of writing <span class="math inline">\(H(z)\)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The coefficients of <span class="math inline">\(x[n-k]\)</span> are the coefficients <span class="math inline">\(b_k\)</span> at the numerator of <span class="math inline">\(H(z)\)</span>. Here, they are <span class="math inline">\(b_0 = 1\)</span> and <span class="math inline">\(b_1 = 1\)</span>.</p>
+<p>The coefficients of <span class="math inline">\(y[n-k]\)</span> are the coefficients <span class="math inline">\(a_k\)</span> at the denominator of <span class="math inline">\(H(z)\)</span>, <strong>with the opposite sign</strong>. Here, they are <span class="math inline">\(a_1 = 0.1\)</span> and <span class="math inline">\(a_2 = -0.2\)</span> (note the different sign from how they appear in the equation).</p>
+<p>Therefore <span class="math inline">\(H(z)\)</span> is: <span class="math display">\[H(z) = \frac{1 + z^{-1}}{1 + 0.1 z^{-1} - 0.2 z^{-2}}\]</span></p>
+</div>
+</div>
+<p>Find the zeros as the roots of the numerator polynomial: <span class="math display">\[z(z + 1) = 0 \rightarrow z_1 = 0, \quad z_2 = -1\]</span> Find the poles as the roots of the denominator polynomial: <span class="math display">\[z^2 + 0.1 z^ - 0.2 = 0 \rightarrow p_1 = -0.5, \quad p_2 = 0.4\]</span></p>
+<p>The pole-zero diagram is:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/Ex03_04_01.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<p></p><figcaption class="figure-caption">Pole-zero diagram</figcaption><p></p>
+</figure>
+</div>
+<p>The system is stable, because:</p>
+<ul>
+<li>The system is causal, because the system equation is causal (no <span class="math inline">\(y[n+k]\)</span> or <span class="math inline">\(x[n+k]\)</span> terms).</li>
+<li>A causal system is stable if all the poles are inside the unit circle. In our case, the poles are <span class="math inline">\(p_1 = -0.5\)</span> and <span class="math inline">\(p_2 = 0.4\)</span>, so they are indeed inside the unit circle.</li>
+</ul>
+<p>b). <em>Compute the impulse response <span class="math inline">\(h[n]\)</span> of the system</em></p>
+<p>The impulse response <span class="math inline">\(h[n]\)</span> is the inverse Z transform of the system function <span class="math inline">\(H(z)\)</span>. We use the same method for inverting the Z transform with partial fractions as in a previous exercise.</p>
+<p>We start from the expression of <span class="math inline">\(H(z)\)</span>, with positive exponents: <span class="math display">\[H(z) = \frac{z(z + 1)}{z^2 + 0.1 z - 0.2}= \frac{z(z+1)}{(z+0.5)(z-0.4)}\]</span> Then we write <span class="math inline">\(H(z)/z\)</span>: Write <span class="math inline">\(H(z)/z\)</span>: <span class="math display">\[\frac{H(z)}{z} = \frac{z + 1}{(z+0.5)(z-0.4)}\]</span> Then decompose in partial fractions: <span class="math display">\[\frac{H(z)}{z} = \frac{z + 1}{(z+0.5)(z-0.4)} = \frac{A}{z+0.5} + \frac{B}{z-0.4}\]</span> Multiply back with <span class="math inline">\(z\)</span>: <span class="math display">\[H(z) = A \frac{z}{z+0.5} + B \frac{z}{z-0.4}\]</span></p>
+<p>We know the system is causal, so we know <span class="math inline">\(h[n]\)</span> must be causal, so we invert the fractions using the variant with <span class="math inline">\(u[n]\)</span> for both: <span class="math display">\[\begin{aligned}
+\frac{z}{z+0.5} &amp;\leftrightarrow (-0.5)^n u[n] \\
+\frac{z}{z-0.4} &amp;\leftrightarrow (0.4)^n u[n]
+\end{aligned}\]</span></p>
+<p>The result is: <span class="math display">\[h[n] = A (-0.5)^n u[n] + B (0.4)^n u[n]\]</span> where <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are: <span class="math display">\[A = \frac{z+1}{z-0.4} \Big|_{z=-0.5} = \frac{-0.5+1}{-0.5-0.4} = \frac{0.5}{-0.9}\]</span> <span class="math display">\[B = \frac{z+1}{z+0.5} \Big|_{z=0.4} = \frac{0.4+1}{0.4+0.5} = \frac{1.4}{0.9}\]</span></p>
+<p>c). <em>Compute the response of the system to the unit step <span class="math inline">\(x[n] = u[n]\)</span></em></p>
+<p>If the system function is <span class="math inline">\(H(z)\)</span>, and the input has the Z transform <span class="math inline">\(X(z)\)</span>, then the output Z transform is: <span class="math display">\[Y(z) = H(z) X(z)\]</span></p>
+<p>In our case, the input is <span class="math inline">\(x[n] = u[n]\)</span>, so its Z transform is: <span class="math display">\[X(z) = \frac{1}{1 - z^{-1}} = \frac{z}{z-1}, \quad \text{ROC:} \quad |z| &gt; 1\]</span></p>
+<p>Therefore: <span class="math display">\[\begin{aligned}
+Y(z) &amp;= H(z) X(z) \\
+&amp;= \frac{z(z+1)}{(z+0.5)(z-0.4)} \cdot \frac{z}{z-1} \\
+&amp;= \frac{z^2(z+1)}{(z+0.5)(z-0.4)(z-1)} \\
+\end{aligned}\]</span></p>
+<p>Now we use the same inverse Z procedure as in the previous exercises.</p>
+<p>Write <span class="math inline">\(Y(z)/z\)</span>, then decompose in partial fractions: <span class="math display">\[\frac{Y(z)}{z} = \frac{z(z+1)}{(z+0.5)(z-0.4)(z-1)} = \frac{A}{z+0.5} + \frac{B}{z-0.4} + \frac{C}{z-1}\]</span> Multiply back with <span class="math inline">\(z\)</span>: <span class="math display">\[Y(z) = A \frac{z}{z+0.5} + B \frac{z}{z-0.4} + C \frac{z}{z-1}\]</span></p>
+<p>The system is causal, the input is causal (<span class="math inline">\(u[n]\)</span>), so the output must be causal, so we invert using the variant with <span class="math inline">\(u[n]\)</span> for all fractions: <span class="math display">\[y[n] = A (-0.5)^n u[n] + B (0.4)^n u[n] + C u[n]\]</span> where <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span> are: <span class="math display">\[A = \frac{z(z+1)}{(z-0.4)(z-1)} \Big|_{z=-0.5} = \frac{-0.5(-0.5+1)}{(-0.5-0.4)(-0.5-1)} = ...\]</span> <span class="math display">\[B = \frac{z(z+1)}{(z+0.5)(z-1)} \Big|_{z=0.4} = \frac{0.4(0.4+1)}{(0.4+0.5)(0.4-1)} = ...\]</span> <span class="math display">\[C = \frac{z(z+1)}{(z+0.5)(z-0.4)} \Big|_{z=1} = \frac{1(1+1)}{(1+0.5)(1-0.4)} = ...\]</span> and the ROC is the intersection of the ROCs of the three fractions, which is: <span class="math display">\[\text{ROC:} \quad |z| &gt; |-0.5| \quad \text{and} \quad |z| &gt; |0.4| \quad \text{and} \quad |z| &gt; |1|\]</span> which means: <span class="math display">\[\text{ROC:} \quad |z| &gt; 1\]</span></p>
+<p>d). <em>Compute the response of the system to the input signal <span class="math inline">\(x[n] = \left(\frac{1}{3}\right)^n u[n]\)</span></em></p>
+<p>The Z tranform of the input is: <span class="math display">\[X(z) = \frac{1}{1 - \frac{1}{3} z^{-1}} = \frac{z}{z-\frac{1}{3}}, \quad \text{ROC:} \quad |z| &gt; \frac{1}{3}\]</span></p>
+<p>We solve in the same manner as in c).</p>
+</section>
+</section>
+<section id="exercise-5" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="exercise-5"><span class="header-section-number">6.5</span> Exercise 5</h2>
+<p>A causal LTI system has the property that if the input signal is <span class="math display">\[x[n] = \left( \frac{1}{3} \right)^n u[n] - \frac{1}{4} \left( \frac{1}{3} \right)^n u[n-1],\]</span> then the output signal is <span class="math display">\[y[n] = \left( \frac{1}{4} \right)^n u[n]\]</span></p>
+<ul>
+<li><p>a). Find the system function H(z), draw the pole-zero diagram</p></li>
+<li><p>b). Compute the impulse response <span class="math inline">\(h[n]\)</span> of the system</p></li>
+<li><p>c). Find the difference equation of the system</p></li>
+<li><p>d). Characterize the system with respect to:</p>
+<ul>
+<li>length of impulse response (FIR or IIR)</li>
+<li>implementation (recursive or non-recursive)</li>
+<li>stability</li>
+</ul></li>
+</ul>
+<section id="solution-4" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="solution-4">Solution</h3>
+<p>a). <em>Find the system function H(z), draw the pole-zero diagram</em></p>
+<p>We know that <span class="math inline">\(H(z) = \frac{Y(z)}{X(z)}\)</span>. We find <span class="math inline">\(X(z)\)</span> and <span class="math inline">\(Y(z)\)</span>, then we divide them to obtain <span class="math inline">\(H(z)\)</span>.</p>
+<p>For the Z transform of the input, we take each term: <span class="math display">\[\left(\frac{1}{3}\right)^n u[n] \leftrightarrow \frac{z}{z-\frac{1}{3}}, \quad \text{ROC:} \quad |z| &gt; \frac{1}{3}\]</span> For the second term, observe that we can write it as: <span class="math display">\[\frac{1}{4} \left( \frac{1}{3} \right)^n u[n-1] = \frac{1}{4} \cdot \frac{1}{3} \cdot \left( \frac{1}{3} \right)^{n-1} u[n-1]\]</span> and <span class="math inline">\(\left( \frac{1}{3} \right)^{n-1} u[n-1]\)</span> is the shifted version of <span class="math inline">\(\left( \frac{1}{3} \right)^n u[n]\)</span>, so its Z transform is multiplied by <span class="math inline">\(z^{-1}\)</span>: <span class="math display">\[\left( \frac{1}{3} \right)^{n-1} u[n-1] \leftrightarrow z^{-1} \frac{z}{z-\frac{1}{3}}, \quad \text{ROC:} \quad |z| &gt; \frac{1}{3}\]</span> Therefore the second term has the Z transform: <span class="math display">\[\frac{1}{4} \left( \frac{1}{3} \right)^n u[n-1] \leftrightarrow \frac{1}{12} \cdot \frac{1}{z-\frac{1}{3}}, \quad \text{ROC:} \quad |z| &gt; \frac{1}{3}\]</span> and the Z transform of the whole input <span class="math inline">\(x[n]\)</span> is: <span class="math display">\[X(z) = \frac{z}{z-\frac{1}{3}} - \frac{1}{12} \cdot \frac{1}{z-\frac{1}{3}} = \frac{z-\frac{1}{12}}{z-\frac{1}{3}}, \quad \text{ROC:} \quad |z| &gt; \frac{1}{3}\]</span></p>
+<p>The Z transform of the output is: <span class="math display">\[Y(z) = \frac{z}{z-\frac{1}{4}}, \quad \text{ROC:} \quad |z| &gt; \frac{1}{4}\]</span></p>
+<p>Therefore the system function is the ratio of the two, and the ROC is the intersection of the ROCs of the two: <span class="math display">\[\begin{aligned}
+H(z) = \frac{Y(z)}{X(z)} &amp;= \frac{z}{z-\frac{1}{4}} \cdot \frac{z-\frac{1}{3}}{z-\frac{1}{12}}, \quad \text{ROC:} \quad |z| &gt; \frac{1}{3} \quad \text{and} \quad |z| &gt; \frac{1}{4}\\
+&amp;= \frac{z (z-\frac{1}{3})}{(z-\frac{1}{4})(z-\frac{1}{12})}, \quad \text{ROC:} \quad |z| &gt; \frac{1}{3}\\
+\end{aligned}\]</span></p>
+<p>The zeros are the roots of the numerator polynomial, i.e.&nbsp;<span class="math inline">\(z_1 = 0\)</span> and <span class="math inline">\(z_2 = \frac{1}{3}\)</span>.</p>
+<p>The poles are the roots of the denominator polynomial, i.e.&nbsp;<span class="math inline">\(p_1 = \frac{1}{4}\)</span> and <span class="math inline">\(p_2 = \frac{1}{12}\)</span>.</p>
+<p>The pole-zero diagram is:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/Ex03_05_01.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<p></p><figcaption class="figure-caption">Pole-zero diagram</figcaption><p></p>
+</figure>
+</div>
+<p>b). <em>Compute the impulse response <span class="math inline">\(h[n]\)</span> of the system</em></p>
+<p>We compute <span class="math inline">\(h[n]\)</span> as the inverse Z transform of <span class="math inline">\(H(z)\)</span>, using the same method as in the previous exercises.</p>
+<p>The system is causal (it is mentioend in the text, and also because the ROC is the outside of a circle), so <span class="math inline">\(h[n]\)</span> must be causal, which means we invert the fractions using the variant with <span class="math inline">\(u[n]\)</span> for all fractions.</p>
+<p>c). <em>Find the difference equation of the system</em></p>
+<p>We disband the parantheses in <span class="math inline">\(H(z)\)</span> and simplify to obtain negative exponents: <span class="math display">\[\begin{aligned}
+H(z) &amp;= \frac{z (z-\frac{1}{3})}{(z-\frac{1}{4})(z-\frac{1}{12})} \\
+&amp;= \frac{z^2 - \frac{1}{3}z}{z^2 - \frac{4}{12}z + \frac{1}{48}}\\
+&amp;= \frac{1 - \frac{1}{3}z^{-1}}{1 - \frac{1}{3}z^{-1} + \frac{1}{48}z^{-2}}
+\end{aligned}\]</span></p>
+<p>We can write the system equation directly, knowing that the numerator coefficients are the coefficients of <span class="math inline">\(x[n-k]\)</span> and the denominator coefficients, with the opposite sign, are the coefficients of <span class="math inline">\(y[n-k]\)</span>: <span class="math display">\[y[n] = \frac{1}{3} y[n-1] - \frac{1}{48} y[n-2] + x[n] - \frac{1}{3} x[n-1]\]</span></p>
+<p>We could also take the long route to the same result: <span class="math display">\[H(z) = \frac{1 - \frac{1}{3}z^{-1}}{1 - \frac{1}{3}z^{-1} + \frac{1}{48}z^{-2}} = \frac{Y(z)}{X(z)}\]</span> <span class="math display">\[Y(z) (1 - \frac{1}{3}z^{-1} + \frac{1}{48}z^{-2}) = X(z) (1 - \frac{1}{3}z^{-1})\]</span> <span class="math display">\[y[n] - \frac{1}{3} y[n-1] + \frac{1}{48} y[n-2] = x[n] - \frac{1}{3} x[n-1]\]</span> <span class="math display">\[y[n] = \frac{1}{3} y[n-1] - \frac{1}{48} y[n-2] + x[n] - \frac{1}{3} x[n-1]\]</span></p>
+<p>d). <em>Characterize the system with respect to those three properties</em></p>
+<ol type="1">
+<li><p>Since the system function <span class="math inline">\(H(z)\)</span> has a denominator (has poles), it is an IIR system, so the length of the impulse response is infinite.</p>
+<p>We can also see from the expression of <span class="math inline">\(h[n]\)</span> which we obtained in b).</p></li>
+<li><p>The system is recursive, because it has a feedback loop (<span class="math inline">\(y[n]\)</span> depends on <span class="math inline">\(y[n-1]\)</span> and <span class="math inline">\(y[n-2]\)</span> in the equation).</p>
+<p>Any IIR system is recursive.</p></li>
+<li><p>The system is stable, because:</p>
+<ul>
+<li>it is causal</li>
+<li>the poles are inside the unit circle (<span class="math inline">\(p_1 = \frac{1}{4}\)</span>, <span class="math inline">\(p_2 = \frac{1}{12}\)</span>).</li>
+</ul></li>
+</ol>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./Ex02_Systems.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Exercises 02: Signals and Systems</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
