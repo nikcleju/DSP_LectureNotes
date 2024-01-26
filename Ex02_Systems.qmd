@@ -426,3 +426,96 @@ Let's see the systems one by one:
 
   Is **not** stable because of $n$, same argument as in a).
 
+## Exercise 4
+
+Compute the convolution of the signals:
+$x_1[n] = \{ ...,0,1,2,\underuparrow{3},4,0,...\}$ and $x_2[n] = \{...,0,2,\underuparrow{2},3,3,0,...\}$
+
+### Solution {.unnumbered}
+
+There are three ways of computing the convolution of short signals like
+these ones.
+
+#### Method 1: using linearity and time invariance
+
+Each individual value from one signal triggers a copy of the other signal,
+having the same amplitude and shift as the trigger value.
+
+![Convolution using linearity and time invariance](./img/Ex02_04_01.png){width=75%}
+
+- the first value from $x_1[n]$, which is $1$, triggers a copy of $x_2[n]$ multipled by $1$
+- the second value from $x_1[n]$, which is $2$ and shifted by one step, triggers a copy of $x_2[n]$ multipled by $2$ and shifted by one step
+- the third value from $x_1[n]$, which is $3$ and shifted by two steps, triggers a copy of $x_2[n]$ multipled by $3$ and shifted by two steps
+- the fourth value from $x_1[n]$, which is $4$ and shifted by three steps, triggers a copy of $x_2[n]$ multipled by $4$ and shifted by three steps
+
+The convolution result is the sum of all these copies, which is:
+$$y[n] = \{..., 2, 6, 13, \underuparrow{23}, 23, 21, 12, ... \}$$
+
+The origin of time in the resulting sequence is at the value which
+corresponds to the origin of time in the two input sequences (see the
+light blue arrows).
+
+#### Method 2: using the definition
+
+The convolution of two signals is defined as:
+$$y[n] = \sum_{k=-\infty}^{\infty} x_1[k] \cdot x_2[n-k]$$
+
+- $x_1[k]$ is the first signal
+- $x_2[n-k]$ is the second signal, reversed and then shifted by $n$ steps to the right
+- for every shift $n$, multiply these two and sum
+
+We write $x_1[k]$ once, and then we write all the shifted and reversed copies of $x_2[n-k]$, we multiply them point by point with $x_1[k]$ and sum the result.
+In this way we compute all the values $y[n]$, one by one.
+
+The origin of time in $y[n]$ corresponds to the value calculated when
+the time origins of the two signals are aligned.
+
+![Convolution using the definition](./img/Ex02_04_02.png){width=100%}
+
+### Method 3: using the Z transform (polynomials)
+
+We can write the convolution as a product of the Z transforms of the two signals:
+$$x_1[n] \leftrightarrow X_1(z) = 1z^2 + 2z^1 + 3 + 4z^{-1}$$
+$$x_2[n] \leftrightarrow X_2(z) = 2z^1 + 2 + 3z^{-1} + 3z^{-2}$$
+$$\begin{aligned}
+x_1[n] \ast x_2[n] \leftrightarrow X_1 \cdot X_2(z) &= (1z^2 + 2z^1 + 3 + 4z^{-1}) \cdot (2z^1 + 2 + 3z^{-1} + 3z^{-2}) \\
+&= 2z^3 + 6z^2 + 13z + 23 + 23z^{-1} + 21z^{-2} + 12z^{-3}
+\end{aligned}
+$$
+
+
+## Exercise 5
+
+Compute the 2D convolution of the image
+$$I = \begin{bmatrix}
+1 & 1 & 1 & 1 & 1 \\
+2 & 2 & 2 & 2 & 2 \\
+3 & 3 & 3 & 3 & 3 \\
+\end{bmatrix}$$
+with the kernel image:
+$$H = \begin{bmatrix}
+0 & 1 & 0 \\
+1 & -4 & 1 \\
+0 & 1 & 0 \\
+\end{bmatrix}$$
+
+Note: the result must be the same shape as the input signal.
+
+### Solution {.unnumbered}
+
+We proceed similarly to Method 2 in the previous exercise.
+
+We write the input matrix $I$ once, then reverse $H$ (flip horizontally and vertically),
+then we shift $H$ across all the positions of $I$, multiply point by point and sum.
+
+Here, because $H$ is symmetric, flipping it horizontally and vertically
+makes no difference.
+
+The resulting matrix is:
+$$\begin{bmatrix}
+-1 & 0 & 0 & 0 & -1 \\
+-2 & 0 & 0 & 0 & -2 \\
+-7 & -4 & -4 & -4 & -7 \\
+\end{bmatrix}$$
+
+![2D convolution](./img/Ex02_05_01.png){width=100%}
