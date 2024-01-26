@@ -1,5 +1,5 @@
 
-# Exercises 02: Signals and Systems
+# 02: Signals and Systems
 
 ::: {.hidden}
 $$
