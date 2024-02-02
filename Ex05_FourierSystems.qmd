@@ -1,0 +1,40 @@
+# Fourier analysis of LTI systems
+
+## Exercise 3
+
+A digital filter has the following properties:
+
+- it is a high-pass filter of order 1
+- the pole is situated at a distance 0.9 from the origin
+- constant signals are completely blocked by the filter
+
+Requirements:
+
+- a. Draw the pole-zero diagram and find the system function $H(z)$
+- b. Compute the amplitude response and the phase response of the filter
+- c. Normalize the filter such that $| H(\pi) | = 1$
+- d. Find the output signal $y[n]$ if the input signal is $x[n] = 2 \cos(\frac{\pi}{6}n + \frac{\pi}{4}), n \in \mathbb{Z}$
+
+## Exercise 4
+
+Which of the following filters has a linear-phase? Justify the answer.
+
+- a. $H(z) = 7 + 3 z^{-1} + z^{-2} + 7z^{-3} + 3 z^{-4} + z^{-5}$
+- b. $H(z) = \frac{1 + 2 z^{-1} + z^{-2}}{1 - 2 z^{-1} + z^{-2}}$
+- c. $H(z) = 1 + 2z^{-1} + z^{-2}$
+- d. $H(z) = 1 - 2z^{-1} + z^{-2}$
+- e. $H(z) = 1 - 2z^{-1} - 2z^{-2} + z^{-3}$
+- f. $H(z) = 1 + 2z^{-1} + 7z^{-2}- 2z^{-2} - z^{-3}$
+- g. $H(z) = 1 - z^{-1}$
+- h. $H(z) = 1 - z^{-2}$
+
+### Solution {.unnumbered}
+
+## Exercise 5
+
+Draw the implementation structure of one of the following filter in
+Direct-Form I / Direct-Form II / Direct-Form I Transposed / Direct-Form II Transposed
+
+$$H(z) = \frac{7 - 3 z^{-1} + z^{-2} }{1 + 0.5 z^{-1} - 0.75 z^{-2} + 0.4 z^{-3} }$$
+
+### Solution {.unnumbered}

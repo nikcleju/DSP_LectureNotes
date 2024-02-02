@@ -1,5 +1,5 @@
 
-# 01: Sampling
+# Sampling
 
 ## Exercise 1
 

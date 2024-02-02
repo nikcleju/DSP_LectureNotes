@@ -16,6 +16,7 @@ book:
       - Ex01_Sampling.qmd
       - Ex02_Systems.qmd
       - Ex03_Z_Transform.qmd
+      - Ex04_Fourier.qmd
       # - 01_02_ProceseAleatoare.qmd
       # - 01_03_Autocorelatia.qmd
 

@@ -1,4 +1,4 @@
-# 03: The Z Transform
+# The Z Transform
 
 ::: {.hidden}
 $$
