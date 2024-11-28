@@ -1,3 +1,1349 @@
+# The Fourier Transform for discrete signals and its applications
+
+## Introduction: vector spaces of signals
+
+<!-- In the following we review the mathematical framework of vector spaces
+
+Consider a set $V = \lbrace v_i \rbrace$, containing elements $v_i$.
+
+The set $V$ is a **vector space** if it satisfies the following two properties:
+
+    - one element  + another element = still an element of the same space
+
+    - a scalar constant $\times$ an element = still an element of the same space
+
+- You **can't escape** a vector space by summing or scaling
+
+- The elements of a vector space are called **vectors**
+
+### Examples of vector spaces
+
+- Geometric spaces are great intuitive examples:
+
+    - a line, or the set $\mathbb{R}$   (one-dimensional)
+    - a plane, or the set $\mathbb{C}$   (two-dimensional)
+    - 3D space  (three-dimensional)
+    - 4D space  (four-dimensional, like the spatio-temporal universe)
+    - arrays with N numbers (N-dimensional)
+    - space of continuous signals ($\infty$-dimensional)
+
+- The **dimension** of the space = "how many numbers you need in order to specify one element" (informal)
+
+- A "vector" like in maths = a sequence of $N$ numbers = a "vector" like in programming
+
+  - e.g. a point in a plane has two coordinates = a vector of size $N=2$
+  - e.g. a point in a 3D-space has three coordinates = a vector of size $N=3$
+
+### Inner product
+
+- Many vector spaces have a fundamental operation: **the (Euclidean) inner product**
+
+    - for **discrete** signals:
+        $$\langle \vec{x},\vec{y} \rangle = \sum_i x_i y_i^*$$
+
+    - for **continuous** signals:
+        $$\langle \vec{x},\vec{y} \rangle = \int x(t) y^*(t)$$
+
+- $^*$ represents **complex conjugate** (has no effect for real signals)
+
+- The result is one number (real or complex)
+
+- Also known as **dot product** or **scalar product** ("produs scalar")
+
+### Inner product
+
+- Each entry in $\vec{x}$ times the complex conjugate of the one in $\vec{y}$, all summed
+
+- For discrete signals, it can be understood as a row $\times$ column multiplication
+
+- Discrete vs continuous: just change sum/integral depending on signal type
+
+### Inner product properties
+
+- Inner product is **linear** in both terms:
+
+    $$\langle \vec{x_1} + \vec{x_2}, \vec{y} \rangle = \langle \vec{x_1}, \vec{y} \rangle + \langle \vec{x_2}, \vec{y} \rangle$$
+    $$\langle c \cdot \vec{x}, \vec{y} \rangle = c \cdot \langle \vec{x_1}, \vec{y} \rangle$$
+    $$\langle \vec{x}, \vec{y_1} + \vec{y_2} \rangle = \langle \vec{x}, \vec{y_1} \rangle + \langle \vec{x}, \vec{y_2} \rangle$$
+    $$\langle \vec{x}, c \cdot \vec{y} \rangle = c^* \cdot \langle \vec{x_1}, \vec{y} \rangle$$
+
+
+### The distance between two vectors
+
+- An inner product induces a **norm** and a **distance** function
+
+- **The (Euclidean) distance** between two vectors =
+    $$d(\vec{x}, \vec{y}) = \sqrt{(x_1-y_1)^2 + (x_2-y_2) ^2 + ... + (x_N-y_N) ^2}$$
+
+- This distance is the **usual geometric distance** you know from geometry
+
+- It has the exact same intuition like in **normal geometry**:
+
+  - if two vectors have small distance, they are close, they are similar
+  - two vectors with large distance are far away, not similar
+  - two identical vectors have zero distance
+
+### The norm of a vector
+
+- An inner product induces a **norm** and a **distance** function
+
+- The **norm** (length) of a vector = sqrt(inner product with itself)
+$$\|\vec{x}\| = \sqrt{ \langle \vec{x},\vec{x} \rangle } = \sqrt{x_1^2 + x_2 ^2 + ... + x_N ^2}$$
+
+- The **norm** of a vector is the distance from $\vec{x}$ to point $\vec{0}$.
+
+- It has the exact same intuition like in **normal geometry**:
+
+  - vector has large norm = has big values, is far from $\vec{0}$
+  - vector has small norm = has small values, is close to $\vec{0}$
+  - vector has zero norm = it is the vector $\vec{0}$
+
+- Norm of a vector = sqrt(the signal **energy**)
+
+### Norm and distance
+
+- The norm and distance are related
+
+- The distance between $\vec{a}$ and $\vec{b}$ = norm (length) of their difference
+$$d(\vec{x}, \vec{y}) = \|\vec{x} - \vec{y}\| = \sqrt{x_1^2 + x_2 ^2 + ... + x_N ^2}$$
+
+- Just like in geometry: distance = length of the difference vector
+
+![Norm and distance in vector spaces](img/NormDist.png){width=42%}
+
+### Angle between vectors
+
+- The **angle** between two vectors is:
+
+  $$\cos(\alpha) = \frac{\langle x,y \rangle}{||x|| \cdot ||y||}$$
+
+    - is a value between -1 and 1
+
+- **Otrhogonal vectors** = two vectors with $\langle x,y \rangle = 0$
+
+   - their angle = $90\deg$
+   - in geometric language, the two vectors are **perpendicular**
+
+### Why vector space
+
+- Why are all these useful?
+
+- They are a very general **framework** for different kinds of signals
+
+- We can have **generic** algorithms expressed in terms of distances, norms, angles,
+and they will work the same in all vector spaces
+
+  - Example in DEDP class: ML decision with 1, 2, N samples
+
+### Vector spaces in DSP class
+
+We deal mainly with the following vector spaces:
+
+- The vector space of all infinitely-long real signals $x[n]$
+
+- The vector space of all infinitely-long periodic signals $x[n]$ with period N
+
+  - for each $N$ we have a different vector space
+
+- The vector space of all finite-length signals $x[n]$ with only $N$ samples
+
+  - for each $N$ we have a different vector space
+
+### Bases
+
+- A **basis** = a set of $N$ linear independent elements from a vector space
+
+  $$B = \lbrace \vec{b}^1, \vec{b}^2 ... \vec{b}^N \rbrace$$
+
+- Any vector in a vector space is expressed as a **linear combination** of the basis elements:
+
+  $$\vec{x} = \alpha_1 \vec{b}^1 + \alpha_2 \vec{b}^2 + ... + \alpha_N \vec{b}^N$$
+
+- The vector is defined by these coefficients:
+
+  $$\vec{x} = (\alpha_1, \alpha_2, ... \alpha_N)$$
+
+### Bases and coordinate systems
+
+- Bases are just like **coordinate systems** in a geometric space
+
+  - any point is expressed w.r.t. a coordinate system
+  $$\vec{x} =  x_1 \vec{i} + x_2 \vec{j}$$
+
+  - any vector is expressed w.r.t. a basis
+  $$\vec{x} = \alpha_1 \vec{b}^1 + \alpha_2 \vec{b}^2 + \dots + \alpha_N \vec{b}^N$$
+
+- $N$ = The number of basis elements = The dimension of the space
+
+- Example: any color = RGB values (monitor) or Cyan-Yellow-Magenta values (printer)
+
+### Bases and coordinate systems
+
+![Basis expansion of a vector x](img/Basis.png)
+
+
+### Choice of bases
+
+- There is typically an infinite choice of bases
+
+- The **canonical basis** = all basis vectors are full of zeros, just with one 1
+
+- You used it already in an exercise:
+
+  - any signal $x[n]$ can be expressed of a sum of $\delta[n-k]$
+  $$\lbrace \dots, 3, 6, 2, \dots \rbrace = \dots + 3 \delta[n] + 6 \delta[n-1] + 2 \delta[n-2] + \dots$$
+
+  - the canonical basis is $B = \lbrace ..., \delta[n], \delta[n-1], \delta[n-2], \dots \rbrace$
+
+### Orthonormal bases
+
+- An **orthonormal basis** a basis where all elements $\vec{b}^i$ are:
+
+  - orthogonal to each other:  $$\langle \vec{b}^i, \vec{b}^j \rangle = 0, \forall i \neq j$$
+
+  - **normalized** (their norm = 1): $$||\vec{b}^i|| = \sqrt{\langle \vec{b}^i, \vec{b}^i \rangle} = 1, \forall i$$
+
+- Example: the canonical basis $\lbrace \delta[n-k] \rbrace$ is orthonormal:
+
+  - $\langle \delta[n-k], \delta[n-l] \rangle = 0, \forall k \neq l$
+  - $\langle \delta[n-k], \delta[n-k] \rangle = 1, \forall k$
+
+
+### Orthonormal bases
+
+- Orthonormal basis = like a coordinate system with orthogonal vectors, of length 1
+
+![Sample bases in a 2D space](img/Bases.png){width=80%}
+
+
+### Basis expansion of a vector
+
+- Suppose we have an **orthonormal basis** $B = \lbrace \vec{b}^i \rbrace$
+
+- Suppose we have a vector $\vec{x}$
+
+- We can write (expand) $\vec{x}$ as:
+  $$\vec{x} = \alpha_1 \vec{b}^1 + \alpha_2 \vec{b}^2 + \dots + \alpha_N \vec{b}^N$$
+
+- Question: how to **find** the coefficients $\alpha_i$?
+
+### Basis expansion of a vector
+
+- If the basis is **orthonormal**, we have:
+
+$$\begin{split}
+\langle \vec{x}, \vec{b}^i \rangle =&
+\langle \alpha_1 \vec{b}^1 + \alpha_2 \vec{b}^2 + \dots + \alpha_N \vec{b}^N, \vec{b}^i \rangle\\
+&= \langle \alpha_1 \vec{b}^1, \vec{b}^i \rangle + \langle \alpha_2 \vec{b}^2, \vec{b}^i \rangle + \dots + \langle \alpha_N \vec{b}^N, \vec{b}^i \rangle\\
+&= \alpha_1 \langle \vec{b}^1, \vec{b}^i \rangle + \alpha_2 \langle \vec{b}^2, \vec{b}^i \rangle + \dots + \alpha_N\langle \vec{b}^N, \vec{b}^i \rangle\\
+&= \alpha_i
+\end{split}$$
+
+### Basis expansion of a vector
+
+- Any vector $\vec{x}$ can be written as:
+  $$\vec{x} = \alpha_1 \vec{b}^1 + \alpha_2 \vec{b}^2 + \dots + \alpha_N \vec{b}^N$$
+
+- For orthonormal basis: the coefficients $\alpha_i$ are found by inner product
+with the corresponding basis vector:
+  $$\alpha_i = \langle, \vec{x}, \vec{b}^i \rangle$$
+
+
+### Why bases
+
+- How does all this talk about bases help us?
+
+- To better understand the Fourier transform
+
+- The signals $\lbrace e^{j \omega n} \rbrace$ form an **orthonormal basis**
+
+- The Fourier Transform of a signal $x$ = finding the coefficients of $\vec{x}$ in this basis
+
+- The Inverse Fourier Transform = expanding $\vec{x}$ with the elements of this basis
+
+- Same **generic** thing every time, only the type of signals differ -->
+
+## Introducing the Fourier Transforms
+
+Let's start with a **reminder** of some basic mathematical formulas.
+
+- the Euler formula:
+  $$
+    e^{jx} = \cos(x) + j \sin(x)
+  $$
+
+  This function $e^{jx}$ is known as the **complex exponential**.
+
+- relation between $\cos()$ and $\sin()$ and the complex exponential:
+  $$
+  \begin{split}
+    \cos(x) &= \frac{e^{jx} + e^{-jx}}{2}\\
+    \sin(x) &= \frac{e^{jx} - e^{-jx}}{2j}\\
+  \end{split}
+  $$
+
+- $\cos()$ and $\sin()$ are just shifted versions of each other:
+  $$
+    \begin{split}
+    \sin(x) &= \cos(x - \frac{\pi}{2})\\
+    \cos(x) &= \sin(x + \frac{\pi}{2})
+    \end{split}
+  $$
+
+### Eigen-signals of LTI systems
+
+Why are sinusoidal signals $\sin()$ and $\cos()$ so prevalent in signal processing?
+The reason is that they can be written based on $e^{jx}$ and an $e^{-jx}$.
+In fact, it is the function $e^{jx}$ that is very special, due to its relation to differential equations,
+and $\sin()$ and $\cos()$ merely inherit the nice properties of $e^{jx}$.
+
+Why is the function $e^{jx}$ special? From the point of view of LTI systems,
+it is because it is an **eigen-function** of these systems.
+
+An **eigen-function** ("funcție proprie") of a mathematical system is function $f$ which,
+if input in a system, produces an output proportional to it:
+    $$H\lbrace f \rbrace = \lambda \cdot f, \lambda \in \mathbb{C}$$
+
+Using the signal processing terminology,
+a signal $x[n]$ is called an **eigen-signal** of the system if
+the output signal is proportional to the input signal:
+    $$y[n] = H \lbrace x[n] \} = \lambda \cdot x[n]$$
+It turns out that the complex exponential signals $e^{j\omega n}$ are eigen-signals of Linear and Time Invariant (LTI) systems.
+
+::: {.callout-note icon=false appearance=simple}
+#### Theorem: Complex exponentials are eigen-signals of LTI systems
+
+The complex exponential signals $e^{j\omega n}$ are **eigen-functions** of Linear and Time Invariant (LTI) systems:
+$$
+y[n] = H \lbrace x[n] \} = \lambda \cdot x[n], \lambda \in \mathbb{C}, \forall H{} \textrm{ a LTI system}
+$$
+
+**Proof:**
+Let's consider an input signal $x[n] = A e^{j\omega_0 n}$, for some values $A$, $\omega_0 \in \mathbb{R}$.
+
+The LTI system $H$ has an impulse response $h[n]$. The output signal is the convolution of the input signal $x[n]$ with the impulse response $h[n]$:
+$$
+\begin{split}
+    y[n] &= \sum_{k=-\infty}^\infty h[k] x[n-k]\\
+         &= \sum_{k=-\infty}^\infty h[k] A e^{j \omega_0 (n-k)} \\
+         &= \sum_{k=-\infty}^\infty h[k] e^{-j \omega_0 k} A e^{j \omega_0 n}\\
+         &= A e^{j \omega_0 n} \underbrace{\sum_{k=-\infty}^\infty h[k] e^{-j \omega_0 k}}_{H(\omega_0)}\\
+         &= H(\omega_0) \cdot x[n]
+\end{split}
+$$
+
+With the notation $H(\omega_0) = \sum_{k=-\infty}^\infty h[k] e^{-j \omega_0 k}$, which is a constant complex number,
+we have shown that $y[n]$ is proportional to $x[n]$:
+$$
+    y[n] = H(\omega_0) \cdot x[n]
+$$
+:::
+
+The concept of eigen-signals and, more generally, of eigen-functions, is similar to the
+concept of **eigen-vectors** of a matrix (remember algebra).
+Eigen-vectors are vectors which, when multiplied by a matrix $A$, produce a vector proportional to the input vector.
+$$
+    A \cdot v = \lambda \cdot v
+$$
+The core idea is the same: the vector $v$ is not changed by the matrix $A$ except by scaling with some value.
+
+Eigen-signals are very useful as building blocks of signals.
+If we can decompose a signal into a sum of eigen-signals,
+we can easily understand how the signal will be transformed by LTI a system,
+since each of the eigen-signals will be transformed into a scaled version of itself.
+The output signal will be a sum of scaled versions of the input signal's eigen-signals.
+
+This is exactly the idea behind the Fourier Transform.
+The Fourier Transform decomposes a signal into a sum of complex exponentials $e^{j\omega n}$,
+so that when the signal passes through an LTI system,
+we can understand the effect as simply scaling each of the complex exponentials
+(multiplication by the transfer function $H(\omega)$).
+
+
+::: {.callout-tip icon=false title="Example"}
+#### Example
+
+Imagine a professional DSLR photo camera with some RGB color filters mounted on the lens.
+Suppose we have three photographic filters which reduce the intensity of the red, green, and blue colors:
+
+- one filter reduces red to 50%:
+  $$R_{out} = 0.5 \cdot R_{in}$$
+- one filter reduces green to 25%:
+  $$G_{out} = 0.25 \cdot G_{in}$$
+- one filter reduces blue to 80%:
+  $$B_{out} = 0.8 \cdot B_{in}$$
+
+The colors R, G, B behave like eigen-colors of the system, in the sense that the output
+is proportional to the input.
+
+Now, suppose we have an input color "pink" which is some combination of red and blue.
+What is the output color if we pass the "pink" color through the filters?
+
+The answer is easy if we represent the "pink" color in terms of the eigen-colors R, G, B.
+If, say, pink is equal to $200 \cdot R + 0 \cdot G + 200 \cdot B$, then the output will simply be:
+$$
+200 \cdot 0.5 \cdot R + 0 \cdot 0.25 \cdot G + 200 \cdot 0.8 \cdot B
+$$
+
+Decomposing the color in terms of the eigen-colors R, G, B, makes it easy to understand the effect of the filters.
+R, G, B are the natural way of representing colors in this case, making it easy to
+understand the effect of the filters.
+:::
+
+### The Fourier Transforms
+
+The Fourier Transform is the mathematical tool that allows us to decompose a signal
+as a linear combination of complex exponentials $e^{j\omega n}$.
+
+For non-periodic signals, we use the Discrete-Time Fourier Transform (DTFT) and its inverse.
+
+<!--
+### Discrete-Time Fourier Transform (DTFT)
+
+- Consider the vector space of **non-periodic infinitely-long signals**
+
+- This vector space is **infinite-dimensional**
+
+- The signals $\lbrace e^{j 2 \pi f n} \rbrace, \forall f \in [-\frac{1}{2}, \frac{1}{2}]$ form an **orthonormal basis**
+
+- We can expand (almost) any $\vec{x}$ in this basis:
+
+  $$x[n] = \int_{f=-1/2}^{1/2} \underbrace{X(f)}_{\alpha_\omega} e^{j 2 \pi f n} df$$
+
+- The coefficient of every $e^{j 2 \pi f n}$ is found by inner product:
+
+  $$\alpha_\omega = X(f) = \langle x[n], e^{j 2 \pi f n} \rangle = \sum_n x[n] e^{- j 2 \pi f n}$$ -->
+
+
+**Inverse Discrete-Time Fourier Transform (Inverse DTFT)**:
+
+A signal $x[n]$ can be written as an infinite sum (i.e. integral) of complex exponentials:
+  $$x[n] = \int_{f=-1/2}^{1/2} X(f) e^{j 2 \pi f n} df$$
+with some coefficients, $X(f)$.
+  <!-- - A signal $x[n]$ can be written as a linear combination of $\lbrace e^{j 2 \pi f n} \rbrace, \forall f \in [-\frac{1}{2}, \frac{1}{2}]$, with some coefficients $X(f)$ -->
+
+**Discrete-Time Fourier Transform (DTFT):**
+
+The coefficients $X(f)$ are found as:
+  $$X(f) = \langle x[n], e^{j 2 \pi f n} \rangle = \sum_{n=-\infty}^{\infty} x[n] e^{- j 2 \pi f n}$$
+
+  <!-- - The coefficient $X(f)$ of every $\lbrace e^{j 2 \pi f n} \rbrace$ is found using the inner product $\langle \vec{x}, e^{j 2 \pi f n} \rangle$ -->
+
+Alternatively, we can write these in terms of $\omega$,
+by replacing $f$ with $\omega = 2 \pi f$ and $df = \frac{1}{2 \pi} d\omega$:
+$$
+\begin{split}
+    x[n] &= \frac{1}{2 \pi}\int_{\omega=-\pi}^{\pi} X(\omega) e^{j \omega n} d\omega\\
+    X(\omega) &= \langle x[n], e^{j \omega n} \rangle = \sum_n x[n] e^{- j \omega n}
+\end{split}
+$$
+
+---
+
+For periodic signals, we use the Discrete Fourier Transform (DFT) formula and its inverse,
+because the spectrum $X(f)$ is discrete, so there is just a finite number of coefficients:
+
+<!--
+### Discrete Fourier Transform (DFT)
+
+- Consider the vector space of **periodic** signals with **period N**
+  - for some fixed $N =$ 2, 3 or ... etc
+
+- This is a vector space of **dimension N**
+  - we need N numbers to identify a signal (specify its period)
+
+- We can consider $x[n]$ only for **one period**, i.e. $n = 0 ,\dots N-1$
+
+- The signals $\lbrace e^{j 2 \pi f n} \rbrace, \forall f \in \lbrace 0, \frac{1}{N}, \dots \frac{N-1}{N} \rbrace$ form an **orthonormal basis** with N elements
+
+- It is a **discrete** set of frequencies: $f = \frac{k}{N}, \forall k \in \lbrace 0, 1, \dots N-1 \rbrace$ -->
+
+**Inverse Discrete Fourier Transform (Inverse DFT):**
+
+A periodic signal $x[n]$ can be written as a sum of exactly $N$ complex exponentials:
+$$ x[n] = \frac{1}{N} \sum_{k=0}^{N-1} X_k e^{j 2 \pi k n / N} $$
+with some coefficients, $X_k$.
+
+**Discrete Fourier Transform (DFT)**:
+
+The coefficients $X_k$ are found as:
+ $$X_k = \langle x[n], e^{j 2 \pi f n} \rangle = \sum_{n=0}^{N-1} x[n] e^{- j 2 \pi k n / N}$$
+
+<!-- - The coefficient $X(f)$ of every $\lbrace e^{j 2 \pi f n} \rbrace$ is found using the inner product $\langle \vec{x}, e^{j 2 \pi f n} \rangle$ -->
+
+In the following, we shall analyze each variant of the Fourier Transform in more detail.
+
+## The Discrete-Time Fourier Transform (DTFT)
+
+The Discrete-Time Fourier Transform (DTFT) is used for discrete signals, infinitely long, that are **non-periodic**.
+
+Inverse Discrete-Time Fourier Transform (Inverse DTFT):
+  $$x[n] = \int_{f=-1/2}^{1/2} X(f) e^{j 2 \pi f n} df = \frac{1}{2\pi} \int_{\omega=-\pi}^{\pi} X(\omega) e^{j \omega n} d\omega$$
+
+
+Discrete-Time Fourier Transform (DTFT):
+  $$X(f) = \langle x[n], e^{j 2 \pi f n} \rangle = \sum_{n=-\infty}^{\infty} x[n] e^{- j 2 \pi f n}$$
+
+The inverse DTFT shows that a signal can be written as a continuous sum (i.e. an intergal)
+of complex exponentials $e^{j \omega n}$, with some coefficients $X(\omega)$ or $X(f)$.
+The direct DTFT shows how to compute these coefficients.
+
+### Basic properties of DTFT
+
+The function $X(\omega)$ is known as the **spectrum** of the signal $x[n]$.
+
+- $X(\omega)$ is **defined** only for $\omega \in [-\pi, \pi]$, or $f \in [-\frac{1}{2}, \frac{1}{2}]$.
+  This is unlike the spectrum of continuous signals, which ranges from $-\infty$ to $\infty$.
+
+- $X(\omega)$ is has **complex** values, meaning there exists the functions $| X(\omega) |$ and $\angle X(\omega)$.
+
+- If the signal $x[n]$ is real, $X(\omega)$ is **even**:
+  $$x[n] \in \mathbb{R} \rightarrow X(-\omega) = X^*(\omega)$$
+
+  Furthermore, this means that the modulus $|X(\omega)|$ is an even, real-valued function:
+  $$|X(\omega)| = |X(-\omega)|$$
+  and the phase $\angle X(\omega)$ is an odd, real-valued function:
+  $$X(\omega) = - X(-\omega)$$
+
+### Sum of sinusoids
+
+The Inverse DTFT can be rewritten to show the signal $x[n]$ as a sum of sinusoids.
+
+By grouping terms with $e^{j \omega n}$ and $e^{j (-\omega) n}$ we get:
+
+$$
+\begin{split}
+    x[n] &= \frac{1}{2\pi} \int_{-\pi}^0 X(\omega) e^{j \omega n} + \frac{1}{2\pi} \int_0^\pi X(\omega) e^{j \omega n} d\omega\\
+        &= \frac{1}{2\pi} \int_0^\pi (X(\omega) e^{j \omega n}  + X(-\omega) e^{j (-\omega) n} ) d\omega\\
+        &= \frac{1}{2\pi} \int_0^\pi 2|X(\omega)| ( e^{j \omega n + \angle{X(\omega)}}  +  e^{- j \omega n - \angle{X(\omega)}} ) d\omega\\
+        &= \frac{1}{2\pi} \int_0^\pi 2 |X(\omega)| \cos(\omega n + \angle X(\omega))d\omega
+\end{split}
+$$
+
+The Inverse DTFT shows, therefore, that any signal $x[n]$ can be written as a
+continuous sum (i.e. integral) of sinusoids with all frequencies $f \in [-\frac{1}{2}, \frac{1}{2}]$.
+
+The coefficient of each sinusoid is given by the spectrum $X(f)$, for every value of $f$:
+
+- The **modulus** $|X(\omega)|$ gives the **amplitude** of the sinusoids ($\times$ 2)
+  - As a particular case for $\omega = 0$, $|X(\omega=0)|$ gives the DC component of the signal
+- The **phase** $\angle X(\omega)$ gives the initial phase shift of the sinusoids
+
+This is the fundamental practical interpretation of the Fourier transform:
+it shows that any signal can be decomposed into a continuous sum of sinusoids of all frequencies,
+each with a certain amplitude and phase.
+
+### Properties of DTFT
+
+#### Linearity
+
+The DTFT is a linear operation. The DTFT of a linear combination of signals is the linear combination of their DTFTs:
+
+$$a \cdot x_1[n] + b\cdot x_2[n] \leftrightarrow a \cdot X_1(\omega)+ b\cdot X_2(\omega)$$
+
+Proof: via definition
+
+#### Shifting in time
+
+The DTF of a signal delayed by $n_0$ is the DTFT of the original signal, multiplied by a complex exponential:
+
+$$x[n - n_0] \leftrightarrow e^{-j \omega n_0} X(\omega)$$
+
+Proof: via definition
+
+Note that
+$$ \| e^{-j \omega n_0} X(\omega) \| = \| X(\omega) \|$$
+which shows that when a signal is shifted in time,
+the amplitudes $|X(\omega)|$ of the spectrum are not affected.
+Shifting in time affects only the phase of the spectrum.
+This makes sense, because shifting a signal in time does not change the
+"amplitudes" of the composing sinusoids, it only shifts them.
+
+#### Modulation in time
+
+A shift of the spectrum $X(\omega)$ by $\omega_0$ corresponds to a modulation of the signal $x[n]$ by a complex exponential:
+
+$$e^{j \omega_0 n} x[n]\leftrightarrow X(\omega - \omega_0)$$
+
+#### Complex conjugation
+
+Complex conjugation in time domain corresponds in frequency domain to complex conjugation and inversion of the frequency:
+
+$$x^*[n] \leftrightarrow X^*(-\omega)$$
+
+#### Convolution
+
+The convolution of two signals in time domain corresponds to the multiplication of their spectra in frequency domain:
+
+$$x_1[n] \star x_2[n] \leftrightarrow X_1(\omega) \cdot X_2(\omega)$$
+
+Proof: TBD
+
+#### Product in time
+
+The product of two signals in time domain corresponds to the convolution of their spectra in frequency domain:
+
+$$x_1[n] \cdot  x_2[n] \leftrightarrow \frac{1}{2 \pi} \int_{-\pi}^\pi X_1(\lambda) X_2(\omega - \lambda) d\lambda$$
+
+#### Correlation theorem
+
+The cross-correlation of two signals in time domain corresponds to the product of their spectra in frequency domain,
+the second spectrum being complex conjugated:
+
+$$r_{x_1x_2}[l] \leftrightarrow X_1(\omega) X_2^*(\omega)$$
+
+#### Wiener-Khinchin theorem
+
+The autocorrelation of a signal in time domain corresponds to the power spectral density in frequency domain:
+
+$$r_{xx}[l] \leftrightarrow S_{xx}(\omega) = |X(\omega)|^2$$
+
+Note that this is a special case of the correlation theorem, where the two signals are the same:
+$$r_{xx}[l] \leftrightarrow X(\omega) X^*(\omega) = |X(\omega)|^2$$
+since for any complex number $z$, $z \cdot z^* = |z|^2$.
+
+#### Parseval theorem
+
+The **Parseval theorem** states that the energy of the signal is the same in time and frequency domains:
+$$E = \sum_{-\infty}^\infty |x[n]|^2 = \frac{1}{2 \pi}\int_{-\pi}^\pi |X(\omega)|^2$$
+
+The energy of a function, in general, is defined as the sum of the squares of its values.
+In the case of a signal, in the time domain we have the sum of the squares of the samples,
+and in the frequency domain we have the integral of the square of the spectrum, since the spectrum is continuous.
+
+## The Discrete Fourier Transform (DFT)
+
+The Discrete Fourier Transform (DFT) is used for discrete signals, periodic, with period $N$.
+
+If we apply the DTFT to a periodic signal, we get a spectrum that is discrete, with only $N$ Dirac deltas.
+In this case it is easier to replace the integral with a sum of exactly $N$ terms, and in this way we get the DFT.
+
+Inverse Discrete Fourier Transform (Inverse DFT)
+$$x[n] = \frac{1}{N} \sum_{k=0}^{N-1} X_k e^{j 2 \pi k n / N}$$
+
+Discrete Fourier Transform (DFT):
+$$X_k = \langle x[n], e^{j 2 \pi f n} \rangle = \sum_{n=0}^{N-1} x[n] e^{- j 2 \pi k n / N}$$
+
+The DFT is defined for periodical signals with period $N$, and there are exactly $N$ terms in each sum in the two formulas above.
+The DFT formula only uses the values from one period of the signal, $x[n]$ for $n = 0, 1, \dots, N-1$,
+because the signal is periodic and the values repeat from $N$ onwards.
+
+::: {.callout-note icon=false appearance=simple title="Note"}
+
+Remember the differences between the DTFT and DFT in terms of the types of signals and spectra:
+
+The DFT takes a vector with N elements ($x[0], \dots, x[N-1]$) and produces a vector with N elements ($X_k$).
+For this reason, we can compute it with tools like Matlab, because it is a finite operation.
+
+The DTFT takes an infinitely-long signal $x[n]$ and produces a continuous function ($X(\omega)$) between $[-\pi, \pi]$.
+
+:::
+
+### Basic properties of DFT
+
+The DFT produces only $N$ coefficients $X_k$, with each $X_k$ corresponding to a frequency $f = \frac{k}{N}$.
+$X_0$ corresponds to the DC component, $X_1$ to the frequency $f = \frac{1}{N}$, and so on.
+
+The DFT coefficients $X_k$ are complex numbers, meaning they have a modulus $|X_k|$ and a phase $\angle X_k$.
+
+If the signal $x[n] \in \mathbb{R}$, the coefficients are **even** (and complex):
+$$X_{-k} = X_k^*$$
+Furthermore, this means that the modulus $|X_k|$ are even, real values:
+$$|X_{-k}| = |X_k|$$
+and the phase $\angle X_k$ are odd, real values:
+$$\angle X_{-k} = -\angle X_k$$
+
+The DFT coefficients $X_k$ are periodic with period $N$, i.e. $X_{k+N} = X_k$.
+This can be shown from the DFT formula, where, if we replace $k$ with $k + N$, we get the same value:
+$$
+\begin{split}
+    X_{k+N} &= \sum_{n=0}^{N-1} x[n] e^{- j 2 \pi (k + N) n / N}\\
+            &= \sum_{n=0}^{N-1} x[n] e^{- j 2 \pi k n / N} e^{- j 2 \pi n}\\
+            &= \sum_{n=0}^{N-1} x[n] e^{- j 2 \pi k n / N}\\
+            &= X_k
+\end{split}
+$$
+The periodicity of the DFT coefficients is the reason for which the Inverse DFT only uses
+the values $X_0, X_1, \dots, X_{N-1}$, since the values repeat afterwards.
+
+Because of periodicity, we can rename the coefficients $X_{N-k}$ as $X_{-k}$.
+Consider, for example, a signal $x[n]$ with period $N = 6$. The signal has 6 DFT coefficients $X_0$, $X_1$, $X_2$, $X_3$, $X_4$, $X_5$.
+However, we can rename the last ones as $X_5 = X_{-1}$, and $X_4 = X_{-2}$.
+Thus, the 6 coefficients can be considered $X_{-2}$, $X_{-1}$, $X_0$, $X_1$, $X_2$, $X_3$.
+
+This "renaming" of coefficients corresponds to the fact that the frequency $f = \frac{N-k}{N}$ is the same as $f - 1 = \frac{-k}{N}$,
+which we know from the aliasing effect.
+Thus, for a periodic signal with $N=6$, the coefficient $X_5$ corresponds to frequency $f = \frac{5}{6}$, which
+is the same as $f = \frac{-1}{6}$, which corresponds to $X_{-1}$. Similarly, $X_4$ corresponds to $f = \frac{4}{6}$, which is the same as $f = \frac{-2}{6}$, which corresponds to $X_{-2}$.
+The resulting DFT coefficients are $X_{-2}$, $X_{-1}$, $X_0$, $X_1$, $X_2$, $X_3$,
+and now their corresponding frequencies are all in the range $[-\frac{1}{2}, \frac{1}{2}]$.
+
+### Sum of sinusoids
+
+Just like the DTFT, the DFT can be rewritten to show the signal $x[n]$ as a sum of sinusoids,
+where the modulus $|X_k|$ gives the amplitude of the sinusoids, and the phase $\angle X_k$ gives the initial phase shift.
+
+For easy analysis, we consider seperately the cases when $N$ is odd and when $N$ is even.
+
+#### Sum of sinusoids with N = odd
+
+If $N$ is odd, we have an odd number of coefficients $X_k$. We keep $X_0$ single, and we group
+together the coefficients $X_k$ and  $X_{-k}$ as follows:
+
+$$\begin{split}
+x[n] &= \sum_{k=-(N-1)/2}^{(N-1)/2} X_k e^{j 2 \pi k n / N}\\
+    &= \frac{1}{N} X_0 e^{j 0 n} + \frac{1}{N} \sum_{k=-(N-1)/2}^{-1} X_k e^{j 2 \pi k n / N} + \frac{1}{N} \sum_{k=1}^{(N-1)/2} X_k e^{j 2 \pi k n / N}\\
+    &= \frac{1}{N} X_0 + \frac{1}{N} \sum_{k=1}^{(N-1)/2} (X_k e^{j 2 \pi k n / N}  + X_{-k} e^{- j 2 \pi k n / N} )\\
+    &= \frac{1}{N} X_0 + \frac{1}{N} \sum_{k=1}^{(N-1)/2} |X_k| ( e^{j 2 \pi k n /N + \angle{X(k)}}  +  e^{- j 2 \pi k n / N - \angle{X(\omega)}} )\\
+    &= \frac{1}{N} X_0 + \frac{1}{N} \sum_{k=0}^{(N-1)/2} 2 |X_k| \cos(2 \pi k/N n + \angle X_k)
+\end{split}$$
+
+This shows that a signal $x[n]$ with period $N$ can be written as a sum of a few sinusoids with frequencies
+$0, \frac{1}{N}, \frac{2}{N}, \dots$, not exceeding 1/2.
+
+The DC component is given by $X_0$. The amplitudes of the sinusoids are given by $|X_k|$, and the phases by $\angle X_k$.
+
+#### Sum of sinusoids with N = even
+
+If $N$ is even, we have an even number of coefficients $X_k$. We group together the coefficients $X_k$ and $X_{-k}$ as follows:
+- we leave $X_0$ on its own
+- we group $X_1$ and $X_{-1}$, $X_2$ and $X_{-2}$, and so on
+- there is one remaining coefficient $X_{N/2}$, which has no pair
+
+For example, for $N=6$, we have coefficients $X_{-2}, X_{-1}, X_0, X_1, X_2, X_3$.
+We group $X_1$ and $X_{-1}$, $X_2$ and $X_{-2}$, while $X_0$ and $X_3$ are left on their own.
+
+We observe that the final term $X_{N/2}$, having no pair, must be a real number.
+Because of periodicity, we must have $X_{N/2} = X_{-N/2}, but on other hand toe coefficients are even, so $X_{N/2} = X_{-N/2}^*$.
+This means that $X_{N/2}$ is equal to its own complex conjugate, so it must be a real number.
+
+We have:
+
+$$\begin{split}
+x[n] &= \sum_{k=-(N-2)/2}^{N/2} X_k e^{j 2 \pi k n / N}\\
+     &= \frac{1}{N} X_0 e^{j 0 n} + \frac{1}{N} \sum_{k=-(N-2)/2 }^{-1} X_k e^{j 2 \pi k n / N} + \frac{1}{N} \sum_{k=1}^{(N-2)/2} X_k e^{j 2 \pi k n / N} + \frac{1}{N} X_{N/2} e^{j 2 \pi (N/2) n / N}\\
+     &= \frac{1}{N} X_0 + \frac{1}{N} \sum_{k=1}^{(N-2)/2} (X_k e^{j 2 \pi k n / N}  + X_{-k} e^{- j 2 \pi k n / N} ) + \frac{1}{N} X_{N/2} e^{j 2 \pi (N/2) n / N}\\
+     &= \frac{1}{N} X_0 + \frac{1}{N} \sum_{k=1}^{(N-2)/2} 2 |X_k| \cos(2 \pi k/N n + \angle X_k) + \frac{1}{N} X_{N/2} \cos(n \pi)
+\end{split}$$
+
+This shows that a signal $x[n]$ with period $N$ can be written as a sum of a few sinusoids with frequencies
+$0, \frac{1}{N}, \frac{2}{N}, \dots$, up to but not exceeding 1/2.
+
+- The DC component is given by $X_0$.
+- The amplitudes of the sinusoids are given by $|X_k|$, and the phases by $\angle X_k$. Note that for the frequency $1/2$ in particular,
+  (the last term in the sum), the amplitude is $X_{N/2}$, which is a real number, and doesn't have the factor of 2. Also, its phase is 0, because $X_{N/2}$ is real.
+
+::: {.callout-tip icon=false appearance=simple title="Exercises"}
+
+1. Consider a periodic signal $x[n]$ with period $N=6$ and the DFT coefficients:
+
+   $X_k$ = [15.0000 + 0.0000i , -2.5000 + 3.4410i , -2.5000 + 0.8123i , -2.5000 - 0.8123i , -2.5000 - 3.4410i]
+
+   Write $x[n]$ as a sum of sinusoids.
+
+
+2. Do the same for a periodic signal $x[n]$ with period $N=5$ and the DFT coefficients:
+
+   $X_k$ = [21.0000 + 0.0000i , -3.0000 + 5.1962i , -3.0000 + 1.7321i , -3.0000 + 0.0000i , -3.0000 - 1.7321i , -3.0000 - 5.1962i]
+
+   Write $x[n]$ as a sum of sinusoids.
+
+:::
+
+
+### The DFT matrix
+
+- The DFT (and the inverse IDFT) is equivalent with a matrix multiplication:
+
+  - on whiteboard
+
+- In the world of discrete signals, there are many signal transforms possible, and many of them
+  can be expressed as matrix multiplications, just like the DFT.
+
+### Properties of the DFT
+
+#### 1. Linearity
+
+If the signal $x_1[n]$ has the DFT coefficients $\lbrace X_k^{(1)} \rbrace$,
+and $x_2[n]$ has $\lbrace X_k^{(2)} \rbrace$, then their sum has
+
+$a \cdot x_1[n] + b\cdot x_2[n] \leftrightarrow \lbrace a \cdot X_k^{(1)} + b\cdot X_k^{(2)} \rbrace$
+
+Proof: via definition
+
+### Properties of the DFT
+
+####  2. Shifting in time
+
+If $x[n] \leftrightarrow \lbrace X_k \rbrace$, then
+$$x[n - n_0] \leftrightarrow \lbrace e^{(-j 2 \pi k n_0 / N)} X_k \rbrace$$
+
+Proof: via definition
+
+- The amplitudes $|X_k|$ are not affected, shifting in time **affects only the phase**
+
+### Properties of the DFT
+
+#### 3. Modulation in time
+$$e^{j 2 \pi k_0 n / N} \leftrightarrow \lbrace X_{k-k_0} \rbrace$$
+
+#### 4. Complex conjugation
+
+$$x^*[n] \leftrightarrow \lbrace X_{-k}^* \rbrace$$
+
+### Properties of the DFT
+
+#### 5. Circular convolution
+
+Circular convolution of two signals $\leftrightarrow$ product of coefficients
+
+$$x_1[n] \otimes x_2[n] \leftrightarrow \lbrace N \cdot X_k^{(1)} \cdot X_k^{(2)} \rbrace$$
+
+**Circular convolution** definition:
+
+$$x_1[n] \otimes x_2[n] = \sum_{k=0}^{N-1} x_1[k] x_2[(n-k)_N]$$
+
+- takes two periodic signals of period N, result is also periodic with period N
+
+- Example at the whiteboard: how it is computed
+
+### Example
+
+Example (write on slides)
+
+### Circular convolution
+
+- We are in the vector space of **periodic signals** with period N
+
+- Linear (e.g. normal) convolution produces a result which is longer periodic with period N
+
+- Circular convolution takes two sequences of length N and produces another sequence of length N
+
+  - each sequence is a period of a periodic signal
+  - circular convolution = like a convolution of periodic signals
+
+### Properties of the DFT
+
+#### 6. Product in time
+
+Product in time $\leftrightarrow$ circular convolution of DFT coefficients
+$$x_1[n] \cdot  x_2[n] \leftrightarrow \sum_{m=0}^{N-1} X_m^{(1)} X_{(k-m)_N}^{(2)} = X_k^{(1)} \otimes X_k^{(2)}$$
+
+### Properties of the DFT
+
+- **Parseval theorem**: energy of the signal is the same in time and frequency domains
+  $$E = \sum_{0}^{N-1} |x[n]|^2 = \frac{1}{2 \pi} \sum |X_k|^2$$
+
+- Is true for all orthonormal bases
+
+### Plot / sketch DTFT and DFT of various signals
+
+Let's plot / sketch DTFT and DFT of various signals
+
+DTFT of:
+
+- a constant signal $x[n] = A$
+- a rectangular signal $x[n] = A$ between $-\tau$ and $\tau$, 0 elsewhere
+- a cosine of frequency precisely $f = k/N$
+- a cosine of frequency not $f = k/N$
+
+DFT, with N=20, of:
+
+- a constant signal $x[n] = A$
+- a rectangular signal $x[n] = A$ between $-\tau$ and $\tau$, 0 elsewhere
+- a cosine of frequency precisely $f = k/N$
+- a cosine of frequency not $f = k/N$
+
+### DFT matrix
+
+- The DFT (and the inverse IDFT) is equivalent with a matrix multiplication:
+
+  DFT:
+  $$\mathbf{X} = \mathbf{W}_N \mathbf{x}$$
+
+  IDFT:
+  $$\mathbf{x} = \mathbf{W}_N^T \mathbf{X}$$
+
+  where
+  $$
+  \mathbf{X} = \begin{bmatrix}
+      X_0 \\
+      X_1 \\
+      \vdots \\
+      X_{N-1}
+  \end{bmatrix},
+  \quad
+  \mathbf{x} = \begin{bmatrix}
+      x_0 \\
+      x_1 \\
+      \vdots \\
+      x_{N-1}
+  \end{bmatrix},
+  $$
+
+### DFT matrix (continued)
+
+  $$
+  \mathbf{W}_N = \frac{1}{\sqrt{N}} \begin{bmatrix}
+      W_N^{0 \cdot 0} & W_N^{0 \cdot 1} & \cdots & W_N^{0 \cdot (N-1)} \\
+      W_N^{1 \cdot 0} & W_N^{1 \cdot 1} & \cdots & W_N^{1 \cdot (N-1)} \\
+      \vdots  & \vdots  & \ddots & \vdots  \\
+      W_N^{(N-1) \cdot 0} & W_N^{(N-1) \cdot 1} & \cdots & W_N^{(N-1) \cdot (N-1)}
+  \end{bmatrix}
+  $$
+
+  with an element $W_N^{kn} = e^{-j 2\pi \frac{k}{N} n}$ ($k$ = row index, $n$ = column index)
+
+- there might be small variations depending on whether we have $\frac{1}{\sqrt{N}}$ at both DFT and IDFT,
+  or just put $\frac{1}{N}$ just for the IDFT
+
+- note that for IDFT we have $W^{-1} = W^T$ (orthonormal basis)
+
+### DFT matrix multiplication
+
+- Naive implementation of DFT, IDFT: use matrix multiplication with $W$, $W^{-1}$
+
+- Number of multiplications necessary for a vector of length $N$ is $N^2$
+
+- In the world of algorithms, the **computational complexity** of an algorithm =
+  number of multiplications necessary, depending on some variable $N$
+  - only the dominant term matters, no coefficient, e.g $O(N^2)$ not $7.3 N^2 + 4N$
+
+- Naive DFT has computation complexity $\mathcal{O}(N^2)$
+  - prohibitively large
+
+### FFT
+
+- The Fast Fourier Transform (FFT) algorithm = a fast algorithm for computing the DFT, exploiting
+  the particular nature (symmetries) in the DFT matrix
+
+- FFT computational complecity: $\mathcal{O}(N \log_2(N))$
+
+- Exercise: for $N=1024$, how much faster is FFT compared to naive DFT multiplication?
+
+- Invention and adoption of FFT (~'60s, Cooley & Tukey) = "the birth of Digital Signal Processing"
+
+### Other transforms
+
+- In the world of discrete signals, there are many signal transforms possible, and many of them
+  can be expressed as matrix multiplications, just like the DFT.
+
+- Transform = expressing a N-dimensional vector $x$ as a linear combination of a set of $N$ basis vectors
+
+- How:
+  1. Put the $N$ vectors of the basis as columns in a matrix A
+  2. Solve the system $x = A X$ (inverse transform)
+  3. Which means $X = A^{-1} x$ (forward transform)
+
+- Why:
+  - compression: the discrete cosine transform is the basis for lossy JPEG image compression
+  - ...
+
+### Example
+
+- Consider the exercise from Week 2:
+
+  $$x[n] = \lbrace ..., 0, \frac{1}{3}, \frac{2}{3}, 1, 1, 1, 1, 0, ... \rbrace$$
+  Write the expression of $x[n]$ based on the signal $u[n]$.
+
+  Solve this in Matlab using a matrix approach
+
+### Another example: JPEG
+
+![JPEG compression with DCT transform](img/JPG_DCT_BlockDiagram.png){width=80% max-width=1000px}
+
+- image from: JPEG Picture Compression Using Discrete Cosine Transform, N. K. More, S. Dubey, 2012
+
+### Another example: JPEG (cont'd)
+
+- Each 8x8 image block is a vector in a 64 dimensional space
+- Each 8x8 image block is decomposed into 64 basis vectors
+
+  ![8x8 DCT basis vectors](img/DCT-8x8.png){width=30% max-width=1000px}
+
+- Result: 64 coefficients, but many are small, negligible, quantizable => compression
+
+- image from: Wikipedia
+
+
+### Relationship between DTFT and DFT
+
+- How are DTFT and DFT related?
+
+- Discrete Time Fourier Transform (DTFT):
+  - for non-periodical signals
+  - spectrum is continuous
+
+- Discrete Fourier Transform (DFT):
+  - for periodical signals
+  - spectrum is discrete
+
+- Duality: periodic in time $\leftrightarrow$ discrete in frequency
+
+- The Diracs of the DFT are samples from the continuous DTFT
+  of a single period of the signal
+
+### Relationship between DTFT and DFT
+
+- Example: consider a sequence of 7 values
+  $$x = [6, 3, -4, 2, 0, 1, 2]$$
+
+- If we consider a $x$ surrounded by infinitely long zeros ($x[n]$ non-periodical), we have a continuous spectrum $X(\omega)$ (DTFT)
+  $$x = [...0, 6, 3, -4, 2, 0, 1, 2, 0, ...]  \leftrightarrow X(\omega)$$
+
+- If we consider that $x$ is surrounded by repeating the sequences ($x[n]$ periodical), we have a discrete spectrum $X_k$ (DFT)
+  $$x = [..., -4, 2, 0, 1, 2, 0, 6, 3, -4, 2, 0, 1, 2, 0, 6, 3, -4, ...]  \leftrightarrow X_k $$
+
+- The discrete $X_k$ are just **samples from $X(\omega)$**, at frequencies $k/N$:
+  $$X_k = X(2 \pi (k/N) n)$$
+
+### Relationship between DTFT and DFT
+
+```{.python .cb.run session=plot}
+import matplotlib.pyplot as plt, numpy as np, scipy as sp
+import scipy.fftpack
+x = np.array([6, 5, 4, -3, 2, -3, 4, 5, 6])
+N = x.size
+bigN = 1000*N
+n = np.arange(0,N)    # n = [0, 1, 2, ... N-1]
+plt.figure(figsize=(12,6))
+plt.stem(n*1000, np.abs(sp.fftpack.fft(x)))
+plt.plot(np.arange(0,bigN), np.abs(sp.fft.fft(x, bigN)), color='r', linestyle='--')
+plt.savefig('fig/04_RelationshipDTFTDFT.png', transparent=True, bbox_inches='tight', dpi=300)
+plt.close()
+```
+![](fig/04_RelationshipDTFTDFT.png){width=90% max-width=1000px}
+
+$x = [6, 5, 4, -3, 2, -3, 4, 5, 6]$
+
+- red line = DTFT of $x$ (assuming surrounded by zeros)
+   - (actually run as `fft(x, 10000)`, x is extended with 9991 zeros)
+
+- blue = DFT of $x$ (assumes periodic)= `fft(x)`
+
+### Relationship between DTFT and DFT
+
+- Consider a non-periodic signal $x[n]$
+
+- It has a continuous spectrum $X(\omega)$
+
+- If we **periodize** it by repeating with period N:
+  $$x_N[n] = \sum_{k=-\infty}^{\infty} x[n - k N]$$
+
+- then the Fourier transform is **discrete** (made of Diracs):
+  $$X_N(\omega) = 2 \pi X_k \delta(\omega - k \frac{2 \pi}{N})$$
+
+- The coefficients of the Diracs = the DFT coefficients
+  $$X_k = X(2 \pi k/N n)$$
+
+- They are **samples**  from the continuous $X(\omega)$ of the non-periodized signal
+
+### Study case
+
+```matlab
+n = 0:99;
+f = 0.015;
+x = cos(2*pi*f*n)
+plot(abs(fft(x)))
+```
+
+Discuss:
+
+1. Why is the spectrum not just 2 Diracs, like a normal `cos()`?
+1. FFT assumes periodicity. Are there boundary problems?
+2. What is the role of the rectangular window?
+3. What happens if we run `fft(x, 10000)` instead of `fft(x)`?
+
+### Signal windowing and frequency resolution
+
+- When you have finite-length cosine vector $x$, you have just a part of your signal
+
+- The true signal $x$, infinitely long, is actually multiplied with a rectangular window $w[n]$
+  $$x = cos(2 \pi f n) \cdot w[n]$$
+
+- Multiplication in time = convolution in frequency
+
+  The spectrum of $x = x[n] \cdot w[n]$ is Diracs * $W(\omega)$
+
+- Instead of Diracs, you have $W(\omega)$'s:
+  - wide peak
+  - secondary lobes
+
+### Signal windowing and frequency resolution
+
+- Working with a piece of a signal **always** distorts a signal
+
+  - every Dirac is "smudged" into a $W(\omega)$
+
+- This is unavoidable
+
+- If we have a segment of a cosine, in the DTFT (continuous) we never see Diracs, but $W(\omega)$
+
+  - The longer the piece, the better
+
+### Signal windowing and frequency resolution
+
+- So what's the problem if we see $W(\omega)$ instead of Diracs?
+
+- **Frequency resolution** = the ability to distinguish between closely spaced frequency components in a signal
+
+- Having $W(\omega)$ instead of a Dirac is bad because it **masks** the surrounding region
+
+  - a two close Diracs with similar height are be impossible to differentiate, because of the wide central lobe
+  - a Dirac further away but smaller is impossible to differentiate, because of secondary lobes
+
+- Analyzing a short segment of a signal leads to **low resolution in frequency**
+
+- Analyzing a longer segment leads to **higher resolution in frequency**
+
+- Frequency resolution is proportional to the length of the signal
+
+### Signal windowing and frequency resolution
+
+- We can change the window $w[n]$
+
+  - Recangular window
+  - Hamming window
+  - Hann window
+  - ...
+
+- What they do: trade narrow peak vs small secondary lobes
+
+  - Rectangular window: widest peak, smallest secondary lobes
+  - Other windows : narrower peak, higher secondary lobes
+
+- What they do: attenuate endings, to reduce boundary problems
+
+### Signal windowing and frequency resolution
+
+- Remember: every time we work with a piece of a signal
+  (e.g. we process an audio file in pieces of 1024 samples),
+  we are applying windowing
+
+- Even the rectangular window is still a window
+
+- If you need to compute the spectrum, know that is is affected
+
+- Always consider replacing the rectangular window with another one,
+  if you use `fft()` or other frequency-based operations
+
+### STFT and Spectrogram
+
+- How to analyze the frequency of a signal whose frequency components change in time
+(e.g. like a musical song)?
+
+- Short-Time Fourier Transform (STFT) = a technique for analyzing the frequency content of local sections of a signal as it changes over time.
+
+- STFT divides a longer time signal into shorter segments of equal length and then computes the Fourier Transform separately on each short segment.
+
+  - Split the signal into pieces (e.g. 1024-samples long)
+  - Compute the spectrum of every piece (e.g. `fft()`)
+  - Display the resulting sequence of spectra = "spectrogram"
+
+### STFT and Spectrogram
+
+- The STFT is a **time-frequency representation** of a signal
+
+- 2-Dimesional: time and frequency
+
+- Examples: [https://en.wikipedia.org/wiki/Spectrogram](https://en.wikipedia.org/wiki/Spectrogram)
+
+### STFT: Time and frequency resolution
+
+- Imagine you look at the spectrogram of a music piece, and you
+  want to pinpoint the moment where the bass guitar starts to play a chord of 100Hz
+
+- Do a STFT and look for the moment where you see a high spectrum atoun 100Hz
+
+- If the segments are short:
+  - good time resolution
+  - poor frequency resolution
+
+- If the segments are long:
+  - poor time resolution
+  - high frequency resolution
+
+### STFT: Time and frequency resolution
+
+**Time-frequency Uncertainty Principle**:
+
+- you cannot have very good time resolution and very good frequency resolution simultaneously
+
+### STFT: other issues
+
+- Other issues with STFT
+  - can change the window type, to alleviate boundary problems / artefacts
+  - allow some overlap between segments (e.g. 10%)
+
+### How to compute the DTFT
+
+- The DFT is computed with `fft(x)`
+
+- How to compute the DTFT?
+
+- You can't. You need to surround $x$ with infinitely long zeros
+
+- You can only surround it with many zeros, but still finite
+
+- Do this with `fft(x, 100000)` (DFT in N=100000 points)
+
+  - $x$ is surrounded with zeros unil total length = 100000
+  - it's still just `fft()`, so DFT, so you have points and not the full continuous function
+  - but it's many many points
+
+### How to compute the DTFT
+
+- Computing the `fft()` in N=100000 points is unrelated with frequency resolution
+
+- Frequency resolution is dependent on actual length of $x$
+
+- Windowing changes the Diracs into $W(\omega)$'s
+
+- `fft()` in N points is just taking N points from the resulting continuous spectrum
+
+### Relation between DTFT and Z transform
+
+- Z transform:
+  $$X(z) = \sum_n x[n] z^{-n}$$
+
+- DTFT:
+  $$X(\omega) = \sum_n x[n] e^{-j \omega n}$$
+
+- DTFT can be obtained from Z transform with
+  $$z = e^{j \omega}$$
+
+- These $z = e^{j \omega}$ are **points on the unit circle**
+
+    - $|z| = |e^{j \omega}| = 1 (modulus)$
+    - $\angle{z} = \angle{e^{j \omega}} = \omega (phase)$
+
+### Relation between DTFT and Z transform
+
+- Fourier transform = Z transform evaluated **on the unit circle**
+
+    - if the unit circle is in the convergence region of Z transform
+    - otherwise, equivalence does not hold
+
+- This is true for most usual signals we work with
+
+    - some details and discussions are skipped
+
+
+### Geometric interpretation of Fourier transform
+
+$$X(z) = C \cdot \frac{(z-z_1)\cdots(z - z_M)}{(z-p_1)\cdots(z - p_N)}$$
+$$X(\omega) = C \cdot \frac{(e^{j \omega}-z_1)\cdots(e^{j \omega} - z_M)}{(e^{j \omega}-p_1)\cdots(e^{j \omega} - p_N)}$$
+
+* Modulus:
+$$|X(\omega)| = |C| \cdot \frac{|e^{j \omega}-z_1|\cdots|e^{j \omega} - z_M|}{|e^{j \omega}-p_1|\cdots|e^{j \omega} - p_N|}$$
+
+* Phase:
+$$\angle{X} = \angle{C} + \angle (e^{j \omega}-z_1) + \cdots + \angle(e^{j \omega} - z_M) - \angle(e^{j \omega}-p_1) - \cdots - \angle(e^{j \omega} - p_N)$$
+
+
+### Geometric interpretation of Fourier transform
+
+- For complex numbers:
+
+  - modulus of $|a - b|$ = the length of the segment between $a$ and $b$
+  - phase of $|a - b|$ = the angle of the segment from $b$ to $a$ (direction is important)
+
+
+- So, for a point on the unit circle $z = e^{j \omega}$
+  - modulus $|X(\omega)|$ is **given by the distances to the zeros and to the poles**
+  - phase $\angle{X(\omega)}$ is **given by the angles from the zeros and poles to z**
+
+
+### Geometric interpretation of Fourier transform
+
+- Consequences:
+
+  - when a **pole** is very close to unit circle --> Fourier transform is **large** at this point
+  - when a **zero** is very close to unit circle --> Fourier transform is **small** at this point
+
+- Examples: ...
+
+### Geometric interpretation of Fourier transform
+
+- Simple interpretation for modulus $|X(\omega)|$:
+
+  - Z transform $X(z)$ is like **a landscape**
+
+    - **poles = mountains** of infinite height
+    - **zeros = valleys** of zero height
+
+  - Fourier transform $X(\omega)$ = "*Walking over this landscape along the unit circle*"
+
+  - The height profile of the walk gives the amplitude of the Fourier transform
+
+  - When close to a mountain --> road is high --> Fourier transform has large amplitude
+
+  - When close to a valley --> road is low --> Fourier transform has small amplitude
+
+### Geometric interpretation of Fourier transform
+
+- Note: $X(z)$ might also have a constant $C$ in front!
+
+  - It does not appear in pole-zero plot
+  - The value of $|C|$ and $\angle{C}$ must be determined separately
+
+- This "geometric method" can be applied for phase as well
+
+
+### Time-frequency duality
+
+- **Duality** properties related to all Fourier transforms
+
+- Discrete $\leftrightarrow$ Periodic
+  - **discrete** in time --> **periodic** in frequency
+  - **periodic** in time --> **discrete** in frequency
+
+- Continuous $\leftrightarrow$ Non-periodic
+  - **continous** in time --> **non-periodic** in frequency
+  - **non-periodic** in time --> **continuous** in frequency
+
+### Terminology
+
+- Based on frequency content:
+  - **low-frequency** signals
+  - **mid-frequency** signals (band-pass)
+  - **high-frequency** signals
+
+- **Band-limited** signals: spectrum is 0 beyond some frequency $f_{max}$
+
+- **Bandwitdh** $B$: frequency interval [$F_1$, $F_2$] which contains $95\%$ of energy
+  - $B = F_2 - F_1$
+
+- Based on bandwidth $B$:
+  - **Narrow-band** signals: $B <<$ central frequency $\frac{F_1 + F_2}{2}$
+  - **Wide-band** signals: not narrow-band
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # DTFT and DFT
 
 ```{python}
@@ -89,7 +1435,7 @@ plt.ylabel('Magnitude')
 plt.show()
 ```
 
-When computing the Discrete Fourier Transform (DFT), this assumes that the given piece of the signal is would be repeated periodically. 
+When computing the Discrete Fourier Transform (DFT), this assumes that the given piece of the signal is would be repeated periodically.
 The DFT is not continous, it is discrete.
 
 ```{python}
