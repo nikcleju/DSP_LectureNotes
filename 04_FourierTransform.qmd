@@ -1,4 +1,6 @@
-# The Fourier Transform for discrete signals and its applications
+# The Fourier Transform
+
+In this chapter we discuss the Fourier Transform for discrete signals, and its applications in signal processing.
 
 ## Introduction: vector spaces of signals
 
@@ -538,7 +540,6 @@ each with a certain amplitude and phase.
 #### Linearity
 
 The DTFT is a linear operation. The DTFT of a linear combination of signals is the linear combination of their DTFTs:
-
 $$a \cdot x_1[n] + b\cdot x_2[n] \leftrightarrow a \cdot X_1(\omega)+ b\cdot X_2(\omega)$$
 
 Proof: via definition
@@ -552,10 +553,10 @@ $$x[n - n_0] \leftrightarrow e^{-j \omega n_0} X(\omega)$$
 Proof: via definition
 
 Note that
-$$ \| e^{-j \omega n_0} X(\omega) \| = \| X(\omega) \|$$
+$$ | e^{-j \omega n_0} X(\omega) | = | X(\omega) |$$
 which shows that when a signal is shifted in time,
 the amplitudes $|X(\omega)|$ of the spectrum are not affected.
-Shifting in time affects only the phase of the spectrum.
+Shifting in time affects **only the phase** of the spectrum.
 This makes sense, because shifting a signal in time does not change the
 "amplitudes" of the composing sinusoids, it only shifts them.
 
@@ -610,6 +611,30 @@ $$E = \sum_{-\infty}^\infty |x[n]|^2 = \frac{1}{2 \pi}\int_{-\pi}^\pi |X(\omega)
 The energy of a function, in general, is defined as the sum of the squares of its values.
 In the case of a signal, in the time domain we have the sum of the squares of the samples,
 and in the frequency domain we have the integral of the square of the spectrum, since the spectrum is continuous.
+
+### Relation between DTFT and Z transform
+
+The DTFT is a special case of the Z transform, where the Z transform is evaluated on the unit circle,
+i.e. with $$z = e^{j \omega}$$
+
+This is clearly seen from the definitions of the DTFT and Z transforms,
+where replacing $z = e^{j \omega}$ in the Z transform leads to the DTFT:
+
+- Z transform:
+  $$X(z) = \sum_n x[n] z^{-n}$$
+
+- DTFT:
+  $$X(\omega) = \sum_n x[n] e^{-j \omega n}$$
+
+The points defined by $z = e^{j \omega}$ are **points on the unit circle**,
+since the modulus of such $z$ is 1:
+  $$|z| = |e^{j \omega}| = 1$$
+The phase (angle) of these points $z$ is $\omega$:
+  $$\angle{z} = \angle{e^{j \omega}} = \omega$$
+
+We say therefore that the DTFT is the Z transform evaluated on the unit circle.
+This requires that the Z transform converges on the unit circle, which is the case for most usual signals.
+Otherwise, the equivalence does not hold
 
 ## The Discrete Fourier Transform (DFT)
 
@@ -750,93 +775,215 @@ $0, \frac{1}{N}, \frac{2}{N}, \dots$, up to but not exceeding 1/2.
 
 :::
 
-
 ### The DFT matrix
 
-- The DFT (and the inverse IDFT) is equivalent with a matrix multiplication:
+A particularly useful way to think about the DFT is as a matrix multiplication.
+Indeed, applying the DFT to a signal $x[n]$ of length N (i.e. one period)
+is equivalent to multiplying the signal  by a matrix $\mathbf{W}_N$ of size $N \times N$:
+$$\mathbf{X} = \mathbf{W}_N \cdot \mathbf{x}$$
+i.e.:
+$$
+\begin{bmatrix}
+    X_0 \\
+    X_1 \\
+    \vdots \\
+    X_{N-1}
+\end{bmatrix}
+=
+\underbrace{
+  \frac{1}{\sqrt{N}} \begin{bmatrix}
+  1 & 1 & 1 & \cdots & 1 \\
+  1 & w & w^2 & \cdots & w^{N-1} \\
+  1 & w^2 & w^4 & \cdots & w^{2(N-1)} \\
+  \vdots & \vdots & \vdots & \ddots & \vdots \\
+  1 & w^{N-1} & w^{2(N-1)} & \cdots & w^{(N-1)(N-1)}
+  \end{bmatrix}
+}_{\mathbf{W}_N}
+\cdot
+\begin{bmatrix}
+    x[0] \\
+    x[1] \\
+    \vdots \\
+    x[n-1]
+\end{bmatrix}
+$$
+where
+$w = e^{-j \frac{2\pi}{N}}$ is the $N$-th root of unity.
 
-  - on whiteboard
+The inverse DFT is also a matrix multiplication, with the inverse matrix $\mathbf{W}_N^{-1}$
+which is the conjugate transpose of $\mathbf{W}_N$:
+$$\mathbf{x} = \mathbf{W}_N^{-1} \cdot \mathbf{X}$$
+with:
+$$\mathbf{W}_N^{-1} = \mathbf{W}_N^T$$
 
-- In the world of discrete signals, there are many signal transforms possible, and many of them
-  can be expressed as matrix multiplications, just like the DFT.
+The DFT matrix $\mathbf{W}_N$ is a unitary matrix, meaning that its inverse is its conjugate transpose.
+
+There might be small variations of the matrix definitions in various sources,
+depending on whether we have $\frac{1}{\sqrt{N}}$ at both DFT and IDFT matrices,
+or just put $\frac{1}{N}$ just for the IDFT matrix.
+
+
+Understanding the DFT and IDFT as mere matrix multiplications with certain fixed $N \times N$ matrices,
+mapping a vector of length $N$ to another vector of length $N$,
+is very useful because it allows us to understand the DFT as a linear operation, and to apply all the properties of linear algebra.
+
+In practice, the DFT is computed using the Fast Fourier Transform (FFT) algorithm, which is much faster than
+the direct matrix multiplication
+
+<!-- , because it exploits the periodicity of the DFT coefficients. -->
+
+In the world of algorithms, the **computational complexity** of an algorithm is a measure of the amount of resources necessary to run it, most often the number of multiplications.
+The straightforward matrix multiplication of a vector of size $N$ with the DFT matrix
+has a computational complexity of $\mathcal{O}(N^2)$, meaning
+that the number of multiplications necessary grows quadratically with the size of the signal
+(note that only the dominant term matters, without coefficient, e.g we write
+$O(N^2)$ not $O(7.3 N^2 + 4N)$). This is prohibitively large for large signals.
+
+The Fast Fourier Transform (FFT) algorithm exploits the particular nature of the DFT matrix,
+and reduces the computational complexity to $\mathcal{O}(N \log_2(N))$. This is a huge improvement.
+Consider for example a vector of size $N=1024$.
+The number of multiplications for the naive matrix multiplication would be
+of the order of $1024^2 = 1,048,576$,
+whereas for the FFT algorithm it would be $1024 \log_2(1024) \approx 1024 \times 10 = 10,240$,
+which is two orders of magnitude smaller (e.g. about 100 times faster).
+
+The FFT algorithm is one of the most important algorithms in signal processing.
+The invention and adoption of the FFT in the 1960s by Cooley and Tukey
+is considered by many as "the birth of Digital Signal Processing".
+
+#### Other transforms
+
+In the world of discrete signals, there are many signal transforms possible, and many of them
+can be expressed as matrix multiplications, just like the DFT, but with different matrices.
+
+In fact, we can view such a transform as a way of expressing a N-dimensional vector $x$ as a linear combination of a set of $N$ basis vectors:
+
+1. Put the $N$ vectors of the basis as columns in a matrix (let's name it $\mathbf{A}$)
+2. The inverse transform is then written as:
+   $$\mathbf{x} = \mathbf{A} \cdot \mathbf{X}$$
+   which means that $\mathbf{x}$ is a sum of the columns of $\mathbf{A}$, with coefficients given by $\mathbf{X}$.
+3. The direct transform is then equivalent to finding the coefficients $\mathbf{X}$:
+   $$\mathbf{X} = \mathbf{A}^{-1} \cdot \mathbf{x}$$
+   which means that $\mathbf{X}$ is the coefficients of $\mathbf{x}$ in the basis of $\mathbf{A}$.
+
+This is exactly the case of the DFT, where the basis vectors are the complex exponentials $e^{j 2 \pi k n / N}$, and moreover we also have that the matrix $\mathbf{A}^{-1}$ is equal to $\mathbf{A}^H$.
+
+The reasons of using transforms, DFT or others, are multiple:
+compression, denoising, feature extraction, etc.
+As an example, the discrete cosine transform (DCT) is used in JPEG image compression.
+
+::: {.callout-note icon=false appearance=simple title="Transform examples"}
+#### Transform example 1
+
+Consider the exercise from Week 2:
+
+$$x[n] = \lbrace ..., 0, \frac{1}{3}, \frac{2}{3}, 1, 1, 1, 1, 0, ... \rbrace$$
+Write the expression of $x[n]$ based on the signal $u[n]$.
+
+Solve this in Matlab using a matrix approach.
+
+#### Another example: JPEG 2D compression
+
+![JPEG compression with DCT transform[^JPEG]](img/JPG_DCT_BlockDiagram.png){width=80% max-width=1000px}
+
+[^JPEG]: image from: JPEG Picture Compression Using Discrete Cosine Transform, N. K. More, S. Dubey, 2012
+
+In JPEG compression, the image is divided into 8x8 blocks, and each block is transformed using the 2D Discrete Cosine Transform (DCT).
+This exactly corresponds to the matrix multiplication approach we discussed above,
+except that the basis vectors are the 64 DCT basis vectors.
+
+![8x8 DCT basis vectors[^JPEG2]](img/DCT-8x8.png){width=30% max-width=1000px}
+
+[^JPEG2]: image from Wikipedia
+
+The DCT transform transforms the 64 pixels of a block into 64 DCT coefficients,
+similar to the DFT transforming a signal of length $N$ into $N$ DFT coefficients.
+
+Why? Because, unlike the 64 pixel values, out of the 64 DCT coefficients many are small
+negligible, and can be quantized to zero, leading to compression.
+When the image is reconstructed, the DCT coefficients are transformed back into pixel values using the inverse DCT, and the quantized or missing DCT coefficients not having a large effect on the image quality.
+
+:::
 
 ### Properties of the DFT
 
-#### 1. Linearity
+#### Linearity
 
-If the signal $x_1[n]$ has the DFT coefficients $\lbrace X_k^{(1)} \rbrace$,
-and $x_2[n]$ has $\lbrace X_k^{(2)} \rbrace$, then their sum has
+If the signal $x_1[n]$ has the DFT coefficients $X_k^{(1)}$,
+and $x_2[n]$ has $X_k^{(2)}$, then their sum has
+$$a \cdot x_1[n] + b\cdot x_2[n] \leftrightarrow a \cdot X_k^{(1)} + b\cdot X_k^{(2)} $$
 
-$a \cdot x_1[n] + b\cdot x_2[n] \leftrightarrow \lbrace a \cdot X_k^{(1)} + b\cdot X_k^{(2)} \rbrace$
+Proof: via definition. Also, since DFT is equivalent to a matrix multiplication,
+this property is inherited from the linearity of matrix multiplication.
+
+#### Shifting in time
+
+The DFT coefficients of a signal $x[n]$ delayed by $n_0$
+are the DFT coefficients of the original signal, multiplied by a complex exponential:
+If $x[n] \leftrightarrow  X_k$, then
+$$x[n - n_0] \leftrightarrow e^{(-j 2 \pi k n_0 / N)} X_k$$
 
 Proof: via definition
 
-### Properties of the DFT
+Note that
+$$ | e^{(-j 2 \pi k n_0 / N)} X(\omega) | = | X(\omega) |$$
+which shows that when a signal is shifted in time,
+the amplitudes $|X(\omega)|$ of the spectrum are not affected.
+Shifting in time affects **only the phase** of the spectrum.
+This makes sense, because shifting a signal in time does not change the
+amplitudes of the composing sinusoids, it only shifts them.
 
-####  2. Shifting in time
+#### Modulation in time
 
-If $x[n] \leftrightarrow \lbrace X_k \rbrace$, then
-$$x[n - n_0] \leftrightarrow \lbrace e^{(-j 2 \pi k n_0 / N)} X_k \rbrace$$
+A shift of the spectrum $X_k$ by $k_0$ corresponds to a modulation of the signal $x[n]$ by a complex exponential:
 
-Proof: via definition
+$$e^{j 2 \pi k_0 n / N} \leftrightarrow X_{k-k_0}$$
 
-- The amplitudes $|X_k|$ are not affected, shifting in time **affects only the phase**
+#### Complex conjugation
 
-### Properties of the DFT
+Complex conjugation in time domain corresponds in frequency domain to complex conjugation and inversion of the frequency:
 
-#### 3. Modulation in time
-$$e^{j 2 \pi k_0 n / N} \leftrightarrow \lbrace X_{k-k_0} \rbrace$$
+$$x^*[n] \leftrightarrow X_{-k}^*$$
 
-#### 4. Complex conjugation
+#### Circular convolution
 
-$$x^*[n] \leftrightarrow \lbrace X_{-k}^* \rbrace$$
+We define now the **circular convolution** of two signals $x_1[n]$ and $x_2[n]$ with period $N$,
+which is slightly different from the normal convolution.
 
-### Properties of the DFT
-
-#### 5. Circular convolution
-
-Circular convolution of two signals $\leftrightarrow$ product of coefficients
-
-$$x_1[n] \otimes x_2[n] \leftrightarrow \lbrace N \cdot X_k^{(1)} \cdot X_k^{(2)} \rbrace$$
-
-**Circular convolution** definition:
+**Circular convolution** is defined as:
 
 $$x_1[n] \otimes x_2[n] = \sum_{k=0}^{N-1} x_1[k] x_2[(n-k)_N]$$
 
-- takes two periodic signals of period N, result is also periodic with period N
+CIrcular convolution is similar to normal convolution,
+but specifically for periodic signals.
+Thus, it takes two periodic signals of period N (in fact, two periods of the signals),
+and the result is also a periodic signal of period N (one period of the result).
+In other words, it takes two vectors of length N and produces another vector of length N,
+each of these vectors being a period of a periodic signal of period N.
+This is different from the normal convolution, which produces a result that is longer than the original signals, i.e. a vector of length 2N.
 
-- Example at the whiteboard: how it is computed
+TBD: Example at the whiteboard: how it is computed
 
-### Example
+The property of DFT is that the **circular**, not the linear, convolution of two signals in time domain corresponds to the product of their DFT coefficients in frequency domain:
+$$x_1[n] \otimes x_2[n] \leftrightarrow N \cdot X_k^{(1)} \cdot X_k^{(2)}$$
 
-Example (write on slides)
+#### Product in time
 
-### Circular convolution
-
-- We are in the vector space of **periodic signals** with period N
-
-- Linear (e.g. normal) convolution produces a result which is longer periodic with period N
-
-- Circular convolution takes two sequences of length N and produces another sequence of length N
-
-  - each sequence is a period of a periodic signal
-  - circular convolution = like a convolution of periodic signals
-
-### Properties of the DFT
-
-#### 6. Product in time
-
-Product in time $\leftrightarrow$ circular convolution of DFT coefficients
+The product of two signals in time domain corresponds to the circular convolution of their spectra in frequency domain:
 $$x_1[n] \cdot  x_2[n] \leftrightarrow \sum_{m=0}^{N-1} X_m^{(1)} X_{(k-m)_N}^{(2)} = X_k^{(1)} \otimes X_k^{(2)}$$
 
-### Properties of the DFT
+#### Parseval theorem
 
-- **Parseval theorem**: energy of the signal is the same in time and frequency domains
-  $$E = \sum_{0}^{N-1} |x[n]|^2 = \frac{1}{2 \pi} \sum |X_k|^2$$
+The **Parseval theorem** states that the energy of the signal is the same in time and frequency domains:
+$$E = \sum_{0}^{N-1} |x[n]|^2 = \frac{1}{2 \pi} \sum |X_k|^2$$
 
-- Is true for all orthonormal bases
+The energy of a signal is defined as the sum of the squares of its values.
+Here we have two discrete set of values both in time and frequency domains,
+so we use the sum instead of the integral in both domains.
 
-### Plot / sketch DTFT and DFT of various signals
+### Examples of DTFT and DFT
+
+::: {.callout-tip icon=false title="Example"}
 
 Let's plot / sketch DTFT and DFT of various signals
 
@@ -854,150 +1001,70 @@ DFT, with N=20, of:
 - a cosine of frequency precisely $f = k/N$
 - a cosine of frequency not $f = k/N$
 
-### DFT matrix
+:::
 
-- The DFT (and the inverse IDFT) is equivalent with a matrix multiplication:
+## Relationship between DTFT and DFT
 
-  DFT:
-  $$\mathbf{X} = \mathbf{W}_N \mathbf{x}$$
+The DTFT transform is used for non-periodic signals, and produces a continuous spectrum.
 
-  IDFT:
-  $$\mathbf{x} = \mathbf{W}_N^T \mathbf{X}$$
+The DFT transform is used for periodic signals, and produces a discrete spectrum.
 
-  where
-  $$
-  \mathbf{X} = \begin{bmatrix}
-      X_0 \\
-      X_1 \\
-      \vdots \\
-      X_{N-1}
-  \end{bmatrix},
-  \quad
-  \mathbf{x} = \begin{bmatrix}
-      x_0 \\
-      x_1 \\
-      \vdots \\
-      x_{N-1}
-  \end{bmatrix},
-  $$
+We observe the fundamental duality of time and frequency,
+same for all Fourier transforms:
+a signal periodic in time has a spectrum discrete in frequency.
 
-### DFT matrix (continued)
+- Discrete in one domain $\leftrightarrow$ Periodic in the other domain
+  - **discrete** in time --> **periodic** in frequency
+  - **periodic** in time --> **discrete** in frequency
 
-  $$
-  \mathbf{W}_N = \frac{1}{\sqrt{N}} \begin{bmatrix}
-      W_N^{0 \cdot 0} & W_N^{0 \cdot 1} & \cdots & W_N^{0 \cdot (N-1)} \\
-      W_N^{1 \cdot 0} & W_N^{1 \cdot 1} & \cdots & W_N^{1 \cdot (N-1)} \\
-      \vdots  & \vdots  & \ddots & \vdots  \\
-      W_N^{(N-1) \cdot 0} & W_N^{(N-1) \cdot 1} & \cdots & W_N^{(N-1) \cdot (N-1)}
-  \end{bmatrix}
-  $$
+- Continuous in one domain $\leftrightarrow$ Non-periodic in the other domain
+  - **continous** in time --> **non-periodic** in frequency
+  - **non-periodic** in time --> **continuous** in frequency
 
-  with an element $W_N^{kn} = e^{-j 2\pi \frac{k}{N} n}$ ($k$ = row index, $n$ = column index)
+Moreover, there is a close relationship between the two values of the transforms.
+The discrete DFT coefficients are samples of the continuous DTFT spectrum
+of a single period of the signal (assuming the signal is surrounded by zeros).
 
-- there might be small variations depending on whether we have $\frac{1}{\sqrt{N}}$ at both DFT and IDFT,
-  or just put $\frac{1}{N}$ just for the IDFT
+In general, consider a non-periodic signal $x[n]$,
+from which we construct a periodic signal $x_N[n]$ by repeating $x[n]$ every $N$ samples
+(we "periodize" $x[n]$ with period $N$).
 
-- note that for IDFT we have $W^{-1} = W^T$ (orthonormal basis)
+The non-periodic $x[n]$ has a continuous spectrum $X(\omega)$,
+and the periodic signal $x_N[n]$ has $N$ discrete DFT coefficients $X_k$.
+The values of $X_k$ are samples of the continuous spectrum $X(\omega)$ at frequencies $k/N$:
+$$X_k = X(2 \pi (k/N) n)$$
 
-### DFT matrix multiplication
+To illustrate this, consider a sequence of 7 values:
+$$x = [6, 3, -4, 2, 0, 1, 2]$$
+and let's compute both the DTFT and DFT starting from these values.
 
-- Naive implementation of DFT, IDFT: use matrix multiplication with $W$, $W^{-1}$
+1. If we consider a $x$ surrounded by infinitely long zeros, i.e. $x[n]$ is non-periodical,
+   we have a continuous spectrum $X(\omega)$ given by the DTFT:
+  $$x_{non-per}[n] = [...0, 0, \underbrace{6, 3, -4, 2, 0, 1, 2}_{\textrm{one period}}, 0, 0, ...]  \leftrightarrow X(\omega)$$
 
-- Number of multiplications necessary for a vector of length $N$ is $N^2$
+1. If we consider that $x$ just one period of a periodic signal,
+   the values repeating themselves every 7 samples:
+   $$x_{per_7}[n] = \sum_{k=-\infty}^{\infty} x[n - 7 k]$$
+   we can compute the DFT of this signal, based on the 7 values:
+   $$x_{per_7}[n] = [..., -4, 2, 0, 1, 2, \underbrace{6, 3, -4, 2, 0, 1, 2}_{\textrm{one period}}, 6, 3, -4, ...]  \leftrightarrow X_k $$
 
-- In the world of algorithms, the **computational complexity** of an algorithm =
-  number of multiplications necessary, depending on some variable $N$
-  - only the dominant term matters, no coefficient, e.g $O(N^2)$ not $7.3 N^2 + 4N$
+   The values $X_k$ are just **samples from $X(\omega)$**, at taken at frequencies $k/N$:
+   $$X_k = X(2 \pi (k/N) n)$$
 
-- Naive DFT has computation complexity $\mathcal{O}(N^2)$
-  - prohibitively large
+2. We can even repeat the 7 values with a larger period, e.g. $N=10$, by adding zeros in between:
+   $$x_{per_{10}}[n] = \sum_{k=-\infty}^{\infty} x[n - 10 k]$$
+   $$x_{per_{10}}[n] = [..., 0, 6, 3, -4, 2, 0, 1, 2, 0, 0, 0, \underbrace{6, 3, -4, 2, 0, 1, 2, 0, 0, 0}_{\textrm{one period}}, 6, 3, -4, ...]  \leftrightarrow X_k $$
 
-### FFT
+   The values $X_k$ are still samples from $X(\omega)$, but since $N=10$, we have
+   10 samples taken at frequencies $k/10$:
 
-- The Fast Fourier Transform (FFT) algorithm = a fast algorithm for computing the DFT, exploiting
-  the particular nature (symmetries) in the DFT matrix
+The illustration below shows this relationship,
+for a vector $x = [6, 5, 4, -3, 2, -3, 4, 5, 6]$.:
 
-- FFT computational complecity: $\mathcal{O}(N \log_2(N))$
-
-- Exercise: for $N=1024$, how much faster is FFT compared to naive DFT multiplication?
-
-- Invention and adoption of FFT (~'60s, Cooley & Tukey) = "the birth of Digital Signal Processing"
-
-### Other transforms
-
-- In the world of discrete signals, there are many signal transforms possible, and many of them
-  can be expressed as matrix multiplications, just like the DFT.
-
-- Transform = expressing a N-dimensional vector $x$ as a linear combination of a set of $N$ basis vectors
-
-- How:
-  1. Put the $N$ vectors of the basis as columns in a matrix A
-  2. Solve the system $x = A X$ (inverse transform)
-  3. Which means $X = A^{-1} x$ (forward transform)
-
-- Why:
-  - compression: the discrete cosine transform is the basis for lossy JPEG image compression
-  - ...
-
-### Example
-
-- Consider the exercise from Week 2:
-
-  $$x[n] = \lbrace ..., 0, \frac{1}{3}, \frac{2}{3}, 1, 1, 1, 1, 0, ... \rbrace$$
-  Write the expression of $x[n]$ based on the signal $u[n]$.
-
-  Solve this in Matlab using a matrix approach
-
-### Another example: JPEG
-
-![JPEG compression with DCT transform](img/JPG_DCT_BlockDiagram.png){width=80% max-width=1000px}
-
-- image from: JPEG Picture Compression Using Discrete Cosine Transform, N. K. More, S. Dubey, 2012
-
-### Another example: JPEG (cont'd)
-
-- Each 8x8 image block is a vector in a 64 dimensional space
-- Each 8x8 image block is decomposed into 64 basis vectors
-
-  ![8x8 DCT basis vectors](img/DCT-8x8.png){width=30% max-width=1000px}
-
-- Result: 64 coefficients, but many are small, negligible, quantizable => compression
-
-- image from: Wikipedia
-
-
-### Relationship between DTFT and DFT
-
-- How are DTFT and DFT related?
-
-- Discrete Time Fourier Transform (DTFT):
-  - for non-periodical signals
-  - spectrum is continuous
-
-- Discrete Fourier Transform (DFT):
-  - for periodical signals
-  - spectrum is discrete
-
-- Duality: periodic in time $\leftrightarrow$ discrete in frequency
-
-- The Diracs of the DFT are samples from the continuous DTFT
-  of a single period of the signal
-
-### Relationship between DTFT and DFT
-
-- Example: consider a sequence of 7 values
-  $$x = [6, 3, -4, 2, 0, 1, 2]$$
-
-- If we consider a $x$ surrounded by infinitely long zeros ($x[n]$ non-periodical), we have a continuous spectrum $X(\omega)$ (DTFT)
-  $$x = [...0, 6, 3, -4, 2, 0, 1, 2, 0, ...]  \leftrightarrow X(\omega)$$
-
-- If we consider that $x$ is surrounded by repeating the sequences ($x[n]$ periodical), we have a discrete spectrum $X_k$ (DFT)
-  $$x = [..., -4, 2, 0, 1, 2, 0, 6, 3, -4, 2, 0, 1, 2, 0, 6, 3, -4, ...]  \leftrightarrow X_k $$
-
-- The discrete $X_k$ are just **samples from $X(\omega)$**, at frequencies $k/N$:
-  $$X_k = X(2 \pi (k/N) n)$$
-
-### Relationship between DTFT and DFT
+- The red line is the DTFT of the values $x$, which assumes it is surrounded by zeros
+  and forms a non-periodic signal
+- The blue line is the DFT of the values $x$, which assumes they are periodic.
+  Note that the DFT is just samples from the DTFT.
 
 ```{.python .cb.run session=plot}
 import matplotlib.pyplot as plt, numpy as np, scipy as sp
@@ -1014,31 +1081,23 @@ plt.close()
 ```
 ![](fig/04_RelationshipDTFTDFT.png){width=90% max-width=1000px}
 
-$x = [6, 5, 4, -3, 2, -3, 4, 5, 6]$
+Note that in practice we can't compute the DTFT of a signal
+with numerical tools like Matlab, because the DTFT is a continuous function.
+Instead, we can extend the signal with many zeros, and then compute the DFT of the extended signal.
+We will have therefore many samples of the continous spectrum, enough to plot it as a continuous function.
+For example, to plot the continuous spectrum of a signal $x$ above, we extended it with zeros to a length of 10000 samples and then computed the 10000 DFT coefficients,
+which is achieved by the `fft(x, 10000)` function call in Matlab.
+There is no other way to compute the DTFT of a signal with numerical tools.
 
-- red line = DTFT of $x$ (assuming surrounded by zeros)
-   - (actually run as `fft(x, 10000)`, x is extended with 9991 zeros)
 
-- blue = DFT of $x$ (assumes periodic)= `fft(x)`
+## Signal windowing and frequency resolution
 
-### Relationship between DTFT and DFT
+In the following, we discuss the effect of working with a finite segment of a signal,
+which is always the case in practice.
 
-- Consider a non-periodic signal $x[n]$
+### Initial example
 
-- It has a continuous spectrum $X(\omega)$
-
-- If we **periodize** it by repeating with period N:
-  $$x_N[n] = \sum_{k=-\infty}^{\infty} x[n - k N]$$
-
-- then the Fourier transform is **discrete** (made of Diracs):
-  $$X_N(\omega) = 2 \pi X_k \delta(\omega - k \frac{2 \pi}{N})$$
-
-- The coefficients of the Diracs = the DFT coefficients
-  $$X_k = X(2 \pi k/N n)$$
-
-- They are **samples**  from the continuous $X(\omega)$ of the non-periodized signal
-
-### Study case
+Consider the
 
 ```matlab
 n = 0:99;
@@ -1054,298 +1113,219 @@ Discuss:
 2. What is the role of the rectangular window?
 3. What happens if we run `fft(x, 10000)` instead of `fft(x)`?
 
-### Signal windowing and frequency resolution
+#### Discussion
 
-- When you have finite-length cosine vector $x$, you have just a part of your signal
+When we have the finite-length cosine vector $x$, we have just a part of the signal.
+The true signal $x$, infinitely long, is actually multiplied with a rectangular window $w[n]$
+$$x = cos(2 \pi f n) \cdot w[n]$$.
 
-- The true signal $x$, infinitely long, is actually multiplied with a rectangular window $w[n]$
-  $$x = cos(2 \pi f n) \cdot w[n]$$
+Multiplication in time means convolution in frequency, and thus the spectrum of the
+true infinitely-long $x$, i.e. two Diracs, is convoluted with the spectrum of the rectangular window, $W(\omega)$.
 
-- Multiplication in time = convolution in frequency
-
-  The spectrum of $x = x[n] \cdot w[n]$ is Diracs * $W(\omega)$
-
-- Instead of Diracs, you have $W(\omega)$'s:
-  - wide peak
-  - secondary lobes
+Thus, the spectrum of our finite-length $x$ is not just two Diracs, but the convolution of two Diracs with $W(\omega)$. Thus, instead of two Diracs, we have a $sinc()$-like function, with a wide peak and secondary lobes.
 
 ### Signal windowing and frequency resolution
 
-- Working with a piece of a signal **always** distorts a signal
+Working with a finite-length segment of a signal **always** distorts its spectrum.
 
-  - every Dirac is "smudged" into a $W(\omega)$
+Suppose we have a very long, possibly infinitely-long, signal $x[n]$ with a spectrum $X(\omega)$.
 
-- This is unavoidable
+Out of this signal, we take a segment of length $N$, $x_w[n]$ (for example, in order to process it with a computer).
 
-- If we have a segment of a cosine, in the DTFT (continuous) we never see Diracs, but $W(\omega)$
+Taking this segment is equivalent to multiplying the signal with a rectangular window $w[n]$ of length $N$:
+$$x_w[n] = x[n] \cdot w[n]$$
+The window $w[n]$ can be the rectangular window, which leaves $N$ samples unchanged and
+zeroes the rest, or any other window or function.
 
-  - The longer the piece, the better
+The spectrum of the windowed signal $x_w[n]$ is the convolution of the spectrum of the original signal $X(\omega)$ with the spectrum of the window $W(\omega)$:
+$$X_w(\omega) = X(\omega) * W(\omega)$$
 
-### Signal windowing and frequency resolution
+As a result, the spectrum of the windowed signal $x_w[n]$ is not the same as the spectrum of the original signal $x[n]$.
 
-- So what's the problem if we see $W(\omega)$ instead of Diracs?
+If the true signal $x[n]$ is infinitely long, the spectrum $X(\omega)$ is composed of just two Diracs.
+But if we have only a segment of the signal, which is always the case in practice, the spectrum is not just two Diracs, but a convolution of two Diracs with the spectrum of the window $W(\omega)$.
+As a result, every Dirac in the spectrum of the original signal is "smudged" into a $W(\omega)$.
+This is unavoidable.
 
-- **Frequency resolution** = the ability to distinguish between closely spaced frequency components in a signal
+Different windows $w[n]$ have different spectra $W(\omega)$.
+For example, the rectangular window has a $sinc()$-like spectrum, with a narrow central peak
+but large secondary lobes. Other windows, like the Hamming or Hann window,
+trade the width of the central peak with the height of the secondary lobes.
+However, every window $w[n]$ will always distort the spectrum of the signal.
 
-- Having $W(\omega)$ instead of a Dirac is bad because it **masks** the surrounding region
+The only way to mitigate this effect is to work with a longer segment of the signal, which means taking more samples.
 
-  - a two close Diracs with similar height are be impossible to differentiate, because of the wide central lobe
-  - a Dirac further away but smaller is impossible to differentiate, because of secondary lobes
+What is the problem with this? We lose frequency resolution.
 
-- Analyzing a short segment of a signal leads to **low resolution in frequency**
+**Frequency resolution** is the ability to distinguish between closely spaced frequency components in a signal, e.g. two Diracs close to each other.
 
-- Analyzing a longer segment leads to **higher resolution in frequency**
+The window spectrum $W(\omega)$ "blurs" the spectrum of the signal.
+We are looking at the spectrum through a "blurred lens" $W(\omega)$.
+For example, two close Diracs are be impossible to differentiate, because the "blur"
+will change them into overlapping peaks, which we can't separate.
+Secondary lobes of the window $W(\omega)$ will mask other Diracs in the spectrum, smaller but further away.
 
-- Frequency resolution is proportional to the length of the signal
+In short, working with a finite-length segment of a signal always distorts its spectrum.
+Having a short segment of a signal leads to **low frequency resolution**, because the spectrum is "blurred" by the window. The only way to increase frequency resolution is to work with a longer segment of the signal, which means taking more samples. Frequency resolution is proportional to the length of the segment.
 
-### Signal windowing and frequency resolution
+There are many windows available, each with different spectra $W(\omega)$.
 
-- We can change the window $w[n]$
+- Recangular window
+- Hamming window
+- Hann window
+- ...
 
-  - Recangular window
-  - Hamming window
-  - Hann window
-  - ...
+The rectangular window has the narrowest central peak, but the largest secondary lobes.
+Other windows have wider central peaks, but smaller secondary lobes.
+They can be useful to attenuate sharp transitions at the boundaries of the signal,
+thus reducing the boundary problems.
 
-- What they do: trade narrow peak vs small secondary lobes
+::: {.callout-note icon=false appearance=simple title="Remember"}
 
-  - Rectangular window: widest peak, smallest secondary lobes
-  - Other windows : narrower peak, higher secondary lobes
+Every time we work with a piece of a signal
+(for example we process an audio file working on segments of 1024 samples),
+we are applying windowing, and this distorts the spectrum.
 
-- What they do: attenuate endings, to reduce boundary problems
+Even the rectangular window is still a window.
+Always consider if it is useful to replace the rectangular window with another one,
+especially if you use `fft()` or other frequency-based operations (hint: most often it is).
 
-### Signal windowing and frequency resolution
+:::
 
-- Remember: every time we work with a piece of a signal
-  (e.g. we process an audio file in pieces of 1024 samples),
-  we are applying windowing
+## STFT and Spectrograms
 
-- Even the rectangular window is still a window
-
-- If you need to compute the spectrum, know that is is affected
-
-- Always consider replacing the rectangular window with another one,
-  if you use `fft()` or other frequency-based operations
-
-### STFT and Spectrogram
-
-- How to analyze the frequency of a signal whose frequency components change in time
+How can we analyze the frequency of a signal whose frequency components change in time
 (e.g. like a musical song)?
 
-- Short-Time Fourier Transform (STFT) = a technique for analyzing the frequency content of local sections of a signal as it changes over time.
+The **Short-Time Fourier Transform (STFT)** is a a technique for analyzing the frequency content of local sections of a signal as it changes over time.
 
-- STFT divides a longer time signal into shorter segments of equal length and then computes the Fourier Transform separately on each short segment.
+STFT divides a longer time signal into shorter segments of equal length and then computes the Fourier Transform separately on each short segment:
 
-  - Split the signal into pieces (e.g. 1024-samples long)
-  - Compute the spectrum of every piece (e.g. `fft()`)
-  - Display the resulting sequence of spectra = "spectrogram"
+- Split the signal into pieces (e.g. 1024-samples long), possibly overlapping
+- Compute the spectrum of every piece (e.g. `fft()`)
+- Display the resulting sequence of spectra as an image, known as a **spectrogram**.
 
-### STFT and Spectrogram
+Examples: [https://en.wikipedia.org/wiki/Spectrogram](https://en.wikipedia.org/wiki/Spectrogram)
 
-- The STFT is a **time-frequency representation** of a signal
+The STFT is a **time-frequency representation** of a signal, because the
+resulting spectrogram is 2D, with two axes: time and frequency.
 
-- 2-Dimesional: time and frequency
+It is common for the segments to overlap, e.g. 10% overlap, in order to have a smoother transition between segments.
 
-- Examples: [https://en.wikipedia.org/wiki/Spectrogram](https://en.wikipedia.org/wiki/Spectrogram)
+The STFT depends on two parameters:
 
-### STFT: Time and frequency resolution
+- The length of the segments (e.g. 1024 samples)
+- The overlap between segments (e.g. 10%)
 
-- Imagine you look at the spectrogram of a music piece, and you
+The length of the segments affects the **time resolution** and the **frequency resolution** of the spectrogram.
+
+- If the segments have **short** length, we have **good time** resolution, because we can pinpoint
+  the moment in time where a frequency component appears with high precision.
+  However, we have **poor frequency** resolution, because the spectrum of a short segment is more "blurred"
+
+- If the segments have **long** length, we have **poor time** resolution, because we can't pinpoint
+  the moment in time where a frequency component appears with high precision,
+  but we have **good frequency** resolution, because the spectrum of a long segment is less "blurred".
+
+This illustrates the **Time-frequency Uncertainty Principle**, which states that
+you cannot have very good time resolution and very good frequency resolution simultaneously.
+This principle is often encountered in many areas of engineering, physics, or mathematics.
+
+A small overlap between segments is useful to have a smoother transition between segments,
+and avoid hard-splitting a frequency component between two adjacent segments.
+Common values range from 10% to 50%.
+
+
+
+
+<!-- - Imagine you look at the spectrogram of a music piece, and you
   want to pinpoint the moment where the bass guitar starts to play a chord of 100Hz
 
-- Do a STFT and look for the moment where you see a high spectrum atoun 100Hz
-
-- If the segments are short:
-  - good time resolution
-  - poor frequency resolution
-
-- If the segments are long:
-  - poor time resolution
-  - high frequency resolution
-
-### STFT: Time and frequency resolution
-
-**Time-frequency Uncertainty Principle**:
-
-- you cannot have very good time resolution and very good frequency resolution simultaneously
-
-### STFT: other issues
-
-- Other issues with STFT
-  - can change the window type, to alleviate boundary problems / artefacts
-  - allow some overlap between segments (e.g. 10%)
-
-### How to compute the DTFT
-
-- The DFT is computed with `fft(x)`
-
-- How to compute the DTFT?
-
-- You can't. You need to surround $x$ with infinitely long zeros
-
-- You can only surround it with many zeros, but still finite
-
-- Do this with `fft(x, 100000)` (DFT in N=100000 points)
-
-  - $x$ is surrounded with zeros unil total length = 100000
-  - it's still just `fft()`, so DFT, so you have points and not the full continuous function
-  - but it's many many points
-
-### How to compute the DTFT
-
-- Computing the `fft()` in N=100000 points is unrelated with frequency resolution
-
-- Frequency resolution is dependent on actual length of $x$
-
-- Windowing changes the Diracs into $W(\omega)$'s
-
-- `fft()` in N points is just taking N points from the resulting continuous spectrum
-
-### Relation between DTFT and Z transform
-
-- Z transform:
-  $$X(z) = \sum_n x[n] z^{-n}$$
-
-- DTFT:
-  $$X(\omega) = \sum_n x[n] e^{-j \omega n}$$
-
-- DTFT can be obtained from Z transform with
-  $$z = e^{j \omega}$$
-
-- These $z = e^{j \omega}$ are **points on the unit circle**
-
-    - $|z| = |e^{j \omega}| = 1 (modulus)$
-    - $\angle{z} = \angle{e^{j \omega}} = \omega (phase)$
-
-### Relation between DTFT and Z transform
-
-- Fourier transform = Z transform evaluated **on the unit circle**
-
-    - if the unit circle is in the convergence region of Z transform
-    - otherwise, equivalence does not hold
-
-- This is true for most usual signals we work with
-
-    - some details and discussions are skipped
+- Do a STFT and look for the moment where you see a high spectrum atoun 100Hz -->
 
 
-### Geometric interpretation of Fourier transform
+## Geometric interpretation of Fourier Transform (DTFT)
 
+Consider a signal $x[n]$ with the Z-transform $X(z)$, with zeros $z_1, z_2, \dots$ and poles $p_1, p_2, \dots$:
 $$X(z) = C \cdot \frac{(z-z_1)\cdots(z - z_M)}{(z-p_1)\cdots(z - p_N)}$$
+
+The DTFT is:
 $$X(\omega) = C \cdot \frac{(e^{j \omega}-z_1)\cdots(e^{j \omega} - z_M)}{(e^{j \omega}-p_1)\cdots(e^{j \omega} - p_N)}$$
-
-* Modulus:
+with its modulus function being:
 $$|X(\omega)| = |C| \cdot \frac{|e^{j \omega}-z_1|\cdots|e^{j \omega} - z_M|}{|e^{j \omega}-p_1|\cdots|e^{j \omega} - p_N|}$$
-
-* Phase:
+and phase:
 $$\angle{X} = \angle{C} + \angle (e^{j \omega}-z_1) + \cdots + \angle(e^{j \omega} - z_M) - \angle(e^{j \omega}-p_1) - \cdots - \angle(e^{j \omega} - p_N)$$
 
+For any complex numbers $a$ and $b$, we have:
 
-### Geometric interpretation of Fourier transform
+- modulus of $|a - b|$ is the length of the segment between $a$ and $b$
+- phase of $|a - b|$ is the angle of the segment from $b$ to $a$ (direction is important)
 
-- For complex numbers:
+So, for a point on the unit circle $z = e^{j \omega}$, we have:
 
-  - modulus of $|a - b|$ = the length of the segment between $a$ and $b$
-  - phase of $|a - b|$ = the angle of the segment from $b$ to $a$ (direction is important)
+- the modulus $|e^{j \omega} - z_k|$ or $|e^{j \omega} - p_k|$
+  is the distance of that point from the zero or pole $z_k$ or $p_k$
+- phase of $|e^{j \omega} - z_k|$ or $|e^{j \omega} - p_k|$
+  is the angle of the segment from the zero or pole to that point
 
+As such, we can say that the modulus of the DTFT $|X(\omega)|$, for a certain value of $\omega$,
+is given by the distances to the zeros and to the poles,
+and the phase of the DTFT $\angle{X(\omega)}$ is given by the angles of segments from the zeros and poles to that point.
 
-- So, for a point on the unit circle $z = e^{j \omega}$
-  - modulus $|X(\omega)|$ is **given by the distances to the zeros and to the poles**
-  - phase $\angle{X(\omega)}$ is **given by the angles from the zeros and poles to z**
+TBD: Add figures
 
+Consequences:
 
-### Geometric interpretation of Fourier transform
+- when a **pole** is very close to unit circle, the DTFT is **large** around this point (around that value of $\omega$)
+- when a **zero** is very close to unit circle, the DTFT is **small** around this point (around that value of $\omega$)
 
-- Consequences:
+Examples: ...
 
-  - when a **pole** is very close to unit circle --> Fourier transform is **large** at this point
-  - when a **zero** is very close to unit circle --> Fourier transform is **small** at this point
+This geometric interpretation ignores the constant $C$ in front of the Z-transform, which is not visible in the pole-zero plot. The value of $|C|$ and $\angle{C}$ must be determined separately,
+from another information (for example, the value of the transform at a certain point).
 
-- Examples: ...
+::: {.callout-note icon=false appearance=simple title="Intuition"}
 
-### Geometric interpretation of Fourier transform
+We can think of the Z transform $X(z)$ as a **landscape**, with **poles being mountains**
+(of infinite height) and **zeros being valleys** (of zero height).
+and zeros being valleys.
 
-- Simple interpretation for modulus $|X(\omega)|$:
+The DTFT $X(\omega)$ is like a **walk over this landscape along the unit circle**.
+The height profile of the walk gives the modulus of the Fourier transform.
 
-  - Z transform $X(z)$ is like **a landscape**
+- When close to a mountain, the road is high, and the Fourier transform has large amplitude
+- When close to a valley, the road is low, and the Fourier transform has small amplitude
 
-    - **poles = mountains** of infinite height
-    - **zeros = valleys** of zero height
+This allows to quickly understand and possibly sketch the shape of the
+Fourier Transform of a signal, just by looking at the pole-zero plot.
 
-  - Fourier transform $X(\omega)$ = "*Walking over this landscape along the unit circle*"
+:::
 
-  - The height profile of the walk gives the amplitude of the Fourier transform
+## Terminology
 
-  - When close to a mountain --> road is high --> Fourier transform has large amplitude
+Based on the frequency content of signals, we can classify them in various categories:
 
-  - When close to a valley --> road is low --> Fourier transform has small amplitude
+- **low-frequency** signals
+- **mid-frequency** signals
+- **high-frequency** signals
 
-### Geometric interpretation of Fourier transform
+**Band-limited** signals are signals that have all the spectrum within a certain frequency band.
+e.g. no larger than a frequency $f_{max}$, and zero elsewhere.
 
-- Note: $X(z)$ might also have a constant $C$ in front!
+The **bandwitdh** $B$ of a signal is the frequency interval [$f_1$, $f_2$] which contains $95\%$ of energy.
+The size of the bandwidth is $B = f_2 - f_1$.
 
-  - It does not appear in pole-zero plot
-  - The value of $|C|$ and $\angle{C}$ must be determined separately
+Based on bandwidth $B$, we can define the **central frequency** $F_c = \frac{f_1 + f_2}{2}$,
+and classify signals in:
 
-- This "geometric method" can be applied for phase as well
-
-
-### Time-frequency duality
-
-- **Duality** properties related to all Fourier transforms
-
-- Discrete $\leftrightarrow$ Periodic
-  - **discrete** in time --> **periodic** in frequency
-  - **periodic** in time --> **discrete** in frequency
-
-- Continuous $\leftrightarrow$ Non-periodic
-  - **continous** in time --> **non-periodic** in frequency
-  - **non-periodic** in time --> **continuous** in frequency
-
-### Terminology
-
-- Based on frequency content:
-  - **low-frequency** signals
-  - **mid-frequency** signals (band-pass)
-  - **high-frequency** signals
-
-- **Band-limited** signals: spectrum is 0 beyond some frequency $f_{max}$
-
-- **Bandwitdh** $B$: frequency interval [$F_1$, $F_2$] which contains $95\%$ of energy
-  - $B = F_2 - F_1$
-
-- Based on bandwidth $B$:
-  - **Narrow-band** signals: $B <<$ central frequency $\frac{F_1 + F_2}{2}$
-  - **Wide-band** signals: not narrow-band
+- **Narrow-band** signals: their bandwidth $B$ is much smaller than the central frequency $F_c$
+  $$B << F_c$$
+- **Wide-band** signals: signals which are not narrow-band
 
 
+## Numerical examples
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# DTFT and DFT
-
+<!--
 ```{python}
 import numpy as np
 import matplotlib.pyplot as plt
@@ -1356,9 +1336,10 @@ fmin, fmax = 0, 1
 #fmin, fmax = -0.5, 0.5
 
 ```
+-->
 
 
-## Example: a sinusoidal signal
+### A sinusoidal signal
 
 Consider a cosine signal:
 $$x(t) = \cos(2 \pi f n)$$
@@ -1473,7 +1454,7 @@ plt.ylabel('Magnitude')
 plt.show()
 ```
 
-## Example: rectangle pulse
+### A rectangle pulse
 
 Consider a rectangle pulse signal as below:
 

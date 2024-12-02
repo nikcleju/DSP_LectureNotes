@@ -9,7 +9,7 @@ book:
     - index.qmd
     - 01_Intro.qmd
     - 04_FourierTransform.qmd
-    - Shiny.qmd
+    #- Shiny.qmd
     - references.qmd
     - part: "Solved Exercises"
       chapters:
