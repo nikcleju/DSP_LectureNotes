@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>DSP Lecture Notes - 2&nbsp; DTFT and DFT</title>
+<title>2&nbsp; The Fourier Transform – DSP Lecture Notes</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -17,11 +17,12 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -32,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -46,43 +47,13 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
-    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -93,7 +64,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./Shiny.html" rel="next">
+<link href="./references.html" rel="next">
 <link href="./01_Intro.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -110,7 +81,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -119,12 +96,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -132,11 +139,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-    <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">DTFT and DFT</span></h1>
-      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
-        <i class="bi bi-chevron-right"></i>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04_FourierTransform.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Fourier Transform</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
       </button>
     </div>
   </nav>
@@ -144,70 +156,74 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">DSP Lecture Notes</a> 
     </div>
       </div>
-      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-      </div>
+        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">Preface</a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01_Intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></a>
+  <a href="./01_Intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04_FourierTransform.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">DTFT and DFT</span></a>
+  <a href="./04_FourierTransform.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Fourier Transform</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Shiny.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Shinylive in Quarto example</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Solved Exercises</a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Solved Exercises</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Ex01_Sampling.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Sampling</span></a>
+  <a href="./Ex01_Sampling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Sampling</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Ex02_Systems.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Signals and Systems</span></a>
+  <a href="./Ex02_Systems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Signals and Systems</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Ex03_Z_Transform.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The Z Transform</span></a>
+  <a href="./Ex03_Z_Transform.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">The Z Transform</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Ex04_Fourier.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">The Fourier Transforms</span></a>
+  <a href="./Ex04_Fourier.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">The Fourier Transforms</span></span></a>
   </div>
 </li>
       </ul>
@@ -215,14 +231,43 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </ul>
     </div>
 </nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#example-a-sinusoidal-signal" id="toc-example-a-sinusoidal-signal" class="nav-link active" data-scroll-target="#example-a-sinusoidal-signal"><span class="toc-section-number">2.1</span>  Example: a sinusoidal signal</a></li>
-  <li><a href="#example-rectangle-pulse" id="toc-example-rectangle-pulse" class="nav-link" data-scroll-target="#example-rectangle-pulse"><span class="toc-section-number">2.2</span>  Example: rectangle pulse</a></li>
+  <li><a href="#introduction-vector-spaces-of-signals" id="toc-introduction-vector-spaces-of-signals" class="nav-link active" data-scroll-target="#introduction-vector-spaces-of-signals"><span class="header-section-number">2.1</span> Introduction: vector spaces of signals</a></li>
+  <li><a href="#introducing-the-fourier-transforms" id="toc-introducing-the-fourier-transforms" class="nav-link" data-scroll-target="#introducing-the-fourier-transforms"><span class="header-section-number">2.2</span> Introducing the Fourier Transforms</a>
+  <ul class="collapse">
+  <li><a href="#eigen-signals-of-lti-systems" id="toc-eigen-signals-of-lti-systems" class="nav-link" data-scroll-target="#eigen-signals-of-lti-systems"><span class="header-section-number">2.2.1</span> Eigen-signals of LTI systems</a></li>
+  <li><a href="#the-fourier-transforms" id="toc-the-fourier-transforms" class="nav-link" data-scroll-target="#the-fourier-transforms"><span class="header-section-number">2.2.2</span> The Fourier Transforms</a></li>
+  </ul></li>
+  <li><a href="#the-discrete-time-fourier-transform-dtft" id="toc-the-discrete-time-fourier-transform-dtft" class="nav-link" data-scroll-target="#the-discrete-time-fourier-transform-dtft"><span class="header-section-number">2.3</span> The Discrete-Time Fourier Transform (DTFT)</a>
+  <ul class="collapse">
+  <li><a href="#basic-properties-of-dtft" id="toc-basic-properties-of-dtft" class="nav-link" data-scroll-target="#basic-properties-of-dtft"><span class="header-section-number">2.3.1</span> Basic properties of DTFT</a></li>
+  <li><a href="#sum-of-sinusoids" id="toc-sum-of-sinusoids" class="nav-link" data-scroll-target="#sum-of-sinusoids"><span class="header-section-number">2.3.2</span> Sum of sinusoids</a></li>
+  <li><a href="#properties-of-dtft" id="toc-properties-of-dtft" class="nav-link" data-scroll-target="#properties-of-dtft"><span class="header-section-number">2.3.3</span> Properties of DTFT</a></li>
+  <li><a href="#relation-between-dtft-and-z-transform" id="toc-relation-between-dtft-and-z-transform" class="nav-link" data-scroll-target="#relation-between-dtft-and-z-transform"><span class="header-section-number">2.3.4</span> Relation between DTFT and Z transform</a></li>
+  </ul></li>
+  <li><a href="#the-discrete-fourier-transform-dft" id="toc-the-discrete-fourier-transform-dft" class="nav-link" data-scroll-target="#the-discrete-fourier-transform-dft"><span class="header-section-number">2.4</span> The Discrete Fourier Transform (DFT)</a>
+  <ul class="collapse">
+  <li><a href="#basic-properties-of-dft" id="toc-basic-properties-of-dft" class="nav-link" data-scroll-target="#basic-properties-of-dft"><span class="header-section-number">2.4.1</span> Basic properties of DFT</a></li>
+  <li><a href="#sum-of-sinusoids-1" id="toc-sum-of-sinusoids-1" class="nav-link" data-scroll-target="#sum-of-sinusoids-1"><span class="header-section-number">2.4.2</span> Sum of sinusoids</a></li>
+  <li><a href="#the-dft-matrix" id="toc-the-dft-matrix" class="nav-link" data-scroll-target="#the-dft-matrix"><span class="header-section-number">2.4.3</span> The DFT matrix</a></li>
+  <li><a href="#properties-of-the-dft" id="toc-properties-of-the-dft" class="nav-link" data-scroll-target="#properties-of-the-dft"><span class="header-section-number">2.4.4</span> Properties of the DFT</a></li>
+  <li><a href="#examples-of-dtft-and-dft" id="toc-examples-of-dtft-and-dft" class="nav-link" data-scroll-target="#examples-of-dtft-and-dft"><span class="header-section-number">2.4.5</span> Examples of DTFT and DFT</a></li>
+  </ul></li>
+  <li><a href="#relationship-between-dtft-and-dft" id="toc-relationship-between-dtft-and-dft" class="nav-link" data-scroll-target="#relationship-between-dtft-and-dft"><span class="header-section-number">2.5</span> Relationship between DTFT and DFT</a></li>
+  <li><a href="#signal-windowing-and-frequency-resolution" id="toc-signal-windowing-and-frequency-resolution" class="nav-link" data-scroll-target="#signal-windowing-and-frequency-resolution"><span class="header-section-number">2.6</span> Signal windowing and frequency resolution</a>
+  <ul class="collapse">
+  <li><a href="#initial-example" id="toc-initial-example" class="nav-link" data-scroll-target="#initial-example"><span class="header-section-number">2.6.1</span> Initial example</a></li>
+  <li><a href="#signal-windowing-and-frequency-resolution-1" id="toc-signal-windowing-and-frequency-resolution-1" class="nav-link" data-scroll-target="#signal-windowing-and-frequency-resolution-1"><span class="header-section-number">2.6.2</span> Signal windowing and frequency resolution</a></li>
+  </ul></li>
+  <li><a href="#stft-and-spectrograms" id="toc-stft-and-spectrograms" class="nav-link" data-scroll-target="#stft-and-spectrograms"><span class="header-section-number">2.7</span> STFT and Spectrograms</a></li>
+  <li><a href="#geometric-interpretation-of-fourier-transform-dtft" id="toc-geometric-interpretation-of-fourier-transform-dtft" class="nav-link" data-scroll-target="#geometric-interpretation-of-fourier-transform-dtft"><span class="header-section-number">2.8</span> Geometric interpretation of Fourier Transform (DTFT)</a></li>
+  <li><a href="#terminology" id="toc-terminology" class="nav-link" data-scroll-target="#terminology"><span class="header-section-number">2.9</span> Terminology</a></li>
   </ul>
 </nav>
     </div>
@@ -231,7 +276,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">DTFT and DFT</span></h1>
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Fourier Transform</span></h1>
 </div>
 
 
@@ -244,191 +289,1177 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
   
 
+
 </header>
 
-<div class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>fft <span class="op">=</span> np.fft.fft</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>fmin, fmax <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#fft = lambda *args: np.fft.fftshift(np.fft.fft(args))</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#fmin, fmax = -0.5, 0.5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+<p>In this chapter we discuss the Fourier Transform for discrete signals, and its applications in signal processing.</p>
+<section id="introduction-vector-spaces-of-signals" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="introduction-vector-spaces-of-signals"><span class="header-section-number">2.1</span> Introduction: vector spaces of signals</h2>
+<!-- In the following we review the mathematical framework of vector spaces
+
+Consider a set $V = \lbrace v_i \rbrace$, containing elements $v_i$.
+
+The set $V$ is a **vector space** if it satisfies the following two properties:
+
+    - one element  + another element = still an element of the same space
+
+    - a scalar constant $\times$ an element = still an element of the same space
+
+- You **can't escape** a vector space by summing or scaling
+
+- The elements of a vector space are called **vectors**
+
+### Examples of vector spaces
+
+- Geometric spaces are great intuitive examples:
+
+    - a line, or the set $\mathbb{R}$   (one-dimensional)
+    - a plane, or the set $\mathbb{C}$   (two-dimensional)
+    - 3D space  (three-dimensional)
+    - 4D space  (four-dimensional, like the spatio-temporal universe)
+    - arrays with N numbers (N-dimensional)
+    - space of continuous signals ($\infty$-dimensional)
+
+- The **dimension** of the space = "how many numbers you need in order to specify one element" (informal)
+
+- A "vector" like in maths = a sequence of $N$ numbers = a "vector" like in programming
+
+  - e.g. a point in a plane has two coordinates = a vector of size $N=2$
+  - e.g. a point in a 3D-space has three coordinates = a vector of size $N=3$
+
+### Inner product
+
+- Many vector spaces have a fundamental operation: **the (Euclidean) inner product**
+
+    - for **discrete** signals:
+        $$\langle \vec{x},\vec{y} \rangle = \sum_i x_i y_i^*$$
+
+    - for **continuous** signals:
+        $$\langle \vec{x},\vec{y} \rangle = \int x(t) y^*(t)$$
+
+- $^*$ represents **complex conjugate** (has no effect for real signals)
+
+- The result is one number (real or complex)
+
+- Also known as **dot product** or **scalar product** ("produs scalar")
+
+### Inner product
+
+- Each entry in $\vec{x}$ times the complex conjugate of the one in $\vec{y}$, all summed
+
+- For discrete signals, it can be understood as a row $\times$ column multiplication
+
+- Discrete vs continuous: just change sum/integral depending on signal type
+
+### Inner product properties
+
+- Inner product is **linear** in both terms:
+
+    $$\langle \vec{x_1} + \vec{x_2}, \vec{y} \rangle = \langle \vec{x_1}, \vec{y} \rangle + \langle \vec{x_2}, \vec{y} \rangle$$
+    $$\langle c \cdot \vec{x}, \vec{y} \rangle = c \cdot \langle \vec{x_1}, \vec{y} \rangle$$
+    $$\langle \vec{x}, \vec{y_1} + \vec{y_2} \rangle = \langle \vec{x}, \vec{y_1} \rangle + \langle \vec{x}, \vec{y_2} \rangle$$
+    $$\langle \vec{x}, c \cdot \vec{y} \rangle = c^* \cdot \langle \vec{x_1}, \vec{y} \rangle$$
+
+
+### The distance between two vectors
+
+- An inner product induces a **norm** and a **distance** function
+
+- **The (Euclidean) distance** between two vectors =
+    $$d(\vec{x}, \vec{y}) = \sqrt{(x_1-y_1)^2 + (x_2-y_2) ^2 + ... + (x_N-y_N) ^2}$$
+
+- This distance is the **usual geometric distance** you know from geometry
+
+- It has the exact same intuition like in **normal geometry**:
+
+  - if two vectors have small distance, they are close, they are similar
+  - two vectors with large distance are far away, not similar
+  - two identical vectors have zero distance
+
+### The norm of a vector
+
+- An inner product induces a **norm** and a **distance** function
+
+- The **norm** (length) of a vector = sqrt(inner product with itself)
+$$\|\vec{x}\| = \sqrt{ \langle \vec{x},\vec{x} \rangle } = \sqrt{x_1^2 + x_2 ^2 + ... + x_N ^2}$$
+
+- The **norm** of a vector is the distance from $\vec{x}$ to point $\vec{0}$.
+
+- It has the exact same intuition like in **normal geometry**:
+
+  - vector has large norm = has big values, is far from $\vec{0}$
+  - vector has small norm = has small values, is close to $\vec{0}$
+  - vector has zero norm = it is the vector $\vec{0}$
+
+- Norm of a vector = sqrt(the signal **energy**)
+
+### Norm and distance
+
+- The norm and distance are related
+
+- The distance between $\vec{a}$ and $\vec{b}$ = norm (length) of their difference
+$$d(\vec{x}, \vec{y}) = \|\vec{x} - \vec{y}\| = \sqrt{x_1^2 + x_2 ^2 + ... + x_N ^2}$$
+
+- Just like in geometry: distance = length of the difference vector
+
+![Norm and distance in vector spaces](img/NormDist.png){width=42%}
+
+### Angle between vectors
+
+- The **angle** between two vectors is:
+
+  $$\cos(\alpha) = \frac{\langle x,y \rangle}{||x|| \cdot ||y||}$$
+
+    - is a value between -1 and 1
+
+- **Otrhogonal vectors** = two vectors with $\langle x,y \rangle = 0$
+
+   - their angle = $90\deg$
+   - in geometric language, the two vectors are **perpendicular**
+
+### Why vector space
+
+- Why are all these useful?
+
+- They are a very general **framework** for different kinds of signals
+
+- We can have **generic** algorithms expressed in terms of distances, norms, angles,
+and they will work the same in all vector spaces
+
+  - Example in DEDP class: ML decision with 1, 2, N samples
+
+### Vector spaces in DSP class
+
+We deal mainly with the following vector spaces:
+
+- The vector space of all infinitely-long real signals $x[n]$
+
+- The vector space of all infinitely-long periodic signals $x[n]$ with period N
+
+  - for each $N$ we have a different vector space
+
+- The vector space of all finite-length signals $x[n]$ with only $N$ samples
+
+  - for each $N$ we have a different vector space
+
+### Bases
+
+- A **basis** = a set of $N$ linear independent elements from a vector space
+
+  $$B = \lbrace \vec{b}^1, \vec{b}^2 ... \vec{b}^N \rbrace$$
+
+- Any vector in a vector space is expressed as a **linear combination** of the basis elements:
+
+  $$\vec{x} = \alpha_1 \vec{b}^1 + \alpha_2 \vec{b}^2 + ... + \alpha_N \vec{b}^N$$
+
+- The vector is defined by these coefficients:
+
+  $$\vec{x} = (\alpha_1, \alpha_2, ... \alpha_N)$$
+
+### Bases and coordinate systems
+
+- Bases are just like **coordinate systems** in a geometric space
+
+  - any point is expressed w.r.t. a coordinate system
+  $$\vec{x} =  x_1 \vec{i} + x_2 \vec{j}$$
+
+  - any vector is expressed w.r.t. a basis
+  $$\vec{x} = \alpha_1 \vec{b}^1 + \alpha_2 \vec{b}^2 + \dots + \alpha_N \vec{b}^N$$
+
+- $N$ = The number of basis elements = The dimension of the space
+
+- Example: any color = RGB values (monitor) or Cyan-Yellow-Magenta values (printer)
+
+### Bases and coordinate systems
+
+![Basis expansion of a vector x](img/Basis.png)
+
+
+### Choice of bases
+
+- There is typically an infinite choice of bases
+
+- The **canonical basis** = all basis vectors are full of zeros, just with one 1
+
+- You used it already in an exercise:
+
+  - any signal $x[n]$ can be expressed of a sum of $\delta[n-k]$
+  $$\lbrace \dots, 3, 6, 2, \dots \rbrace = \dots + 3 \delta[n] + 6 \delta[n-1] + 2 \delta[n-2] + \dots$$
+
+  - the canonical basis is $B = \lbrace ..., \delta[n], \delta[n-1], \delta[n-2], \dots \rbrace$
+
+### Orthonormal bases
+
+- An **orthonormal basis** a basis where all elements $\vec{b}^i$ are:
+
+  - orthogonal to each other:  $$\langle \vec{b}^i, \vec{b}^j \rangle = 0, \forall i \neq j$$
+
+  - **normalized** (their norm = 1): $$||\vec{b}^i|| = \sqrt{\langle \vec{b}^i, \vec{b}^i \rangle} = 1, \forall i$$
+
+- Example: the canonical basis $\lbrace \delta[n-k] \rbrace$ is orthonormal:
+
+  - $\langle \delta[n-k], \delta[n-l] \rangle = 0, \forall k \neq l$
+  - $\langle \delta[n-k], \delta[n-k] \rangle = 1, \forall k$
+
+
+### Orthonormal bases
+
+- Orthonormal basis = like a coordinate system with orthogonal vectors, of length 1
+
+![Sample bases in a 2D space](img/Bases.png){width=80%}
+
+
+### Basis expansion of a vector
+
+- Suppose we have an **orthonormal basis** $B = \lbrace \vec{b}^i \rbrace$
+
+- Suppose we have a vector $\vec{x}$
+
+- We can write (expand) $\vec{x}$ as:
+  $$\vec{x} = \alpha_1 \vec{b}^1 + \alpha_2 \vec{b}^2 + \dots + \alpha_N \vec{b}^N$$
+
+- Question: how to **find** the coefficients $\alpha_i$?
+
+### Basis expansion of a vector
+
+- If the basis is **orthonormal**, we have:
+
+$$\begin{split}
+\langle \vec{x}, \vec{b}^i \rangle =&
+\langle \alpha_1 \vec{b}^1 + \alpha_2 \vec{b}^2 + \dots + \alpha_N \vec{b}^N, \vec{b}^i \rangle\\
+&= \langle \alpha_1 \vec{b}^1, \vec{b}^i \rangle + \langle \alpha_2 \vec{b}^2, \vec{b}^i \rangle + \dots + \langle \alpha_N \vec{b}^N, \vec{b}^i \rangle\\
+&= \alpha_1 \langle \vec{b}^1, \vec{b}^i \rangle + \alpha_2 \langle \vec{b}^2, \vec{b}^i \rangle + \dots + \alpha_N\langle \vec{b}^N, \vec{b}^i \rangle\\
+&= \alpha_i
+\end{split}$$
+
+### Basis expansion of a vector
+
+- Any vector $\vec{x}$ can be written as:
+  $$\vec{x} = \alpha_1 \vec{b}^1 + \alpha_2 \vec{b}^2 + \dots + \alpha_N \vec{b}^N$$
+
+- For orthonormal basis: the coefficients $\alpha_i$ are found by inner product
+with the corresponding basis vector:
+  $$\alpha_i = \langle, \vec{x}, \vec{b}^i \rangle$$
+
+
+### Why bases
+
+- How does all this talk about bases help us?
+
+- To better understand the Fourier transform
+
+- The signals $\lbrace e^{j \omega n} \rbrace$ form an **orthonormal basis**
+
+- The Fourier Transform of a signal $x$ = finding the coefficients of $\vec{x}$ in this basis
+
+- The Inverse Fourier Transform = expanding $\vec{x}$ with the elements of this basis
+
+- Same **generic** thing every time, only the type of signals differ -->
+</section>
+<section id="introducing-the-fourier-transforms" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="introducing-the-fourier-transforms"><span class="header-section-number">2.2</span> Introducing the Fourier Transforms</h2>
+<p>Let’s start with a <strong>reminder</strong> of some basic mathematical formulas.</p>
+<ul>
+<li><p>the Euler formula: <span class="math display">\[
+  e^{jx} = \cos(x) + j \sin(x)
+\]</span></p>
+<p>This function <span class="math inline">\(e^{jx}\)</span> is known as the <strong>complex exponential</strong>.</p></li>
+<li><p>relation between <span class="math inline">\(\cos()\)</span> and <span class="math inline">\(\sin()\)</span> and the complex exponential: <span class="math display">\[
+\begin{split}
+  \cos(x) &amp;= \frac{e^{jx} + e^{-jx}}{2}\\
+  \sin(x) &amp;= \frac{e^{jx} - e^{-jx}}{2j}\\
+\end{split}
+\]</span></p></li>
+<li><p><span class="math inline">\(\cos()\)</span> and <span class="math inline">\(\sin()\)</span> are just shifted versions of each other: <span class="math display">\[
+  \begin{split}
+  \sin(x) &amp;= \cos(x - \frac{\pi}{2})\\
+  \cos(x) &amp;= \sin(x + \frac{\pi}{2})
+  \end{split}
+\]</span></p></li>
+</ul>
+<section id="eigen-signals-of-lti-systems" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="eigen-signals-of-lti-systems"><span class="header-section-number">2.2.1</span> Eigen-signals of LTI systems</h3>
+<p>Why are sinusoidal signals <span class="math inline">\(\sin()\)</span> and <span class="math inline">\(\cos()\)</span> so prevalent in signal processing? The reason is that they can be written based on <span class="math inline">\(e^{jx}\)</span> and an <span class="math inline">\(e^{-jx}\)</span>. In fact, it is the function <span class="math inline">\(e^{jx}\)</span> that is very special, due to its relation to differential equations, and <span class="math inline">\(\sin()\)</span> and <span class="math inline">\(\cos()\)</span> merely inherit the nice properties of <span class="math inline">\(e^{jx}\)</span>.</p>
+<p>Why is the function <span class="math inline">\(e^{jx}\)</span> special? From the point of view of LTI systems, it is because it is an <strong>eigen-function</strong> of these systems.</p>
+<p>An <strong>eigen-function</strong> (“funcție proprie”) of a mathematical system is function <span class="math inline">\(f\)</span> which, if input in a system, produces an output proportional to it: <span class="math display">\[H\lbrace f \rbrace = \lambda \cdot f, \lambda \in \mathbb{C}\]</span></p>
+<p>Using the signal processing terminology, a signal <span class="math inline">\(x[n]\)</span> is called an <strong>eigen-signal</strong> of the system if the output signal is proportional to the input signal: <span class="math display">\[y[n] = H \lbrace x[n] \} = \lambda \cdot x[n]\]</span> It turns out that the complex exponential signals <span class="math inline">\(e^{j\omega n}\)</span> are eigen-signals of Linear and Time Invariant (LTI) systems.</p>
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
 </div>
-<section id="example-a-sinusoidal-signal" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="example-a-sinusoidal-signal"><span class="header-section-number">2.1</span> Example: a sinusoidal signal</h2>
-<p>Consider a cosine signal: <span class="math display">\[x(t) = \cos(2 \pi f n)\]</span> with <span class="math inline">\(f = 0.01\)</span></p>
-<p>This is how the signal looks like:</p>
-<div class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the signal</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fl">0.02</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">30</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#fmax = fmax * (N-10)/N</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> np.arange(N)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.cos(<span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>f<span class="op">*</span>n)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the signal</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>plt.plot(x, <span class="st">'-o'</span>)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'The signal $x(t) = \cos(2 \pi f n)$'</span>)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Discrete time $n$'</span>)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Signal $x[n]$'</span>)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="04_FourierTransform_files/figure-html/cell-3-output-1.png" width="530" height="303" class="figure-img"></p>
-</figure>
+<div class="callout-title-container flex-fill">
+Theorem: Complex exponentials are eigen-signals of LTI systems
 </div>
 </div>
-</div>
-<p>Now let’s compute the Discrete-Time Fourier transform. This assumes that the signal is infinitely long.</p>
-<p>If the cosine signal would be infinitely long, the DTFT contains only two Dirac impulses at the corresponding frequency.</p>
-<div class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Regenerate the signal so that it fits in one period</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>period <span class="op">=</span> <span class="dv">10000</span><span class="op">*</span>f</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ninf <span class="op">=</span> np.arange(period)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>xinf <span class="op">=</span> np.cos(<span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>f<span class="op">*</span>ninf)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the DTFT</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>Sinf <span class="op">=</span> fft(xinf)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the frequency axis</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>freqinf <span class="op">=</span> np.linspace(fmin, fmax, <span class="bu">len</span>(Sinf))</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the magnitude of the DTFT</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'DTFT of infinitely-long periodic signal'</span>)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>plt.stem(freqinf, np.<span class="bu">abs</span>(Sinf), linefmt<span class="op">=</span><span class="st">'b'</span>)</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Frequency'</span>)</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Magnitude'</span>)</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="04_FourierTransform_files/figure-html/cell-4-output-1.png" width="519" height="302" class="figure-img"></p>
-</figure>
+<div class="callout-body-container callout-body">
+<p>The complex exponential signals <span class="math inline">\(e^{j\omega n}\)</span> are <strong>eigen-functions</strong> of Linear and Time Invariant (LTI) systems: <span class="math display">\[
+y[n] = H \lbrace x[n] \} = \lambda \cdot x[n], \lambda \in \mathbb{C}, \forall H{} \textrm{ a LTI system}
+\]</span></p>
+<p><strong>Proof:</strong> Let’s consider an input signal <span class="math inline">\(x[n] = A e^{j\omega_0 n}\)</span>, for some values <span class="math inline">\(A\)</span>, <span class="math inline">\(\omega_0 \in \mathbb{R}\)</span>.</p>
+<p>The LTI system <span class="math inline">\(H\)</span> has an impulse response <span class="math inline">\(h[n]\)</span>. The output signal is the convolution of the input signal <span class="math inline">\(x[n]\)</span> with the impulse response <span class="math inline">\(h[n]\)</span>: <span class="math display">\[
+\begin{split}
+    y[n] &amp;= \sum_{k=-\infty}^\infty h[k] x[n-k]\\
+         &amp;= \sum_{k=-\infty}^\infty h[k] A e^{j \omega_0 (n-k)} \\
+         &amp;= \sum_{k=-\infty}^\infty h[k] e^{-j \omega_0 k} A e^{j \omega_0 n}\\
+         &amp;= A e^{j \omega_0 n} \underbrace{\sum_{k=-\infty}^\infty h[k] e^{-j \omega_0 k}}_{H(\omega_0)}\\
+         &amp;= H(\omega_0) \cdot x[n]
+\end{split}
+\]</span></p>
+<p>With the notation <span class="math inline">\(H(\omega_0) = \sum_{k=-\infty}^\infty h[k] e^{-j \omega_0 k}\)</span>, which is a constant complex number, we have shown that <span class="math inline">\(y[n]\)</span> is proportional to <span class="math inline">\(x[n]\)</span>: <span class="math display">\[
+    y[n] = H(\omega_0) \cdot x[n]
+\]</span></p>
 </div>
 </div>
+<p>The concept of eigen-signals and, more generally, of eigen-functions, is similar to the concept of <strong>eigen-vectors</strong> of a matrix (remember algebra). Eigen-vectors are vectors which, when multiplied by a matrix <span class="math inline">\(A\)</span>, produce a vector proportional to the input vector. <span class="math display">\[
+    A \cdot v = \lambda \cdot v
+\]</span> The core idea is the same: the vector <span class="math inline">\(v\)</span> is not changed by the matrix <span class="math inline">\(A\)</span> except by scaling with some value.</p>
+<p>Eigen-signals are very useful as building blocks of signals. If we can decompose a signal into a sum of eigen-signals, we can easily understand how the signal will be transformed by LTI a system, since each of the eigen-signals will be transformed into a scaled version of itself. The output signal will be a sum of scaled versions of the input signal’s eigen-signals.</p>
+<p>This is exactly the idea behind the Fourier Transform. The Fourier Transform decomposes a signal into a sum of complex exponentials <span class="math inline">\(e^{j\omega n}\)</span>, so that when the signal passes through an LTI system, we can understand the effect as simply scaling each of the complex exponentials (multiplication by the transfer function <span class="math inline">\(H(\omega)\)</span>).</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled" title="Example">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
 </div>
-<p>If the signal is assumed to be only the segment we defined, and is surrounded by infinitely-long zeros, i.e.&nbsp;a <strong>truncated cosine</strong>, then the spectrum is convoluted with the spectrum of a rectangular window, and the DTFT looks as follows:</p>
-<div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the DTFT</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>FFT_points <span class="op">=</span> <span class="dv">10000</span><span class="op">*</span>n.size</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>S1 <span class="op">=</span> fft(x, FFT_points)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the frequency axis</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>freq1 <span class="op">=</span> np.linspace(fmin, fmax, <span class="bu">len</span>(S1))</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the magnitude of the DTFT</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'DTFT of windowed signal'</span>)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>plt.plot(freq1, np.<span class="bu">abs</span>(S1), <span class="st">'b'</span>)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#plt.stem(freqinf, np.abs(Sinf), 'b')</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Frequency'</span>)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Magnitude'</span>)</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="04_FourierTransform_files/figure-html/cell-5-output-1.png" width="523" height="302" class="figure-img"></p>
-</figure>
+<div class="callout-title-container flex-fill">
+Example
 </div>
 </div>
+<section id="example" class="level4 callout-body-container callout-body" data-number="2.2.1.1">
+<h4 data-number="2.2.1.1" class="anchored" data-anchor-id="example"><span class="header-section-number">2.2.1.1</span> Example</h4>
+<p>Imagine a professional DSLR photo camera with some RGB color filters mounted on the lens. Suppose we have three photographic filters which reduce the intensity of the red, green, and blue colors:</p>
+<ul>
+<li>one filter reduces red to 50%: <span class="math display">\[R_{out} = 0.5 \cdot R_{in}\]</span></li>
+<li>one filter reduces green to 25%: <span class="math display">\[G_{out} = 0.25 \cdot G_{in}\]</span></li>
+<li>one filter reduces blue to 80%: <span class="math display">\[B_{out} = 0.8 \cdot B_{in}\]</span></li>
+</ul>
+<p>The colors R, G, B behave like eigen-colors of the system, in the sense that the output is proportional to the input.</p>
+<p>Now, suppose we have an input color “pink” which is some combination of red and blue. What is the output color if we pass the “pink” color through the filters?</p>
+<p>The answer is easy if we represent the “pink” color in terms of the eigen-colors R, G, B. If, say, pink is equal to <span class="math inline">\(200 \cdot R + 0 \cdot G + 200 \cdot B\)</span>, then the output will simply be: <span class="math display">\[
+200 \cdot 0.5 \cdot R + 0 \cdot 0.25 \cdot G + 200 \cdot 0.8 \cdot B
+\]</span></p>
+<p>Decomposing the color in terms of the eigen-colors R, G, B, makes it easy to understand the effect of the filters. R, G, B are the natural way of representing colors in this case, making it easy to understand the effect of the filters.</p>
+</section>
 </div>
-<p>When computing the Discrete Fourier Transform (DFT), this assumes that the given piece of the signal is would be repeated periodically. The DFT is not continous, it is discrete.</p>
-<div class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the DFT</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>S2 <span class="op">=</span> fft(x)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the frequency axis</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>freq2 <span class="op">=</span> np.linspace(fmin, fmax, <span class="bu">len</span>(S2))</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#freq2 = np.fft.fftfreq(x.size)</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the magnitude of the DTFT</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Its DFT'</span>)</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>plt.stem(freq2, np.<span class="bu">abs</span>(S2), linefmt<span class="op">=</span><span class="st">'ro'</span>)</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Frequency'</span>)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Magnitude'</span>)</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="04_FourierTransform_files/figure-html/cell-6-output-1.png" width="510" height="302" class="figure-img"></p>
-</figure>
+</section>
+<section id="the-fourier-transforms" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="the-fourier-transforms"><span class="header-section-number">2.2.2</span> The Fourier Transforms</h3>
+<p>The Fourier Transform is the mathematical tool that allows us to decompose a signal as a linear combination of complex exponentials <span class="math inline">\(e^{j\omega n}\)</span>.</p>
+<p>For non-periodic signals, we use the Discrete-Time Fourier Transform (DTFT) and its inverse.</p>
+<!--
+### Discrete-Time Fourier Transform (DTFT)
+
+- Consider the vector space of **non-periodic infinitely-long signals**
+
+- This vector space is **infinite-dimensional**
+
+- The signals $\lbrace e^{j 2 \pi f n} \rbrace, \forall f \in [-\frac{1}{2}, \frac{1}{2}]$ form an **orthonormal basis**
+
+- We can expand (almost) any $\vec{x}$ in this basis:
+
+  $$x[n] = \int_{f=-1/2}^{1/2} \underbrace{X(f)}_{\alpha_\omega} e^{j 2 \pi f n} df$$
+
+- The coefficient of every $e^{j 2 \pi f n}$ is found by inner product:
+
+  $$\alpha_\omega = X(f) = \langle x[n], e^{j 2 \pi f n} \rangle = \sum_n x[n] e^{- j 2 \pi f n}$$ -->
+<p><strong>Inverse Discrete-Time Fourier Transform (Inverse DTFT)</strong>:</p>
+<p>A signal <span class="math inline">\(x[n]\)</span> can be written as an infinite sum (i.e.&nbsp;integral) of complex exponentials: <span class="math display">\[x[n] = \int_{f=-1/2}^{1/2} X(f) e^{j 2 \pi f n} df\]</span> with some coefficients, <span class="math inline">\(X(f)\)</span>. <!-- - A signal $x[n]$ can be written as a linear combination of $\lbrace e^{j 2 \pi f n} \rbrace, \forall f \in [-\frac{1}{2}, \frac{1}{2}]$, with some coefficients $X(f)$ --></p>
+<p><strong>Discrete-Time Fourier Transform (DTFT):</strong></p>
+<p>The coefficients <span class="math inline">\(X(f)\)</span> are found as: <span class="math display">\[X(f) = \langle x[n], e^{j 2 \pi f n} \rangle = \sum_{n=-\infty}^{\infty} x[n] e^{- j 2 \pi f n}\]</span></p>
+<p><!-- - The coefficient $X(f)$ of every $\lbrace e^{j 2 \pi f n} \rbrace$ is found using the inner product $\langle \vec{x}, e^{j 2 \pi f n} \rangle$ --></p>
+<p>Alternatively, we can write these in terms of <span class="math inline">\(\omega\)</span>, by replacing <span class="math inline">\(f\)</span> with <span class="math inline">\(\omega = 2 \pi f\)</span> and <span class="math inline">\(df = \frac{1}{2 \pi} d\omega\)</span>: <span class="math display">\[
+\begin{split}
+    x[n] &amp;= \frac{1}{2 \pi}\int_{\omega=-\pi}^{\pi} X(\omega) e^{j \omega n} d\omega\\
+    X(\omega) &amp;= \langle x[n], e^{j \omega n} \rangle = \sum_n x[n] e^{- j \omega n}
+\end{split}
+\]</span></p>
+<hr>
+<p>For periodic signals, we use the Discrete Fourier Transform (DFT) formula and its inverse, because the spectrum <span class="math inline">\(X(f)\)</span> is discrete, so there is just a finite number of coefficients:</p>
+<!--
+### Discrete Fourier Transform (DFT)
+
+- Consider the vector space of **periodic** signals with **period N**
+  - for some fixed $N =$ 2, 3 or ... etc
+
+- This is a vector space of **dimension N**
+  - we need N numbers to identify a signal (specify its period)
+
+- We can consider $x[n]$ only for **one period**, i.e. $n = 0 ,\dots N-1$
+
+- The signals $\lbrace e^{j 2 \pi f n} \rbrace, \forall f \in \lbrace 0, \frac{1}{N}, \dots \frac{N-1}{N} \rbrace$ form an **orthonormal basis** with N elements
+
+- It is a **discrete** set of frequencies: $f = \frac{k}{N}, \forall k \in \lbrace 0, 1, \dots N-1 \rbrace$ -->
+<p><strong>Inverse Discrete Fourier Transform (Inverse DFT):</strong></p>
+<p>A periodic signal <span class="math inline">\(x[n]\)</span> can be written as a sum of exactly <span class="math inline">\(N\)</span> complex exponentials: <span class="math display">\[ x[n] = \frac{1}{N} \sum_{k=0}^{N-1} X_k e^{j 2 \pi k n / N} \]</span> with some coefficients, <span class="math inline">\(X_k\)</span>.</p>
+<p><strong>Discrete Fourier Transform (DFT)</strong>:</p>
+<p>The coefficients <span class="math inline">\(X_k\)</span> are found as: <span class="math display">\[X_k = \langle x[n], e^{j 2 \pi f n} \rangle = \sum_{n=0}^{N-1} x[n] e^{- j 2 \pi k n / N}\]</span></p>
+<!-- - The coefficient $X(f)$ of every $\lbrace e^{j 2 \pi f n} \rbrace$ is found using the inner product $\langle \vec{x}, e^{j 2 \pi f n} \rangle$ -->
+<p>In the following, we shall analyze each variant of the Fourier Transform in more detail.</p>
+</section>
+</section>
+<section id="the-discrete-time-fourier-transform-dtft" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="the-discrete-time-fourier-transform-dtft"><span class="header-section-number">2.3</span> The Discrete-Time Fourier Transform (DTFT)</h2>
+<p>The Discrete-Time Fourier Transform (DTFT) is used for discrete signals, infinitely long, that are <strong>non-periodic</strong>.</p>
+<p>Inverse Discrete-Time Fourier Transform (Inverse DTFT): <span class="math display">\[x[n] = \int_{f=-1/2}^{1/2} X(f) e^{j 2 \pi f n} df = \frac{1}{2\pi} \int_{\omega=-\pi}^{\pi} X(\omega) e^{j \omega n} d\omega\]</span></p>
+<p>Discrete-Time Fourier Transform (DTFT): <span class="math display">\[X(f) = \langle x[n], e^{j 2 \pi f n} \rangle = \sum_{n=-\infty}^{\infty} x[n] e^{- j 2 \pi f n}\]</span></p>
+<p>The inverse DTFT shows that a signal can be written as a continuous sum (i.e.&nbsp;an intergal) of complex exponentials <span class="math inline">\(e^{j \omega n}\)</span>, with some coefficients <span class="math inline">\(X(\omega)\)</span> or <span class="math inline">\(X(f)\)</span>. The direct DTFT shows how to compute these coefficients.</p>
+<section id="basic-properties-of-dtft" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="basic-properties-of-dtft"><span class="header-section-number">2.3.1</span> Basic properties of DTFT</h3>
+<p>The function <span class="math inline">\(X(\omega)\)</span> is known as the <strong>spectrum</strong> of the signal <span class="math inline">\(x[n]\)</span>.</p>
+<ul>
+<li><p><span class="math inline">\(X(\omega)\)</span> is <strong>defined</strong> only for <span class="math inline">\(\omega \in [-\pi, \pi]\)</span>, or <span class="math inline">\(f \in [-\frac{1}{2}, \frac{1}{2}]\)</span>. This is unlike the spectrum of continuous signals, which ranges from <span class="math inline">\(-\infty\)</span> to <span class="math inline">\(\infty\)</span>.</p></li>
+<li><p><span class="math inline">\(X(\omega)\)</span> is has <strong>complex</strong> values, meaning there exists the functions <span class="math inline">\(| X(\omega) |\)</span> and <span class="math inline">\(\angle X(\omega)\)</span>.</p></li>
+<li><p>If the signal <span class="math inline">\(x[n]\)</span> is real, <span class="math inline">\(X(\omega)\)</span> is <strong>even</strong>: <span class="math display">\[x[n] \in \mathbb{R} \rightarrow X(-\omega) = X^*(\omega)\]</span></p>
+<p>Furthermore, this means that the modulus <span class="math inline">\(|X(\omega)|\)</span> is an even, real-valued function: <span class="math display">\[|X(\omega)| = |X(-\omega)|\]</span> and the phase <span class="math inline">\(\angle X(\omega)\)</span> is an odd, real-valued function: <span class="math display">\[X(\omega) = - X(-\omega)\]</span></p></li>
+</ul>
+</section>
+<section id="sum-of-sinusoids" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="sum-of-sinusoids"><span class="header-section-number">2.3.2</span> Sum of sinusoids</h3>
+<p>The Inverse DTFT can be rewritten to show the signal <span class="math inline">\(x[n]\)</span> as a sum of sinusoids.</p>
+<p>By grouping terms with <span class="math inline">\(e^{j \omega n}\)</span> and <span class="math inline">\(e^{j (-\omega) n}\)</span> we get:</p>
+<p><span class="math display">\[
+\begin{split}
+    x[n] &amp;= \frac{1}{2\pi} \int_{-\pi}^0 X(\omega) e^{j \omega n} + \frac{1}{2\pi} \int_0^\pi X(\omega) e^{j \omega n} d\omega\\
+        &amp;= \frac{1}{2\pi} \int_0^\pi (X(\omega) e^{j \omega n}  + X(-\omega) e^{j (-\omega) n} ) d\omega\\
+        &amp;= \frac{1}{2\pi} \int_0^\pi 2|X(\omega)| ( e^{j \omega n + \angle{X(\omega)}}  +  e^{- j \omega n - \angle{X(\omega)}} ) d\omega\\
+        &amp;= \frac{1}{2\pi} \int_0^\pi 2 |X(\omega)| \cos(\omega n + \angle X(\omega))d\omega
+\end{split}
+\]</span></p>
+<p>The Inverse DTFT shows, therefore, that any signal <span class="math inline">\(x[n]\)</span> can be written as a continuous sum (i.e.&nbsp;integral) of sinusoids with all frequencies <span class="math inline">\(f \in [-\frac{1}{2}, \frac{1}{2}]\)</span>.</p>
+<p>The coefficient of each sinusoid is given by the spectrum <span class="math inline">\(X(f)\)</span>, for every value of <span class="math inline">\(f\)</span>:</p>
+<ul>
+<li>The <strong>modulus</strong> <span class="math inline">\(|X(\omega)|\)</span> gives the <strong>amplitude</strong> of the sinusoids (<span class="math inline">\(\times\)</span> 2)
+<ul>
+<li>As a particular case for <span class="math inline">\(\omega = 0\)</span>, <span class="math inline">\(|X(\omega=0)|\)</span> gives the DC component of the signal</li>
+</ul></li>
+<li>The <strong>phase</strong> <span class="math inline">\(\angle X(\omega)\)</span> gives the initial phase shift of the sinusoids</li>
+</ul>
+<p>This is the fundamental practical interpretation of the Fourier transform: it shows that any signal can be decomposed into a continuous sum of sinusoids of all frequencies, each with a certain amplitude and phase.</p>
+</section>
+<section id="properties-of-dtft" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="properties-of-dtft"><span class="header-section-number">2.3.3</span> Properties of DTFT</h3>
+<section id="linearity" class="level4" data-number="2.3.3.1">
+<h4 data-number="2.3.3.1" class="anchored" data-anchor-id="linearity"><span class="header-section-number">2.3.3.1</span> Linearity</h4>
+<p>The DTFT is a linear operation. The DTFT of a linear combination of signals is the linear combination of their DTFTs: <span class="math display">\[a \cdot x_1[n] + b\cdot x_2[n] \leftrightarrow a \cdot X_1(\omega)+ b\cdot X_2(\omega)\]</span></p>
+<p>Proof: via definition</p>
+</section>
+<section id="shifting-in-time" class="level4" data-number="2.3.3.2">
+<h4 data-number="2.3.3.2" class="anchored" data-anchor-id="shifting-in-time"><span class="header-section-number">2.3.3.2</span> Shifting in time</h4>
+<p>The DTF of a signal delayed by <span class="math inline">\(n_0\)</span> is the DTFT of the original signal, multiplied by a complex exponential:</p>
+<p><span class="math display">\[x[n - n_0] \leftrightarrow e^{-j \omega n_0} X(\omega)\]</span></p>
+<p>Proof: via definition</p>
+<p>Note that <span class="math display">\[ | e^{-j \omega n_0} X(\omega) | = | X(\omega) |\]</span> which shows that when a signal is shifted in time, the amplitudes <span class="math inline">\(|X(\omega)|\)</span> of the spectrum are not affected. Shifting in time affects <strong>only the phase</strong> of the spectrum. This makes sense, because shifting a signal in time does not change the “amplitudes” of the composing sinusoids, it only shifts them.</p>
+</section>
+<section id="modulation-in-time" class="level4" data-number="2.3.3.3">
+<h4 data-number="2.3.3.3" class="anchored" data-anchor-id="modulation-in-time"><span class="header-section-number">2.3.3.3</span> Modulation in time</h4>
+<p>A shift of the spectrum <span class="math inline">\(X(\omega)\)</span> by <span class="math inline">\(\omega_0\)</span> corresponds to a modulation of the signal <span class="math inline">\(x[n]\)</span> by a complex exponential:</p>
+<p><span class="math display">\[e^{j \omega_0 n} x[n]\leftrightarrow X(\omega - \omega_0)\]</span></p>
+</section>
+<section id="complex-conjugation" class="level4" data-number="2.3.3.4">
+<h4 data-number="2.3.3.4" class="anchored" data-anchor-id="complex-conjugation"><span class="header-section-number">2.3.3.4</span> Complex conjugation</h4>
+<p>Complex conjugation in time domain corresponds in frequency domain to complex conjugation and inversion of the frequency:</p>
+<p><span class="math display">\[x^*[n] \leftrightarrow X^*(-\omega)\]</span></p>
+</section>
+<section id="convolution" class="level4" data-number="2.3.3.5">
+<h4 data-number="2.3.3.5" class="anchored" data-anchor-id="convolution"><span class="header-section-number">2.3.3.5</span> Convolution</h4>
+<p>The convolution of two signals in time domain corresponds to the multiplication of their spectra in frequency domain:</p>
+<p><span class="math display">\[x_1[n] \star x_2[n] \leftrightarrow X_1(\omega) \cdot X_2(\omega)\]</span></p>
+<p>Proof: TBD</p>
+</section>
+<section id="product-in-time" class="level4" data-number="2.3.3.6">
+<h4 data-number="2.3.3.6" class="anchored" data-anchor-id="product-in-time"><span class="header-section-number">2.3.3.6</span> Product in time</h4>
+<p>The product of two signals in time domain corresponds to the convolution of their spectra in frequency domain:</p>
+<p><span class="math display">\[x_1[n] \cdot  x_2[n] \leftrightarrow \frac{1}{2 \pi} \int_{-\pi}^\pi X_1(\lambda) X_2(\omega - \lambda) d\lambda\]</span></p>
+</section>
+<section id="correlation-theorem" class="level4" data-number="2.3.3.7">
+<h4 data-number="2.3.3.7" class="anchored" data-anchor-id="correlation-theorem"><span class="header-section-number">2.3.3.7</span> Correlation theorem</h4>
+<p>The cross-correlation of two signals in time domain corresponds to the product of their spectra in frequency domain, the second spectrum being complex conjugated:</p>
+<p><span class="math display">\[r_{x_1x_2}[l] \leftrightarrow X_1(\omega) X_2^*(\omega)\]</span></p>
+</section>
+<section id="wiener-khinchin-theorem" class="level4" data-number="2.3.3.8">
+<h4 data-number="2.3.3.8" class="anchored" data-anchor-id="wiener-khinchin-theorem"><span class="header-section-number">2.3.3.8</span> Wiener-Khinchin theorem</h4>
+<p>The autocorrelation of a signal in time domain corresponds to the power spectral density in frequency domain:</p>
+<p><span class="math display">\[r_{xx}[l] \leftrightarrow S_{xx}(\omega) = |X(\omega)|^2\]</span></p>
+<p>Note that this is a special case of the correlation theorem, where the two signals are the same: <span class="math display">\[r_{xx}[l] \leftrightarrow X(\omega) X^*(\omega) = |X(\omega)|^2\]</span> since for any complex number <span class="math inline">\(z\)</span>, <span class="math inline">\(z \cdot z^* = |z|^2\)</span>.</p>
+</section>
+<section id="parseval-theorem" class="level4" data-number="2.3.3.9">
+<h4 data-number="2.3.3.9" class="anchored" data-anchor-id="parseval-theorem"><span class="header-section-number">2.3.3.9</span> Parseval theorem</h4>
+<p>The <strong>Parseval theorem</strong> states that the energy of the signal is the same in time and frequency domains: <span class="math display">\[E = \sum_{-\infty}^\infty |x[n]|^2 = \frac{1}{2 \pi}\int_{-\pi}^\pi |X(\omega)|^2\]</span></p>
+<p>The energy of a function, in general, is defined as the sum of the squares of its values. In the case of a signal, in the time domain we have the sum of the squares of the samples, and in the frequency domain we have the integral of the square of the spectrum, since the spectrum is continuous.</p>
+</section>
+</section>
+<section id="relation-between-dtft-and-z-transform" class="level3" data-number="2.3.4">
+<h3 data-number="2.3.4" class="anchored" data-anchor-id="relation-between-dtft-and-z-transform"><span class="header-section-number">2.3.4</span> Relation between DTFT and Z transform</h3>
+<p>The DTFT is a special case of the Z transform, where the Z transform is evaluated on the unit circle, i.e.&nbsp;with <span class="math display">\[z = e^{j \omega}\]</span></p>
+<p>This is clearly seen from the definitions of the DTFT and Z transforms, where replacing <span class="math inline">\(z = e^{j \omega}\)</span> in the Z transform leads to the DTFT:</p>
+<ul>
+<li><p>Z transform: <span class="math display">\[X(z) = \sum_n x[n] z^{-n}\]</span></p></li>
+<li><p>DTFT: <span class="math display">\[X(\omega) = \sum_n x[n] e^{-j \omega n}\]</span></p></li>
+</ul>
+<p>The points defined by <span class="math inline">\(z = e^{j \omega}\)</span> are <strong>points on the unit circle</strong>, since the modulus of such <span class="math inline">\(z\)</span> is 1: <span class="math display">\[|z| = |e^{j \omega}| = 1\]</span> The phase (angle) of these points <span class="math inline">\(z\)</span> is <span class="math inline">\(\omega\)</span>: <span class="math display">\[\angle{z} = \angle{e^{j \omega}} = \omega\]</span></p>
+<p>We say therefore that the DTFT is the Z transform evaluated on the unit circle. This requires that the Z transform converges on the unit circle, which is the case for most usual signals. Otherwise, the equivalence does not hold</p>
+</section>
+</section>
+<section id="the-discrete-fourier-transform-dft" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="the-discrete-fourier-transform-dft"><span class="header-section-number">2.4</span> The Discrete Fourier Transform (DFT)</h2>
+<p>The Discrete Fourier Transform (DFT) is used for discrete signals, periodic, with period <span class="math inline">\(N\)</span>.</p>
+<p>If we apply the DTFT to a periodic signal, we get a spectrum that is discrete, with only <span class="math inline">\(N\)</span> Dirac deltas. In this case it is easier to replace the integral with a sum of exactly <span class="math inline">\(N\)</span> terms, and in this way we get the DFT.</p>
+<p>Inverse Discrete Fourier Transform (Inverse DFT) <span class="math display">\[x[n] = \frac{1}{N} \sum_{k=0}^{N-1} X_k e^{j 2 \pi k n / N}\]</span></p>
+<p>Discrete Fourier Transform (DFT): <span class="math display">\[X_k = \langle x[n], e^{j 2 \pi f n} \rangle = \sum_{n=0}^{N-1} x[n] e^{- j 2 \pi k n / N}\]</span></p>
+<p>The DFT is defined for periodical signals with period <span class="math inline">\(N\)</span>, and there are exactly <span class="math inline">\(N\)</span> terms in each sum in the two formulas above. The DFT formula only uses the values from one period of the signal, <span class="math inline">\(x[n]\)</span> for <span class="math inline">\(n = 0, 1, \dots, N-1\)</span>, because the signal is periodic and the values repeat from <span class="math inline">\(N\)</span> onwards.</p>
+<div class="callout callout-style-simple callout-note no-icon callout-titled" title="Note">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
 </div>
 </div>
+<div class="callout-body-container callout-body">
+<p>Remember the differences between the DTFT and DFT in terms of the types of signals and spectra:</p>
+<p>The DFT takes a vector with N elements (<span class="math inline">\(x[0], \dots, x[N-1]\)</span>) and produces a vector with N elements (<span class="math inline">\(X_k\)</span>). For this reason, we can compute it with tools like Matlab, because it is a finite operation.</p>
+<p>The DTFT takes an infinitely-long signal <span class="math inline">\(x[n]\)</span> and produces a continuous function (<span class="math inline">\(X(\omega)\)</span>) between <span class="math inline">\([-\pi, \pi]\)</span>.</p>
 </div>
-<p>The DFT is just sampled from the DTFT:</p>
-<div class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the DTFT and DFT overlaid</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>freq2 <span class="op">=</span> np.linspace(fmin, fmax, <span class="bu">len</span>(S2)<span class="op">+</span><span class="dv">1</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>plt.plot(freq1, np.<span class="bu">abs</span>(S1), <span class="st">'b'</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>plt.stem(freq2[:<span class="op">-</span><span class="dv">1</span>], np.<span class="bu">abs</span>(S2), linefmt<span class="op">=</span><span class="st">'ro'</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'The DFT is just sampled from the DTFT'</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Frequency'</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Magnitude'</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="04_FourierTransform_files/figure-html/cell-7-output-1.png" width="523" height="302" class="figure-img"></p>
-</figure>
 </div>
+<section id="basic-properties-of-dft" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="basic-properties-of-dft"><span class="header-section-number">2.4.1</span> Basic properties of DFT</h3>
+<p>The DFT produces only <span class="math inline">\(N\)</span> coefficients <span class="math inline">\(X_k\)</span>, with each <span class="math inline">\(X_k\)</span> corresponding to a frequency <span class="math inline">\(f = \frac{k}{N}\)</span>. <span class="math inline">\(X_0\)</span> corresponds to the DC component, <span class="math inline">\(X_1\)</span> to the frequency <span class="math inline">\(f = \frac{1}{N}\)</span>, and so on.</p>
+<p>The DFT coefficients <span class="math inline">\(X_k\)</span> are complex numbers, meaning they have a modulus <span class="math inline">\(|X_k|\)</span> and a phase <span class="math inline">\(\angle X_k\)</span>.</p>
+<p>If the signal <span class="math inline">\(x[n] \in \mathbb{R}\)</span>, the coefficients are <strong>even</strong> (and complex): <span class="math display">\[X_{-k} = X_k^*\]</span> Furthermore, this means that the modulus <span class="math inline">\(|X_k|\)</span> are even, real values: <span class="math display">\[|X_{-k}| = |X_k|\]</span> and the phase <span class="math inline">\(\angle X_k\)</span> are odd, real values: <span class="math display">\[\angle X_{-k} = -\angle X_k\]</span></p>
+<p>The DFT coefficients <span class="math inline">\(X_k\)</span> are periodic with period <span class="math inline">\(N\)</span>, i.e.&nbsp;<span class="math inline">\(X_{k+N} = X_k\)</span>. This can be shown from the DFT formula, where, if we replace <span class="math inline">\(k\)</span> with <span class="math inline">\(k + N\)</span>, we get the same value: <span class="math display">\[
+\begin{split}
+    X_{k+N} &amp;= \sum_{n=0}^{N-1} x[n] e^{- j 2 \pi (k + N) n / N}\\
+            &amp;= \sum_{n=0}^{N-1} x[n] e^{- j 2 \pi k n / N} e^{- j 2 \pi n}\\
+            &amp;= \sum_{n=0}^{N-1} x[n] e^{- j 2 \pi k n / N}\\
+            &amp;= X_k
+\end{split}
+\]</span> The periodicity of the DFT coefficients is the reason for which the Inverse DFT only uses the values <span class="math inline">\(X_0, X_1, \dots, X_{N-1}\)</span>, since the values repeat afterwards.</p>
+<p>Because of periodicity, we can rename the coefficients <span class="math inline">\(X_{N-k}\)</span> as <span class="math inline">\(X_{-k}\)</span>. Consider, for example, a signal <span class="math inline">\(x[n]\)</span> with period <span class="math inline">\(N = 6\)</span>. The signal has 6 DFT coefficients <span class="math inline">\(X_0\)</span>, <span class="math inline">\(X_1\)</span>, <span class="math inline">\(X_2\)</span>, <span class="math inline">\(X_3\)</span>, <span class="math inline">\(X_4\)</span>, <span class="math inline">\(X_5\)</span>. However, we can rename the last ones as <span class="math inline">\(X_5 = X_{-1}\)</span>, and <span class="math inline">\(X_4 = X_{-2}\)</span>. Thus, the 6 coefficients can be considered <span class="math inline">\(X_{-2}\)</span>, <span class="math inline">\(X_{-1}\)</span>, <span class="math inline">\(X_0\)</span>, <span class="math inline">\(X_1\)</span>, <span class="math inline">\(X_2\)</span>, <span class="math inline">\(X_3\)</span>.</p>
+<p>This “renaming” of coefficients corresponds to the fact that the frequency <span class="math inline">\(f = \frac{N-k}{N}\)</span> is the same as <span class="math inline">\(f - 1 = \frac{-k}{N}\)</span>, which we know from the aliasing effect. Thus, for a periodic signal with <span class="math inline">\(N=6\)</span>, the coefficient <span class="math inline">\(X_5\)</span> corresponds to frequency <span class="math inline">\(f = \frac{5}{6}\)</span>, which is the same as <span class="math inline">\(f = \frac{-1}{6}\)</span>, which corresponds to <span class="math inline">\(X_{-1}\)</span>. Similarly, <span class="math inline">\(X_4\)</span> corresponds to <span class="math inline">\(f = \frac{4}{6}\)</span>, which is the same as <span class="math inline">\(f = \frac{-2}{6}\)</span>, which corresponds to <span class="math inline">\(X_{-2}\)</span>. The resulting DFT coefficients are <span class="math inline">\(X_{-2}\)</span>, <span class="math inline">\(X_{-1}\)</span>, <span class="math inline">\(X_0\)</span>, <span class="math inline">\(X_1\)</span>, <span class="math inline">\(X_2\)</span>, <span class="math inline">\(X_3\)</span>, and now their corresponding frequencies are all in the range <span class="math inline">\([-\frac{1}{2}, \frac{1}{2}]\)</span>.</p>
+</section>
+<section id="sum-of-sinusoids-1" class="level3" data-number="2.4.2">
+<h3 data-number="2.4.2" class="anchored" data-anchor-id="sum-of-sinusoids-1"><span class="header-section-number">2.4.2</span> Sum of sinusoids</h3>
+<p>Just like the DTFT, the DFT can be rewritten to show the signal <span class="math inline">\(x[n]\)</span> as a sum of sinusoids, where the modulus <span class="math inline">\(|X_k|\)</span> gives the amplitude of the sinusoids, and the phase <span class="math inline">\(\angle X_k\)</span> gives the initial phase shift.</p>
+<p>For easy analysis, we consider seperately the cases when <span class="math inline">\(N\)</span> is odd and when <span class="math inline">\(N\)</span> is even.</p>
+<section id="sum-of-sinusoids-with-n-odd" class="level4" data-number="2.4.2.1">
+<h4 data-number="2.4.2.1" class="anchored" data-anchor-id="sum-of-sinusoids-with-n-odd"><span class="header-section-number">2.4.2.1</span> Sum of sinusoids with N = odd</h4>
+<p>If <span class="math inline">\(N\)</span> is odd, we have an odd number of coefficients <span class="math inline">\(X_k\)</span>. We keep <span class="math inline">\(X_0\)</span> single, and we group together the coefficients <span class="math inline">\(X_k\)</span> and <span class="math inline">\(X_{-k}\)</span> as follows:</p>
+<p><span class="math display">\[\begin{split}
+x[n] &amp;= \sum_{k=-(N-1)/2}^{(N-1)/2} X_k e^{j 2 \pi k n / N}\\
+    &amp;= \frac{1}{N} X_0 e^{j 0 n} + \frac{1}{N} \sum_{k=-(N-1)/2}^{-1} X_k e^{j 2 \pi k n / N} + \frac{1}{N} \sum_{k=1}^{(N-1)/2} X_k e^{j 2 \pi k n / N}\\
+    &amp;= \frac{1}{N} X_0 + \frac{1}{N} \sum_{k=1}^{(N-1)/2} (X_k e^{j 2 \pi k n / N}  + X_{-k} e^{- j 2 \pi k n / N} )\\
+    &amp;= \frac{1}{N} X_0 + \frac{1}{N} \sum_{k=1}^{(N-1)/2} |X_k| ( e^{j 2 \pi k n /N + \angle{X(k)}}  +  e^{- j 2 \pi k n / N - \angle{X(\omega)}} )\\
+    &amp;= \frac{1}{N} X_0 + \frac{1}{N} \sum_{k=0}^{(N-1)/2} 2 |X_k| \cos(2 \pi k/N n + \angle X_k)
+\end{split}\]</span></p>
+<p>This shows that a signal <span class="math inline">\(x[n]\)</span> with period <span class="math inline">\(N\)</span> can be written as a sum of a few sinusoids with frequencies <span class="math inline">\(0, \frac{1}{N}, \frac{2}{N}, \dots\)</span>, not exceeding 1/2.</p>
+<p>The DC component is given by <span class="math inline">\(X_0\)</span>. The amplitudes of the sinusoids are given by <span class="math inline">\(|X_k|\)</span>, and the phases by <span class="math inline">\(\angle X_k\)</span>.</p>
+</section>
+<section id="sum-of-sinusoids-with-n-even" class="level4" data-number="2.4.2.2">
+<h4 data-number="2.4.2.2" class="anchored" data-anchor-id="sum-of-sinusoids-with-n-even"><span class="header-section-number">2.4.2.2</span> Sum of sinusoids with N = even</h4>
+<p>If <span class="math inline">\(N\)</span> is even, we have an even number of coefficients <span class="math inline">\(X_k\)</span>. We group together the coefficients <span class="math inline">\(X_k\)</span> and <span class="math inline">\(X_{-k}\)</span> as follows: - we leave <span class="math inline">\(X_0\)</span> on its own - we group <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_{-1}\)</span>, <span class="math inline">\(X_2\)</span> and <span class="math inline">\(X_{-2}\)</span>, and so on - there is one remaining coefficient <span class="math inline">\(X_{N/2}\)</span>, which has no pair</p>
+<p>For example, for <span class="math inline">\(N=6\)</span>, we have coefficients <span class="math inline">\(X_{-2}, X_{-1}, X_0, X_1, X_2, X_3\)</span>. We group <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_{-1}\)</span>, <span class="math inline">\(X_2\)</span> and <span class="math inline">\(X_{-2}\)</span>, while <span class="math inline">\(X_0\)</span> and <span class="math inline">\(X_3\)</span> are left on their own.</p>
+<p>We observe that the final term <span class="math inline">\(X_{N/2}\)</span>, having no pair, must be a real number. Because of periodicity, we must have $X_{N/2} = X_{-N/2}, but on other hand toe coefficients are even, so <span class="math inline">\(X_{N/2} = X_{-N/2}^*\)</span>. This means that <span class="math inline">\(X_{N/2}\)</span> is equal to its own complex conjugate, so it must be a real number.</p>
+<p>We have:</p>
+<p><span class="math display">\[\begin{split}
+x[n] &amp;= \sum_{k=-(N-2)/2}^{N/2} X_k e^{j 2 \pi k n / N}\\
+     &amp;= \frac{1}{N} X_0 e^{j 0 n} + \frac{1}{N} \sum_{k=-(N-2)/2 }^{-1} X_k e^{j 2 \pi k n / N} + \frac{1}{N} \sum_{k=1}^{(N-2)/2} X_k e^{j 2 \pi k n / N} + \frac{1}{N} X_{N/2} e^{j 2 \pi (N/2) n / N}\\
+     &amp;= \frac{1}{N} X_0 + \frac{1}{N} \sum_{k=1}^{(N-2)/2} (X_k e^{j 2 \pi k n / N}  + X_{-k} e^{- j 2 \pi k n / N} ) + \frac{1}{N} X_{N/2} e^{j 2 \pi (N/2) n / N}\\
+     &amp;= \frac{1}{N} X_0 + \frac{1}{N} \sum_{k=1}^{(N-2)/2} 2 |X_k| \cos(2 \pi k/N n + \angle X_k) + \frac{1}{N} X_{N/2} \cos(n \pi)
+\end{split}\]</span></p>
+<p>This shows that a signal <span class="math inline">\(x[n]\)</span> with period <span class="math inline">\(N\)</span> can be written as a sum of a few sinusoids with frequencies <span class="math inline">\(0, \frac{1}{N}, \frac{2}{N}, \dots\)</span>, up to but not exceeding 1/2.</p>
+<ul>
+<li>The DC component is given by <span class="math inline">\(X_0\)</span>.</li>
+<li>The amplitudes of the sinusoids are given by <span class="math inline">\(|X_k|\)</span>, and the phases by <span class="math inline">\(\angle X_k\)</span>. Note that for the frequency <span class="math inline">\(1/2\)</span> in particular, (the last term in the sum), the amplitude is <span class="math inline">\(X_{N/2}\)</span>, which is a real number, and doesn’t have the factor of 2. Also, its phase is 0, because <span class="math inline">\(X_{N/2}\)</span> is real.</li>
+</ul>
+<div class="callout callout-style-simple callout-tip no-icon callout-titled" title="Exercises">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercises
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Consider a periodic signal <span class="math inline">\(x[n]\)</span> with period <span class="math inline">\(N=6\)</span> and the DFT coefficients:</p>
+<p><span class="math inline">\(X_k\)</span> = [15.0000 + 0.0000i , -2.5000 + 3.4410i , -2.5000 + 0.8123i , -2.5000 - 0.8123i , -2.5000 - 3.4410i]</p>
+<p>Write <span class="math inline">\(x[n]\)</span> as a sum of sinusoids.</p></li>
+<li><p>Do the same for a periodic signal <span class="math inline">\(x[n]\)</span> with period <span class="math inline">\(N=5\)</span> and the DFT coefficients:</p>
+<p><span class="math inline">\(X_k\)</span> = [21.0000 + 0.0000i , -3.0000 + 5.1962i , -3.0000 + 1.7321i , -3.0000 + 0.0000i , -3.0000 - 1.7321i , -3.0000 - 5.1962i]</p>
+<p>Write <span class="math inline">\(x[n]\)</span> as a sum of sinusoids.</p></li>
+</ol>
 </div>
 </div>
 </section>
-<section id="example-rectangle-pulse" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="example-rectangle-pulse"><span class="header-section-number">2.2</span> Example: rectangle pulse</h2>
-<p>Consider a rectangle pulse signal as below:</p>
-<div class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the signal</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>len_1 <span class="op">=</span> <span class="dv">100</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>len_0 <span class="op">=</span> <span class="dv">100</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.hstack((np.ones(len_1), np.zeros(len_1)))</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.hstack((x, x))</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the signal</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>plt.plot(x)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Discrete time $n$'</span>)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Signal $x[n]$'</span>)</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+</section>
+<section id="the-dft-matrix" class="level3" data-number="2.4.3">
+<h3 data-number="2.4.3" class="anchored" data-anchor-id="the-dft-matrix"><span class="header-section-number">2.4.3</span> The DFT matrix</h3>
+<p>A particularly useful way to think about the DFT is as a matrix multiplication. Indeed, applying the DFT to a signal <span class="math inline">\(x[n]\)</span> of length N (i.e.&nbsp;one period) is equivalent to multiplying the signal by a matrix <span class="math inline">\(\mathbf{W}_N\)</span> of size <span class="math inline">\(N \times N\)</span>: <span class="math display">\[\mathbf{X} = \mathbf{W}_N \cdot \mathbf{x}\]</span> i.e.: <span class="math display">\[
+\begin{bmatrix}
+    X_0 \\
+    X_1 \\
+    \vdots \\
+    X_{N-1}
+\end{bmatrix}
+=
+\underbrace{
+  \frac{1}{\sqrt{N}} \begin{bmatrix}
+  1 &amp; 1 &amp; 1 &amp; \cdots &amp; 1 \\
+  1 &amp; w &amp; w^2 &amp; \cdots &amp; w^{N-1} \\
+  1 &amp; w^2 &amp; w^4 &amp; \cdots &amp; w^{2(N-1)} \\
+  \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+  1 &amp; w^{N-1} &amp; w^{2(N-1)} &amp; \cdots &amp; w^{(N-1)(N-1)}
+  \end{bmatrix}
+}_{\mathbf{W}_N}
+\cdot
+\begin{bmatrix}
+    x[0] \\
+    x[1] \\
+    \vdots \\
+    x[n-1]
+\end{bmatrix}
+\]</span> where <span class="math inline">\(w = e^{-j \frac{2\pi}{N}}\)</span> is the <span class="math inline">\(N\)</span>-th root of unity.</p>
+<p>The inverse DFT is also a matrix multiplication, with the inverse matrix <span class="math inline">\(\mathbf{W}_N^{-1}\)</span> which is the conjugate transpose of <span class="math inline">\(\mathbf{W}_N\)</span>: <span class="math display">\[\mathbf{x} = \mathbf{W}_N^{-1} \cdot \mathbf{X}\]</span> with: <span class="math display">\[\mathbf{W}_N^{-1} = \mathbf{W}_N^T\]</span></p>
+<p>The DFT matrix <span class="math inline">\(\mathbf{W}_N\)</span> is a unitary matrix, meaning that its inverse is its conjugate transpose.</p>
+<p>There might be small variations of the matrix definitions in various sources, depending on whether we have <span class="math inline">\(\frac{1}{\sqrt{N}}\)</span> at both DFT and IDFT matrices, or just put <span class="math inline">\(\frac{1}{N}\)</span> just for the IDFT matrix.</p>
+<p>Understanding the DFT and IDFT as mere matrix multiplications with certain fixed <span class="math inline">\(N \times N\)</span> matrices, mapping a vector of length <span class="math inline">\(N\)</span> to another vector of length <span class="math inline">\(N\)</span>, is very useful because it allows us to understand the DFT as a linear operation, and to apply all the properties of linear algebra.</p>
+<p>In practice, the DFT is computed using the Fast Fourier Transform (FFT) algorithm, which is much faster than the direct matrix multiplication</p>
+<!-- , because it exploits the periodicity of the DFT coefficients. -->
+<p>In the world of algorithms, the <strong>computational complexity</strong> of an algorithm is a measure of the amount of resources necessary to run it, most often the number of multiplications. The straightforward matrix multiplication of a vector of size <span class="math inline">\(N\)</span> with the DFT matrix has a computational complexity of <span class="math inline">\(\mathcal{O}(N^2)\)</span>, meaning that the number of multiplications necessary grows quadratically with the size of the signal (note that only the dominant term matters, without coefficient, e.g we write <span class="math inline">\(O(N^2)\)</span> not <span class="math inline">\(O(7.3 N^2 + 4N)\)</span>). This is prohibitively large for large signals.</p>
+<p>The Fast Fourier Transform (FFT) algorithm exploits the particular nature of the DFT matrix, and reduces the computational complexity to <span class="math inline">\(\mathcal{O}(N \log_2(N))\)</span>. This is a huge improvement. Consider for example a vector of size <span class="math inline">\(N=1024\)</span>. The number of multiplications for the naive matrix multiplication would be of the order of <span class="math inline">\(1024^2 = 1,048,576\)</span>, whereas for the FFT algorithm it would be <span class="math inline">\(1024 \log_2(1024) \approx 1024 \times 10 = 10,240\)</span>, which is two orders of magnitude smaller (e.g.&nbsp;about 100 times faster).</p>
+<p>The FFT algorithm is one of the most important algorithms in signal processing. The invention and adoption of the FFT in the 1960s by Cooley and Tukey is considered by many as “the birth of Digital Signal Processing”.</p>
+<section id="other-transforms" class="level4" data-number="2.4.3.1">
+<h4 data-number="2.4.3.1" class="anchored" data-anchor-id="other-transforms"><span class="header-section-number">2.4.3.1</span> Other transforms</h4>
+<p>In the world of discrete signals, there are many signal transforms possible, and many of them can be expressed as matrix multiplications, just like the DFT, but with different matrices.</p>
+<p>In fact, we can view such a transform as a way of expressing a N-dimensional vector <span class="math inline">\(x\)</span> as a linear combination of a set of <span class="math inline">\(N\)</span> basis vectors:</p>
+<ol type="1">
+<li>Put the <span class="math inline">\(N\)</span> vectors of the basis as columns in a matrix (let’s name it <span class="math inline">\(\mathbf{A}\)</span>)</li>
+<li>The inverse transform is then written as: <span class="math display">\[\mathbf{x} = \mathbf{A} \cdot \mathbf{X}\]</span> which means that <span class="math inline">\(\mathbf{x}\)</span> is a sum of the columns of <span class="math inline">\(\mathbf{A}\)</span>, with coefficients given by <span class="math inline">\(\mathbf{X}\)</span>.</li>
+<li>The direct transform is then equivalent to finding the coefficients <span class="math inline">\(\mathbf{X}\)</span>: <span class="math display">\[\mathbf{X} = \mathbf{A}^{-1} \cdot \mathbf{x}\]</span> which means that <span class="math inline">\(\mathbf{X}\)</span> is the coefficients of <span class="math inline">\(\mathbf{x}\)</span> in the basis of <span class="math inline">\(\mathbf{A}\)</span>.</li>
+</ol>
+<p>This is exactly the case of the DFT, where the basis vectors are the complex exponentials <span class="math inline">\(e^{j 2 \pi k n / N}\)</span>, and moreover we also have that the matrix <span class="math inline">\(\mathbf{A}^{-1}\)</span> is equal to <span class="math inline">\(\mathbf{A}^H\)</span>.</p>
+<p>The reasons of using transforms, DFT or others, are multiple: compression, denoising, feature extraction, etc. As an example, the discrete cosine transform (DCT) is used in JPEG image compression.</p>
+<div class="callout callout-style-simple callout-note no-icon callout-titled" title="Transform examples">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Transform examples
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<section id="transform-example-1" class="level4" data-number="2.4.3.2">
+<h4 data-number="2.4.3.2" class="anchored" data-anchor-id="transform-example-1"><span class="header-section-number">2.4.3.2</span> Transform example 1</h4>
+<p>Consider the exercise from Week 2:</p>
+<p><span class="math display">\[x[n] = \lbrace ..., 0, \frac{1}{3}, \frac{2}{3}, 1, 1, 1, 1, 0, ... \rbrace\]</span> Write the expression of <span class="math inline">\(x[n]\)</span> based on the signal <span class="math inline">\(u[n]\)</span>.</p>
+<p>Solve this in Matlab using a matrix approach.</p>
+</section>
+<section id="another-example-jpeg-2d-compression" class="level4" data-number="2.4.3.3">
+<h4 data-number="2.4.3.3" class="anchored" data-anchor-id="another-example-jpeg-2d-compression"><span class="header-section-number">2.4.3.3</span> Another example: JPEG 2D compression</h4>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="04_FourierTransform_files/figure-html/cell-8-output-1.png" width="591" height="429" class="figure-img"></p>
+<p><img src="img/JPG_DCT_BlockDiagram.png" class="img-fluid figure-img" style="width:80.0%" data-max-width="1000px"></p>
+<figcaption>JPEG compression with DCT transform<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></figcaption>
 </figure>
 </div>
-</div>
-</div>
-<p>The DTFT is:</p>
-<div class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the DTFT of the rectangle window</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>FFT_points <span class="op">=</span> <span class="dv">2000</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>W <span class="op">=</span> fft(x, FFT_points)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the frequency axis</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>freq <span class="op">=</span> np.linspace(fmin, fmax, <span class="bu">len</span>(W))</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the magnitude of the DTFT</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>plt.plot(freq, np.<span class="bu">abs</span>(W))</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Frequency'</span>)</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Magnitude'</span>)</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
+<p>In JPEG compression, the image is divided into 8x8 blocks, and each block is transformed using the 2D Discrete Cosine Transform (DCT). This exactly corresponds to the matrix multiplication approach we discussed above, except that the basis vectors are the 64 DCT basis vectors.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="04_FourierTransform_files/figure-html/cell-9-output-1.png" width="593" height="429" class="figure-img"></p>
+<p><img src="img/DCT-8x8.png" class="img-fluid figure-img" style="width:30.0%" data-max-width="1000px"></p>
+<figcaption>8x8 DCT basis vectors<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></figcaption>
 </figure>
 </div>
+<p>The DCT transform transforms the 64 pixels of a block into 64 DCT coefficients, similar to the DFT transforming a signal of length <span class="math inline">\(N\)</span> into <span class="math inline">\(N\)</span> DFT coefficients.</p>
+<p>Why? Because, unlike the 64 pixel values, out of the 64 DCT coefficients many are small negligible, and can be quantized to zero, leading to compression. When the image is reconstructed, the DCT coefficients are transformed back into pixel values using the inverse DCT, and the quantized or missing DCT coefficients not having a large effect on the image quality.</p>
+</section>
 </div>
 </div>
+</section>
+</section>
+<section id="properties-of-the-dft" class="level3" data-number="2.4.4">
+<h3 data-number="2.4.4" class="anchored" data-anchor-id="properties-of-the-dft"><span class="header-section-number">2.4.4</span> Properties of the DFT</h3>
+<section id="linearity-1" class="level4" data-number="2.4.4.1">
+<h4 data-number="2.4.4.1" class="anchored" data-anchor-id="linearity-1"><span class="header-section-number">2.4.4.1</span> Linearity</h4>
+<p>If the signal <span class="math inline">\(x_1[n]\)</span> has the DFT coefficients <span class="math inline">\(X_k^{(1)}\)</span>, and <span class="math inline">\(x_2[n]\)</span> has <span class="math inline">\(X_k^{(2)}\)</span>, then their sum has <span class="math display">\[a \cdot x_1[n] + b\cdot x_2[n] \leftrightarrow a \cdot X_k^{(1)} + b\cdot X_k^{(2)} \]</span></p>
+<p>Proof: via definition. Also, since DFT is equivalent to a matrix multiplication, this property is inherited from the linearity of matrix multiplication.</p>
+</section>
+<section id="shifting-in-time-1" class="level4" data-number="2.4.4.2">
+<h4 data-number="2.4.4.2" class="anchored" data-anchor-id="shifting-in-time-1"><span class="header-section-number">2.4.4.2</span> Shifting in time</h4>
+<p>The DFT coefficients of a signal <span class="math inline">\(x[n]\)</span> delayed by <span class="math inline">\(n_0\)</span> are the DFT coefficients of the original signal, multiplied by a complex exponential: If <span class="math inline">\(x[n] \leftrightarrow  X_k\)</span>, then <span class="math display">\[x[n - n_0] \leftrightarrow e^{(-j 2 \pi k n_0 / N)} X_k\]</span></p>
+<p>Proof: via definition</p>
+<p>Note that <span class="math display">\[ | e^{(-j 2 \pi k n_0 / N)} X(\omega) | = | X(\omega) |\]</span> which shows that when a signal is shifted in time, the amplitudes <span class="math inline">\(|X(\omega)|\)</span> of the spectrum are not affected. Shifting in time affects <strong>only the phase</strong> of the spectrum. This makes sense, because shifting a signal in time does not change the amplitudes of the composing sinusoids, it only shifts them.</p>
+</section>
+<section id="modulation-in-time-1" class="level4" data-number="2.4.4.3">
+<h4 data-number="2.4.4.3" class="anchored" data-anchor-id="modulation-in-time-1"><span class="header-section-number">2.4.4.3</span> Modulation in time</h4>
+<p>A shift of the spectrum <span class="math inline">\(X_k\)</span> by <span class="math inline">\(k_0\)</span> corresponds to a modulation of the signal <span class="math inline">\(x[n]\)</span> by a complex exponential:</p>
+<p><span class="math display">\[e^{j 2 \pi k_0 n / N} \leftrightarrow X_{k-k_0}\]</span></p>
+</section>
+<section id="complex-conjugation-1" class="level4" data-number="2.4.4.4">
+<h4 data-number="2.4.4.4" class="anchored" data-anchor-id="complex-conjugation-1"><span class="header-section-number">2.4.4.4</span> Complex conjugation</h4>
+<p>Complex conjugation in time domain corresponds in frequency domain to complex conjugation and inversion of the frequency:</p>
+<p><span class="math display">\[x^*[n] \leftrightarrow X_{-k}^*\]</span></p>
+</section>
+<section id="circular-convolution" class="level4" data-number="2.4.4.5">
+<h4 data-number="2.4.4.5" class="anchored" data-anchor-id="circular-convolution"><span class="header-section-number">2.4.4.5</span> Circular convolution</h4>
+<p>We define now the <strong>circular convolution</strong> of two signals <span class="math inline">\(x_1[n]\)</span> and <span class="math inline">\(x_2[n]\)</span> with period <span class="math inline">\(N\)</span>, which is slightly different from the normal convolution.</p>
+<p><strong>Circular convolution</strong> is defined as:</p>
+<p><span class="math display">\[x_1[n] \otimes x_2[n] = \sum_{k=0}^{N-1} x_1[k] x_2[(n-k)_N]\]</span></p>
+<p>CIrcular convolution is similar to normal convolution, but specifically for periodic signals. Thus, it takes two periodic signals of period N (in fact, two periods of the signals), and the result is also a periodic signal of period N (one period of the result). In other words, it takes two vectors of length N and produces another vector of length N, each of these vectors being a period of a periodic signal of period N. This is different from the normal convolution, which produces a result that is longer than the original signals, i.e.&nbsp;a vector of length 2N.</p>
+<p>TBD: Example at the whiteboard: how it is computed</p>
+<p>The property of DFT is that the <strong>circular</strong>, not the linear, convolution of two signals in time domain corresponds to the product of their DFT coefficients in frequency domain: <span class="math display">\[x_1[n] \otimes x_2[n] \leftrightarrow N \cdot X_k^{(1)} \cdot X_k^{(2)}\]</span></p>
+</section>
+<section id="product-in-time-1" class="level4" data-number="2.4.4.6">
+<h4 data-number="2.4.4.6" class="anchored" data-anchor-id="product-in-time-1"><span class="header-section-number">2.4.4.6</span> Product in time</h4>
+<p>The product of two signals in time domain corresponds to the circular convolution of their spectra in frequency domain: <span class="math display">\[x_1[n] \cdot  x_2[n] \leftrightarrow \sum_{m=0}^{N-1} X_m^{(1)} X_{(k-m)_N}^{(2)} = X_k^{(1)} \otimes X_k^{(2)}\]</span></p>
+</section>
+<section id="parseval-theorem-1" class="level4" data-number="2.4.4.7">
+<h4 data-number="2.4.4.7" class="anchored" data-anchor-id="parseval-theorem-1"><span class="header-section-number">2.4.4.7</span> Parseval theorem</h4>
+<p>The <strong>Parseval theorem</strong> states that the energy of the signal is the same in time and frequency domains: <span class="math display">\[E = \sum_{0}^{N-1} |x[n]|^2 = \frac{1}{2 \pi} \sum |X_k|^2\]</span></p>
+<p>The energy of a signal is defined as the sum of the squares of its values. Here we have two discrete set of values both in time and frequency domains, so we use the sum instead of the integral in both domains.</p>
+</section>
+</section>
+<section id="examples-of-dtft-and-dft" class="level3" data-number="2.4.5">
+<h3 data-number="2.4.5" class="anchored" data-anchor-id="examples-of-dtft-and-dft"><span class="header-section-number">2.4.5</span> Examples of DTFT and DFT</h3>
+<div class="callout callout-style-default callout-tip no-icon callout-titled" title="Example">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let’s plot / sketch DTFT and DFT of various signals</p>
+<p>DTFT of:</p>
+<ul>
+<li>a constant signal <span class="math inline">\(x[n] = A\)</span></li>
+<li>a rectangular signal <span class="math inline">\(x[n] = A\)</span> between <span class="math inline">\(-\tau\)</span> and <span class="math inline">\(\tau\)</span>, 0 elsewhere</li>
+<li>a cosine of frequency precisely <span class="math inline">\(f = k/N\)</span></li>
+<li>a cosine of frequency not <span class="math inline">\(f = k/N\)</span></li>
+</ul>
+<p>DFT, with N=20, of:</p>
+<ul>
+<li>a constant signal <span class="math inline">\(x[n] = A\)</span></li>
+<li>a rectangular signal <span class="math inline">\(x[n] = A\)</span> between <span class="math inline">\(-\tau\)</span> and <span class="math inline">\(\tau\)</span>, 0 elsewhere</li>
+<li>a cosine of frequency precisely <span class="math inline">\(f = k/N\)</span></li>
+<li>a cosine of frequency not <span class="math inline">\(f = k/N\)</span></li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="relationship-between-dtft-and-dft" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="relationship-between-dtft-and-dft"><span class="header-section-number">2.5</span> Relationship between DTFT and DFT</h2>
+<p>The DTFT transform is used for non-periodic signals, and produces a continuous spectrum.</p>
+<p>The DFT transform is used for periodic signals, and produces a discrete spectrum.</p>
+<p>We observe the fundamental duality of time and frequency, same for all Fourier transforms: a signal periodic in time has a spectrum discrete in frequency.</p>
+<ul>
+<li>Discrete in one domain <span class="math inline">\(\leftrightarrow\)</span> Periodic in the other domain
+<ul>
+<li><strong>discrete</strong> in time –&gt; <strong>periodic</strong> in frequency</li>
+<li><strong>periodic</strong> in time –&gt; <strong>discrete</strong> in frequency</li>
+</ul></li>
+<li>Continuous in one domain <span class="math inline">\(\leftrightarrow\)</span> Non-periodic in the other domain
+<ul>
+<li><strong>continous</strong> in time –&gt; <strong>non-periodic</strong> in frequency</li>
+<li><strong>non-periodic</strong> in time –&gt; <strong>continuous</strong> in frequency</li>
+</ul></li>
+</ul>
+<p>Moreover, there is a close relationship between the two values of the transforms. The discrete DFT coefficients are samples of the continuous DTFT spectrum of a single period of the signal (assuming the signal is surrounded by zeros).</p>
+<p>In general, consider a non-periodic signal <span class="math inline">\(x[n]\)</span>, from which we construct a periodic signal <span class="math inline">\(x_N[n]\)</span> by repeating <span class="math inline">\(x[n]\)</span> every <span class="math inline">\(N\)</span> samples (we “periodize” <span class="math inline">\(x[n]\)</span> with period <span class="math inline">\(N\)</span>).</p>
+<p>The non-periodic <span class="math inline">\(x[n]\)</span> has a continuous spectrum <span class="math inline">\(X(\omega)\)</span>, and the periodic signal <span class="math inline">\(x_N[n]\)</span> has <span class="math inline">\(N\)</span> discrete DFT coefficients <span class="math inline">\(X_k\)</span>. The values of <span class="math inline">\(X_k\)</span> are samples of the continuous spectrum <span class="math inline">\(X(\omega)\)</span> at frequencies <span class="math inline">\(k/N\)</span>: <span class="math display">\[X_k = X(2 \pi (k/N) n)\]</span></p>
+<p>To illustrate this, consider a sequence of 7 values: <span class="math display">\[x = [6, 3, -4, 2, 0, 1, 2]\]</span> and let’s compute both the DTFT and DFT starting from these values.</p>
+<ol type="1">
+<li><p>If we consider a <span class="math inline">\(x\)</span> surrounded by infinitely long zeros, i.e.&nbsp;<span class="math inline">\(x[n]\)</span> is non-periodical, we have a continuous spectrum <span class="math inline">\(X(\omega)\)</span> given by the DTFT: <span class="math display">\[x_{non-per}[n] = [...0, 0, \underbrace{6, 3, -4, 2, 0, 1, 2}_{\textrm{one period}}, 0, 0, ...]  \leftrightarrow X(\omega)\]</span></p></li>
+<li><p>If we consider that <span class="math inline">\(x\)</span> just one period of a periodic signal, the values repeating themselves every 7 samples: <span class="math display">\[x_{per_7}[n] = \sum_{k=-\infty}^{\infty} x[n - 7 k]\]</span> we can compute the DFT of this signal, based on the 7 values: <span class="math display">\[x_{per_7}[n] = [..., -4, 2, 0, 1, 2, \underbrace{6, 3, -4, 2, 0, 1, 2}_{\textrm{one period}}, 6, 3, -4, ...]  \leftrightarrow X_k \]</span></p>
+<p>The values <span class="math inline">\(X_k\)</span> are just <strong>samples from <span class="math inline">\(X(\omega)\)</span></strong>, at taken at frequencies <span class="math inline">\(k/N\)</span>: <span class="math display">\[X_k = X(2 \pi (k/N) n)\]</span></p></li>
+<li><p>We can even repeat the 7 values with a larger period, e.g.&nbsp;<span class="math inline">\(N=10\)</span>, by adding zeros in between: <span class="math display">\[x_{per_{10}}[n] = \sum_{k=-\infty}^{\infty} x[n - 10 k]\]</span> <span class="math display">\[x_{per_{10}}[n] = [..., 0, 6, 3, -4, 2, 0, 1, 2, 0, 0, 0, \underbrace{6, 3, -4, 2, 0, 1, 2, 0, 0, 0}_{\textrm{one period}}, 6, 3, -4, ...]  \leftrightarrow X_k \]</span></p>
+<p>The values <span class="math inline">\(X_k\)</span> are still samples from <span class="math inline">\(X(\omega)\)</span>, but since <span class="math inline">\(N=10\)</span>, we have 10 samples taken at frequencies <span class="math inline">\(k/10\)</span>:</p></li>
+</ol>
+<p>The illustration below shows this relationship, for a vector <span class="math inline">\(x = [6, 5, 4, -3, 2, -3, 4, 5, 6]\)</span>.:</p>
+<ul>
+<li>The red line is the DTFT of the values <span class="math inline">\(x\)</span>, which assumes it is surrounded by zeros and forms a non-periodic signal</li>
+<li>The blue line is the DFT of the values <span class="math inline">\(x\)</span>, which assumes they are periodic. Note that the DFT is just samples from the DTFT.</li>
+</ul>
+<div class="sourceCode" id="cb1" data-session="plot"><pre class="sourceCode python cb.run code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt, numpy <span class="im">as</span> np, scipy <span class="im">as</span> sp</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.fftpack</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.array([<span class="dv">6</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="op">-</span><span class="dv">3</span>, <span class="dv">2</span>, <span class="op">-</span><span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>])</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> x.size</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>bigN <span class="op">=</span> <span class="dv">1000</span><span class="op">*</span>N</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> np.arange(<span class="dv">0</span>,N)    <span class="co"># n = [0, 1, 2, ... N-1]</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">6</span>))</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>plt.stem(n<span class="op">*</span><span class="dv">1000</span>, np.<span class="bu">abs</span>(sp.fftpack.fft(x)))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>plt.plot(np.arange(<span class="dv">0</span>,bigN), np.<span class="bu">abs</span>(sp.fft.fft(x, bigN)), color<span class="op">=</span><span class="st">'r'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">'fig/04_RelationshipDTFTDFT.png'</span>, transparent<span class="op">=</span><span class="va">True</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>, dpi<span class="op">=</span><span class="dv">300</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>plt.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="fig/04_RelationshipDTFTDFT.png" class="img-fluid" style="width:90.0%" data-max-width="1000px"></p>
+<p>Note that in practice we can’t compute the DTFT of a signal with numerical tools like Matlab, because the DTFT is a continuous function. Instead, we can extend the signal with many zeros, and then compute the DFT of the extended signal. We will have therefore many samples of the continous spectrum, enough to plot it as a continuous function. For example, to plot the continuous spectrum of a signal <span class="math inline">\(x\)</span> above, we extended it with zeros to a length of 10000 samples and then computed the 10000 DFT coefficients, which is achieved by the <code>fft(x, 10000)</code> function call in Matlab. There is no other way to compute the DTFT of a signal with numerical tools.</p>
+</section>
+<section id="signal-windowing-and-frequency-resolution" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="signal-windowing-and-frequency-resolution"><span class="header-section-number">2.6</span> Signal windowing and frequency resolution</h2>
+<p>In the following, we discuss the effect of working with a finite segment of a signal, which is always the case in practice.</p>
+<section id="initial-example" class="level3" data-number="2.6.1">
+<h3 data-number="2.6.1" class="anchored" data-anchor-id="initial-example"><span class="header-section-number">2.6.1</span> Initial example</h3>
+<p>Consider the</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode matlab code-with-copy"><code class="sourceCode matlab"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">n</span> <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">99</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="va">f</span> <span class="op">=</span> <span class="fl">0.015</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="va">x</span> <span class="op">=</span> <span class="va">cos</span>(<span class="fl">2</span><span class="op">*</span><span class="va">pi</span><span class="op">*</span><span class="va">f</span><span class="op">*</span><span class="va">n</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="va">plot</span>(<span class="va">abs</span>(<span class="va">fft</span>(<span class="va">x</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Discuss:</p>
+<ol type="1">
+<li>Why is the spectrum not just 2 Diracs, like a normal <code>cos()</code>?</li>
+<li>FFT assumes periodicity. Are there boundary problems?</li>
+<li>What is the role of the rectangular window?</li>
+<li>What happens if we run <code>fft(x, 10000)</code> instead of <code>fft(x)</code>?</li>
+</ol>
+<section id="discussion" class="level4" data-number="2.6.1.1">
+<h4 data-number="2.6.1.1" class="anchored" data-anchor-id="discussion"><span class="header-section-number">2.6.1.1</span> Discussion</h4>
+<p>When we have the finite-length cosine vector <span class="math inline">\(x\)</span>, we have just a part of the signal. The true signal <span class="math inline">\(x\)</span>, infinitely long, is actually multiplied with a rectangular window <span class="math inline">\(w[n]\)</span> <span class="math display">\[x = cos(2 \pi f n) \cdot w[n]\]</span>.</p>
+<p>Multiplication in time means convolution in frequency, and thus the spectrum of the true infinitely-long <span class="math inline">\(x\)</span>, i.e.&nbsp;two Diracs, is convoluted with the spectrum of the rectangular window, <span class="math inline">\(W(\omega)\)</span>.</p>
+<p>Thus, the spectrum of our finite-length <span class="math inline">\(x\)</span> is not just two Diracs, but the convolution of two Diracs with <span class="math inline">\(W(\omega)\)</span>. Thus, instead of two Diracs, we have a <span class="math inline">\(sinc()\)</span>-like function, with a wide peak and secondary lobes.</p>
+</section>
+</section>
+<section id="signal-windowing-and-frequency-resolution-1" class="level3" data-number="2.6.2">
+<h3 data-number="2.6.2" class="anchored" data-anchor-id="signal-windowing-and-frequency-resolution-1"><span class="header-section-number">2.6.2</span> Signal windowing and frequency resolution</h3>
+<p>Working with a finite-length segment of a signal <strong>always</strong> distorts its spectrum.</p>
+<p>Suppose we have a very long, possibly infinitely-long, signal <span class="math inline">\(x[n]\)</span> with a spectrum <span class="math inline">\(X(\omega)\)</span>.</p>
+<p>Out of this signal, we take a segment of length <span class="math inline">\(N\)</span>, <span class="math inline">\(x_w[n]\)</span> (for example, in order to process it with a computer).</p>
+<p>Taking this segment is equivalent to multiplying the signal with a rectangular window <span class="math inline">\(w[n]\)</span> of length <span class="math inline">\(N\)</span>: <span class="math display">\[x_w[n] = x[n] \cdot w[n]\]</span> The window <span class="math inline">\(w[n]\)</span> can be the rectangular window, which leaves <span class="math inline">\(N\)</span> samples unchanged and zeroes the rest, or any other window or function.</p>
+<p>The spectrum of the windowed signal <span class="math inline">\(x_w[n]\)</span> is the convolution of the spectrum of the original signal <span class="math inline">\(X(\omega)\)</span> with the spectrum of the window <span class="math inline">\(W(\omega)\)</span>: <span class="math display">\[X_w(\omega) = X(\omega) * W(\omega)\]</span></p>
+<p>As a result, the spectrum of the windowed signal <span class="math inline">\(x_w[n]\)</span> is not the same as the spectrum of the original signal <span class="math inline">\(x[n]\)</span>.</p>
+<p>If the true signal <span class="math inline">\(x[n]\)</span> is infinitely long, the spectrum <span class="math inline">\(X(\omega)\)</span> is composed of just two Diracs. But if we have only a segment of the signal, which is always the case in practice, the spectrum is not just two Diracs, but a convolution of two Diracs with the spectrum of the window <span class="math inline">\(W(\omega)\)</span>. As a result, every Dirac in the spectrum of the original signal is “smudged” into a <span class="math inline">\(W(\omega)\)</span>. This is unavoidable.</p>
+<p>Different windows <span class="math inline">\(w[n]\)</span> have different spectra <span class="math inline">\(W(\omega)\)</span>. For example, the rectangular window has a <span class="math inline">\(sinc()\)</span>-like spectrum, with a narrow central peak but large secondary lobes. Other windows, like the Hamming or Hann window, trade the width of the central peak with the height of the secondary lobes. However, every window <span class="math inline">\(w[n]\)</span> will always distort the spectrum of the signal.</p>
+<p>The only way to mitigate this effect is to work with a longer segment of the signal, which means taking more samples.</p>
+<p>What is the problem with this? We lose frequency resolution.</p>
+<p><strong>Frequency resolution</strong> is the ability to distinguish between closely spaced frequency components in a signal, e.g.&nbsp;two Diracs close to each other.</p>
+<p>The window spectrum <span class="math inline">\(W(\omega)\)</span> “blurs” the spectrum of the signal. We are looking at the spectrum through a “blurred lens” <span class="math inline">\(W(\omega)\)</span>. For example, two close Diracs are be impossible to differentiate, because the “blur” will change them into overlapping peaks, which we can’t separate. Secondary lobes of the window <span class="math inline">\(W(\omega)\)</span> will mask other Diracs in the spectrum, smaller but further away.</p>
+<p>In short, working with a finite-length segment of a signal always distorts its spectrum. Having a short segment of a signal leads to <strong>low frequency resolution</strong>, because the spectrum is “blurred” by the window. The only way to increase frequency resolution is to work with a longer segment of the signal, which means taking more samples. Frequency resolution is proportional to the length of the segment.</p>
+<p>There are many windows available, each with different spectra <span class="math inline">\(W(\omega)\)</span>.</p>
+<ul>
+<li>Recangular window</li>
+<li>Hamming window</li>
+<li>Hann window</li>
+<li>…</li>
+</ul>
+<p>The rectangular window has the narrowest central peak, but the largest secondary lobes. Other windows have wider central peaks, but smaller secondary lobes. They can be useful to attenuate sharp transitions at the boundaries of the signal, thus reducing the boundary problems.</p>
+<div class="callout callout-style-simple callout-note no-icon callout-titled" title="Remember">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Remember
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Every time we work with a piece of a signal (for example we process an audio file working on segments of 1024 samples), we are applying windowing, and this distorts the spectrum.</p>
+<p>Even the rectangular window is still a window. Always consider if it is useful to replace the rectangular window with another one, especially if you use <code>fft()</code> or other frequency-based operations (hint: most often it is).</p>
+</div>
+</div>
+</section>
+</section>
+<section id="stft-and-spectrograms" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="stft-and-spectrograms"><span class="header-section-number">2.7</span> STFT and Spectrograms</h2>
+<p>How can we analyze the frequency of a signal whose frequency components change in time (e.g.&nbsp;like a musical song)?</p>
+<p>The <strong>Short-Time Fourier Transform (STFT)</strong> is a a technique for analyzing the frequency content of local sections of a signal as it changes over time.</p>
+<p>STFT divides a longer time signal into shorter segments of equal length and then computes the Fourier Transform separately on each short segment:</p>
+<ul>
+<li>Split the signal into pieces (e.g.&nbsp;1024-samples long), possibly overlapping</li>
+<li>Compute the spectrum of every piece (e.g.&nbsp;<code>fft()</code>)</li>
+<li>Display the resulting sequence of spectra as an image, known as a <strong>spectrogram</strong>.</li>
+</ul>
+<p>Examples: <a href="https://en.wikipedia.org/wiki/Spectrogram">https://en.wikipedia.org/wiki/Spectrogram</a></p>
+<p>The STFT is a <strong>time-frequency representation</strong> of a signal, because the resulting spectrogram is 2D, with two axes: time and frequency.</p>
+<p>It is common for the segments to overlap, e.g.&nbsp;10% overlap, in order to have a smoother transition between segments.</p>
+<p>The STFT depends on two parameters:</p>
+<ul>
+<li>The length of the segments (e.g.&nbsp;1024 samples)</li>
+<li>The overlap between segments (e.g.&nbsp;10%)</li>
+</ul>
+<p>The length of the segments affects the <strong>time resolution</strong> and the <strong>frequency resolution</strong> of the spectrogram.</p>
+<ul>
+<li><p>If the segments have <strong>short</strong> length, we have <strong>good time</strong> resolution, because we can pinpoint the moment in time where a frequency component appears with high precision. However, we have <strong>poor frequency</strong> resolution, because the spectrum of a short segment is more “blurred”</p></li>
+<li><p>If the segments have <strong>long</strong> length, we have <strong>poor time</strong> resolution, because we can’t pinpoint the moment in time where a frequency component appears with high precision, but we have <strong>good frequency</strong> resolution, because the spectrum of a long segment is less “blurred”.</p></li>
+</ul>
+<p>This illustrates the <strong>Time-frequency Uncertainty Principle</strong>, which states that you cannot have very good time resolution and very good frequency resolution simultaneously. This principle is often encountered in many areas of engineering, physics, or mathematics.</p>
+<p>A small overlap between segments is useful to have a smoother transition between segments, and avoid hard-splitting a frequency component between two adjacent segments. Common values range from 10% to 50%.</p>
+<!-- - Imagine you look at the spectrogram of a music piece, and you
+  want to pinpoint the moment where the bass guitar starts to play a chord of 100Hz
+
+- Do a STFT and look for the moment where you see a high spectrum atoun 100Hz -->
+</section>
+<section id="geometric-interpretation-of-fourier-transform-dtft" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="geometric-interpretation-of-fourier-transform-dtft"><span class="header-section-number">2.8</span> Geometric interpretation of Fourier Transform (DTFT)</h2>
+<p>Consider a signal <span class="math inline">\(x[n]\)</span> with the Z-transform <span class="math inline">\(X(z)\)</span>, with zeros <span class="math inline">\(z_1, z_2, \dots\)</span> and poles <span class="math inline">\(p_1, p_2, \dots\)</span>: <span class="math display">\[X(z) = C \cdot \frac{(z-z_1)\cdots(z - z_M)}{(z-p_1)\cdots(z - p_N)}\]</span></p>
+<p>The DTFT is: <span class="math display">\[X(\omega) = C \cdot \frac{(e^{j \omega}-z_1)\cdots(e^{j \omega} - z_M)}{(e^{j \omega}-p_1)\cdots(e^{j \omega} - p_N)}\]</span> with its modulus function being: <span class="math display">\[|X(\omega)| = |C| \cdot \frac{|e^{j \omega}-z_1|\cdots|e^{j \omega} - z_M|}{|e^{j \omega}-p_1|\cdots|e^{j \omega} - p_N|}\]</span> and phase: <span class="math display">\[\angle{X} = \angle{C} + \angle (e^{j \omega}-z_1) + \cdots + \angle(e^{j \omega} - z_M) - \angle(e^{j \omega}-p_1) - \cdots - \angle(e^{j \omega} - p_N)\]</span></p>
+<p>For any complex numbers <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>, we have:</p>
+<ul>
+<li>modulus of <span class="math inline">\(|a - b|\)</span> is the length of the segment between <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span></li>
+<li>phase of <span class="math inline">\(|a - b|\)</span> is the angle of the segment from <span class="math inline">\(b\)</span> to <span class="math inline">\(a\)</span> (direction is important)</li>
+</ul>
+<p>So, for a point on the unit circle <span class="math inline">\(z = e^{j \omega}\)</span>, we have:</p>
+<ul>
+<li>the modulus <span class="math inline">\(|e^{j \omega} - z_k|\)</span> or <span class="math inline">\(|e^{j \omega} - p_k|\)</span> is the distance of that point from the zero or pole <span class="math inline">\(z_k\)</span> or <span class="math inline">\(p_k\)</span></li>
+<li>phase of <span class="math inline">\(|e^{j \omega} - z_k|\)</span> or <span class="math inline">\(|e^{j \omega} - p_k|\)</span> is the angle of the segment from the zero or pole to that point</li>
+</ul>
+<p>As such, we can say that the modulus of the DTFT <span class="math inline">\(|X(\omega)|\)</span>, for a certain value of <span class="math inline">\(\omega\)</span>, is given by the distances to the zeros and to the poles, and the phase of the DTFT <span class="math inline">\(\angle{X(\omega)}\)</span> is given by the angles of segments from the zeros and poles to that point.</p>
+<p>TBD: Add figures</p>
+<p>Consequences:</p>
+<ul>
+<li>when a <strong>pole</strong> is very close to unit circle, the DTFT is <strong>large</strong> around this point (around that value of <span class="math inline">\(\omega\)</span>)</li>
+<li>when a <strong>zero</strong> is very close to unit circle, the DTFT is <strong>small</strong> around this point (around that value of <span class="math inline">\(\omega\)</span>)</li>
+</ul>
+<p>Examples: …</p>
+<p>This geometric interpretation ignores the constant <span class="math inline">\(C\)</span> in front of the Z-transform, which is not visible in the pole-zero plot. The value of <span class="math inline">\(|C|\)</span> and <span class="math inline">\(\angle{C}\)</span> must be determined separately, from another information (for example, the value of the transform at a certain point).</p>
+<div class="callout callout-style-simple callout-note no-icon callout-titled" title="Intuition">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Intuition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We can think of the Z transform <span class="math inline">\(X(z)\)</span> as a <strong>landscape</strong>, with <strong>poles being mountains</strong> (of infinite height) and <strong>zeros being valleys</strong> (of zero height). and zeros being valleys.</p>
+<p>The DTFT <span class="math inline">\(X(\omega)\)</span> is like a <strong>walk over this landscape along the unit circle</strong>. The height profile of the walk gives the modulus of the Fourier transform.</p>
+<ul>
+<li>When close to a mountain, the road is high, and the Fourier transform has large amplitude</li>
+<li>When close to a valley, the road is low, and the Fourier transform has small amplitude</li>
+</ul>
+<p>This allows to quickly understand and possibly sketch the shape of the Fourier Transform of a signal, just by looking at the pole-zero plot.</p>
+</div>
+</div>
+</section>
+<section id="terminology" class="level2" data-number="2.9">
+<h2 data-number="2.9" class="anchored" data-anchor-id="terminology"><span class="header-section-number">2.9</span> Terminology</h2>
+<p>Based on the frequency content of signals, we can classify them in various categories:</p>
+<ul>
+<li><strong>low-frequency</strong> signals</li>
+<li><strong>mid-frequency</strong> signals</li>
+<li><strong>high-frequency</strong> signals</li>
+</ul>
+<p><strong>Band-limited</strong> signals are signals that have all the spectrum within a certain frequency band. e.g.&nbsp;no larger than a frequency <span class="math inline">\(f_{max}\)</span>, and zero elsewhere.</p>
+<p>The <strong>bandwitdh</strong> <span class="math inline">\(B\)</span> of a signal is the frequency interval [<span class="math inline">\(f_1\)</span>, <span class="math inline">\(f_2\)</span>] which contains <span class="math inline">\(95\%\)</span> of energy. The size of the bandwidth is <span class="math inline">\(B = f_2 - f_1\)</span>.</p>
+<p>Based on bandwidth <span class="math inline">\(B\)</span>, we can define the <strong>central frequency</strong> <span class="math inline">\(F_c = \frac{f_1 + f_2}{2}\)</span>, and classify signals in:</p>
+<ul>
+<li><strong>Narrow-band</strong> signals: their bandwidth <span class="math inline">\(B\)</span> is much smaller than the central frequency <span class="math inline">\(F_c\)</span> <span class="math display">\[B &lt;&lt; F_c\]</span></li>
+<li><strong>Wide-band</strong> signals: signals which are not narrow-band</li>
+</ul>
+<!-- # DTFT and DFT
+
+::: {#5b24aa89 .cell execution_count=2}
+``` {.python .cell-code}
+import numpy as np
+import matplotlib.pyplot as plt
+
+fft = np.fft.fft
+fmin, fmax = 0, 1
+#fft = lambda *args: np.fft.fftshift(np.fft.fft(args))
+#fmin, fmax = -0.5, 0.5
+```
+:::
 
 
+## Example: a sinusoidal signal
+
+Consider a cosine signal:
+$$x(t) = \cos(2 \pi f n)$$
+with $f = 0.01$
+
+This is how the signal looks like:
+
+::: {#c4660426 .cell execution_count=3}
+``` {.python .cell-code}
+# Create the signal
+f = 0.02
+N = 30
+#fmax = fmax * (N-10)/N
+n = np.arange(N)
+x = np.cos(2*np.pi*f*n)
+
+# Plot the signal
+plt.figure(figsize=(6, 3))
+plt.plot(x, '-o')
+plt.title('The signal $x(t) = \cos(2 \pi f n)$')
+plt.xlabel('Discrete time $n$')
+plt.ylabel('Signal $x[n]$')
+plt.show()
+```
+
+::: {.cell-output .cell-output-display}
+![](04_FourierTransform_files/figure-html/cell-3-output-1.png){width=530 height=303 fig-align='center'}
+:::
+:::
+
+
+Now let's compute the Discrete-Time Fourier transform. This assumes that the signal is infinitely long.
+
+If the cosine signal would be infinitely long, the DTFT contains only two Dirac impulses at the corresponding frequency.
+
+::: {#65cfb819 .cell execution_count=4}
+``` {.python .cell-code}
+# Regenerate the signal so that it fits in one period
+period = 10000*f
+ninf = np.arange(period)
+xinf = np.cos(2*np.pi*f*ninf)
+
+# Compute the DTFT
+Sinf = fft(xinf)
+
+# Create the frequency axis
+freqinf = np.linspace(fmin, fmax, len(Sinf))
+
+# Plot the magnitude of the DTFT
+plt.figure(figsize=(6, 3))
+plt.title('DTFT of infinitely-long periodic signal')
+plt.stem(freqinf, np.abs(Sinf), linefmt='b')
+plt.xlabel('Frequency')
+plt.ylabel('Magnitude')
+plt.show()
+```
+
+::: {.cell-output .cell-output-display}
+![](04_FourierTransform_files/figure-html/cell-4-output-1.png){width=519 height=302 fig-align='center'}
+:::
+:::
+
+
+If the signal is assumed to be only the segment we defined, and is surrounded by infinitely-long zeros, i.e. a **truncated cosine**, then the spectrum is
+convoluted with the spectrum of a rectangular window, and the DTFT looks as follows:
+
+::: {#9714f111 .cell execution_count=5}
+``` {.python .cell-code}
+# Compute the DTFT
+FFT_points = 10000*n.size
+S1 = fft(x, FFT_points)
+
+# Create the frequency axis
+freq1 = np.linspace(fmin, fmax, len(S1))
+
+# Plot the magnitude of the DTFT
+plt.figure(figsize=(6, 3))
+plt.title('DTFT of windowed signal')
+plt.plot(freq1, np.abs(S1), 'b')
+#plt.stem(freqinf, np.abs(Sinf), 'b')
+plt.xlabel('Frequency')
+plt.ylabel('Magnitude')
+plt.show()
+```
+
+::: {.cell-output .cell-output-display}
+![](04_FourierTransform_files/figure-html/cell-5-output-1.png){width=523 height=302 fig-align='center'}
+:::
+:::
+
+
+When computing the Discrete Fourier Transform (DFT), this assumes that the given piece of the signal is would be repeated periodically.
+The DFT is not continous, it is discrete.
+
+::: {#2557f420 .cell execution_count=6}
+``` {.python .cell-code}
+# Compute the DFT
+S2 = fft(x)
+
+# Create the frequency axis
+freq2 = np.linspace(fmin, fmax, len(S2))
+#freq2 = np.fft.fftfreq(x.size)
+
+# Plot the magnitude of the DTFT
+plt.figure(figsize=(6, 3))
+plt.title('Its DFT')
+plt.stem(freq2, np.abs(S2), linefmt='ro')
+plt.xlabel('Frequency')
+plt.ylabel('Magnitude')
+plt.show()
+```
+
+::: {.cell-output .cell-output-display}
+![](04_FourierTransform_files/figure-html/cell-6-output-1.png){width=510 height=302 fig-align='center'}
+:::
+:::
+
+
+The DFT is just sampled from the DTFT:
+
+::: {#44ea96a1 .cell execution_count=7}
+``` {.python .cell-code}
+# Plot the DTFT and DFT overlaid
+freq2 = np.linspace(fmin, fmax, len(S2)+1)
+plt.figure(figsize=(6, 3))
+plt.plot(freq1, np.abs(S1), 'b')
+plt.stem(freq2[:-1], np.abs(S2), linefmt='ro')
+plt.title('The DFT is just sampled from the DTFT')
+plt.xlabel('Frequency')
+plt.ylabel('Magnitude')
+plt.show()
+```
+
+::: {.cell-output .cell-output-display}
+![](04_FourierTransform_files/figure-html/cell-7-output-1.png){width=523 height=302 fig-align='center'}
+:::
+:::
+
+
+## Example: rectangle pulse
+
+Consider a rectangle pulse signal as below:
+
+::: {#5d96ce4c .cell execution_count=8}
+``` {.python .cell-code}
+# Create the signal
+len_1 = 100
+len_0 = 100
+x = np.hstack((np.ones(len_1), np.zeros(len_1)))
+x = np.hstack((x, x))
+
+# Plot the signal
+plt.figure()
+plt.plot(x)
+plt.xlabel('Discrete time $n$')
+plt.ylabel('Signal $x[n]$')
+plt.show()
+```
+
+::: {.cell-output .cell-output-display}
+![](04_FourierTransform_files/figure-html/cell-8-output-1.png){width=591 height=429 fig-align='center'}
+:::
+:::
+
+
+The DTFT is:
+
+
+#| fig-align: center
+
+# Compute the DTFT of the rectangle window
+FFT_points = 2000
+W = fft(x, FFT_points)
+
+# Create the frequency axis
+freq = np.linspace(fmin, fmax, len(W))
+
+# Plot the magnitude of the DTFT
+plt.figure()
+plt.plot(freq, np.abs(W))
+plt.xlabel('Frequency')
+plt.ylabel('Magnitude')
+plt.show()
+``` -->
+
+
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>image from: JPEG Picture Compression Using Discrete Cosine Transform, N. K. More, S. Dubey, 2012<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>image from Wikipedia<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
 </section>
 
 </main> <!-- /main -->
@@ -459,12 +1490,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
     }
-  });
-  clipboard.on('success', function(e) {
+    return false;
+  }
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -496,11 +1530,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -510,8 +1583,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -523,9 +1605,245 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
@@ -567,17 +1885,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./01_Intro.html" class="pagination-link">
+      <a href="./01_Intro.html" class="pagination-link" aria-label="Introduction">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./Shiny.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Shinylive in Quarto example</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+
 
 
 
