@@ -268,6 +268,11 @@ window.Quarto = {
   <li><a href="#stft-and-spectrograms" id="toc-stft-and-spectrograms" class="nav-link" data-scroll-target="#stft-and-spectrograms"><span class="header-section-number">2.7</span> STFT and Spectrograms</a></li>
   <li><a href="#geometric-interpretation-of-fourier-transform-dtft" id="toc-geometric-interpretation-of-fourier-transform-dtft" class="nav-link" data-scroll-target="#geometric-interpretation-of-fourier-transform-dtft"><span class="header-section-number">2.8</span> Geometric interpretation of Fourier Transform (DTFT)</a></li>
   <li><a href="#terminology" id="toc-terminology" class="nav-link" data-scroll-target="#terminology"><span class="header-section-number">2.9</span> Terminology</a></li>
+  <li><a href="#numerical-examples" id="toc-numerical-examples" class="nav-link" data-scroll-target="#numerical-examples"><span class="header-section-number">2.10</span> Numerical examples</a>
+  <ul class="collapse">
+  <li><a href="#a-sinusoidal-signal" id="toc-a-sinusoidal-signal" class="nav-link" data-scroll-target="#a-sinusoidal-signal"><span class="header-section-number">2.10.1</span> A sinusoidal signal</a></li>
+  <li><a href="#a-rectangle-pulse" id="toc-a-rectangle-pulse" class="nav-link" data-scroll-target="#a-rectangle-pulse"><span class="header-section-number">2.10.2</span> A rectangle pulse</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -1251,9 +1256,12 @@ Intuition
 <li><strong>Narrow-band</strong> signals: their bandwidth <span class="math inline">\(B\)</span> is much smaller than the central frequency <span class="math inline">\(F_c\)</span> <span class="math display">\[B &lt;&lt; F_c\]</span></li>
 <li><strong>Wide-band</strong> signals: signals which are not narrow-band</li>
 </ul>
-<!-- # DTFT and DFT
+</section>
+<section id="numerical-examples" class="level2" data-number="2.10">
+<h2 data-number="2.10" class="anchored" data-anchor-id="numerical-examples"><span class="header-section-number">2.10</span> Numerical examples</h2>
+<!--
 
-::: {#5b24aa89 .cell execution_count=2}
+::: {#d54c6156 .cell execution_count=2}
 ``` {.python .cell-code}
 import numpy as np
 import matplotlib.pyplot as plt
@@ -1266,193 +1274,182 @@ fmin, fmax = 0, 1
 :::
 
 
-## Example: a sinusoidal signal
-
-Consider a cosine signal:
-$$x(t) = \cos(2 \pi f n)$$
-with $f = 0.01$
-
-This is how the signal looks like:
-
-::: {#c4660426 .cell execution_count=3}
-``` {.python .cell-code}
-# Create the signal
-f = 0.02
-N = 30
-#fmax = fmax * (N-10)/N
-n = np.arange(N)
-x = np.cos(2*np.pi*f*n)
-
-# Plot the signal
-plt.figure(figsize=(6, 3))
-plt.plot(x, '-o')
-plt.title('The signal $x(t) = \cos(2 \pi f n)$')
-plt.xlabel('Discrete time $n$')
-plt.ylabel('Signal $x[n]$')
-plt.show()
-```
-
-::: {.cell-output .cell-output-display}
-![](04_FourierTransform_files/figure-html/cell-3-output-1.png){width=530 height=303 fig-align='center'}
-:::
-:::
-
-
-Now let's compute the Discrete-Time Fourier transform. This assumes that the signal is infinitely long.
-
-If the cosine signal would be infinitely long, the DTFT contains only two Dirac impulses at the corresponding frequency.
-
-::: {#65cfb819 .cell execution_count=4}
-``` {.python .cell-code}
-# Regenerate the signal so that it fits in one period
-period = 10000*f
-ninf = np.arange(period)
-xinf = np.cos(2*np.pi*f*ninf)
-
-# Compute the DTFT
-Sinf = fft(xinf)
-
-# Create the frequency axis
-freqinf = np.linspace(fmin, fmax, len(Sinf))
-
-# Plot the magnitude of the DTFT
-plt.figure(figsize=(6, 3))
-plt.title('DTFT of infinitely-long periodic signal')
-plt.stem(freqinf, np.abs(Sinf), linefmt='b')
-plt.xlabel('Frequency')
-plt.ylabel('Magnitude')
-plt.show()
-```
-
-::: {.cell-output .cell-output-display}
-![](04_FourierTransform_files/figure-html/cell-4-output-1.png){width=519 height=302 fig-align='center'}
-:::
-:::
-
-
-If the signal is assumed to be only the segment we defined, and is surrounded by infinitely-long zeros, i.e. a **truncated cosine**, then the spectrum is
-convoluted with the spectrum of a rectangular window, and the DTFT looks as follows:
-
-::: {#9714f111 .cell execution_count=5}
-``` {.python .cell-code}
-# Compute the DTFT
-FFT_points = 10000*n.size
-S1 = fft(x, FFT_points)
-
-# Create the frequency axis
-freq1 = np.linspace(fmin, fmax, len(S1))
-
-# Plot the magnitude of the DTFT
-plt.figure(figsize=(6, 3))
-plt.title('DTFT of windowed signal')
-plt.plot(freq1, np.abs(S1), 'b')
-#plt.stem(freqinf, np.abs(Sinf), 'b')
-plt.xlabel('Frequency')
-plt.ylabel('Magnitude')
-plt.show()
-```
-
-::: {.cell-output .cell-output-display}
-![](04_FourierTransform_files/figure-html/cell-5-output-1.png){width=523 height=302 fig-align='center'}
-:::
-:::
-
-
-When computing the Discrete Fourier Transform (DFT), this assumes that the given piece of the signal is would be repeated periodically.
-The DFT is not continous, it is discrete.
-
-::: {#2557f420 .cell execution_count=6}
-``` {.python .cell-code}
-# Compute the DFT
-S2 = fft(x)
-
-# Create the frequency axis
-freq2 = np.linspace(fmin, fmax, len(S2))
-#freq2 = np.fft.fftfreq(x.size)
-
-# Plot the magnitude of the DTFT
-plt.figure(figsize=(6, 3))
-plt.title('Its DFT')
-plt.stem(freq2, np.abs(S2), linefmt='ro')
-plt.xlabel('Frequency')
-plt.ylabel('Magnitude')
-plt.show()
-```
-
-::: {.cell-output .cell-output-display}
-![](04_FourierTransform_files/figure-html/cell-6-output-1.png){width=510 height=302 fig-align='center'}
-:::
-:::
-
-
-The DFT is just sampled from the DTFT:
-
-::: {#44ea96a1 .cell execution_count=7}
-``` {.python .cell-code}
-# Plot the DTFT and DFT overlaid
-freq2 = np.linspace(fmin, fmax, len(S2)+1)
-plt.figure(figsize=(6, 3))
-plt.plot(freq1, np.abs(S1), 'b')
-plt.stem(freq2[:-1], np.abs(S2), linefmt='ro')
-plt.title('The DFT is just sampled from the DTFT')
-plt.xlabel('Frequency')
-plt.ylabel('Magnitude')
-plt.show()
-```
-
-::: {.cell-output .cell-output-display}
-![](04_FourierTransform_files/figure-html/cell-7-output-1.png){width=523 height=302 fig-align='center'}
-:::
-:::
-
-
-## Example: rectangle pulse
-
-Consider a rectangle pulse signal as below:
-
-::: {#5d96ce4c .cell execution_count=8}
-``` {.python .cell-code}
-# Create the signal
-len_1 = 100
-len_0 = 100
-x = np.hstack((np.ones(len_1), np.zeros(len_1)))
-x = np.hstack((x, x))
-
-# Plot the signal
-plt.figure()
-plt.plot(x)
-plt.xlabel('Discrete time $n$')
-plt.ylabel('Signal $x[n]$')
-plt.show()
-```
-
-::: {.cell-output .cell-output-display}
-![](04_FourierTransform_files/figure-html/cell-8-output-1.png){width=591 height=429 fig-align='center'}
-:::
-:::
-
-
-The DTFT is:
-
-
-#| fig-align: center
-
-# Compute the DTFT of the rectangle window
-FFT_points = 2000
-W = fft(x, FFT_points)
-
-# Create the frequency axis
-freq = np.linspace(fmin, fmax, len(W))
-
-# Plot the magnitude of the DTFT
-plt.figure()
-plt.plot(freq, np.abs(W))
-plt.xlabel('Frequency')
-plt.ylabel('Magnitude')
-plt.show()
-``` -->
+-->
+<section id="a-sinusoidal-signal" class="level3" data-number="2.10.1">
+<h3 data-number="2.10.1" class="anchored" data-anchor-id="a-sinusoidal-signal"><span class="header-section-number">2.10.1</span> A sinusoidal signal</h3>
+<p>Consider a cosine signal: <span class="math display">\[x(t) = \cos(2 \pi f n)\]</span> with <span class="math inline">\(f = 0.01\)</span></p>
+<p>This is how the signal looks like:</p>
+<div id="9166c541" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the signal</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="fl">0.02</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="dv">30</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#fmax = fmax * (N-10)/N</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> np.arange(N)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.cos(<span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>f<span class="op">*</span>n)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the signal</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>plt.plot(x, <span class="st">'-o'</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'The signal $x(t) = \cos(2 \pi f n)$'</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Discrete time $n$'</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Signal $x[n]$'</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="04_FourierTransform_files/figure-html/cell-3-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="530" height="303"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now let’s compute the Discrete-Time Fourier transform. This assumes that the signal is infinitely long.</p>
+<p>If the cosine signal would be infinitely long, the DTFT contains only two Dirac impulses at the corresponding frequency.</p>
+<div id="dd3fb592" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Regenerate the signal so that it fits in one period</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>period <span class="op">=</span> <span class="dv">10000</span><span class="op">*</span>f</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>ninf <span class="op">=</span> np.arange(period)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>xinf <span class="op">=</span> np.cos(<span class="dv">2</span><span class="op">*</span>np.pi<span class="op">*</span>f<span class="op">*</span>ninf)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the DTFT</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>Sinf <span class="op">=</span> fft(xinf)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the frequency axis</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>freqinf <span class="op">=</span> np.linspace(fmin, fmax, <span class="bu">len</span>(Sinf))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the magnitude of the DTFT</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'DTFT of infinitely-long periodic signal'</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>plt.stem(freqinf, np.<span class="bu">abs</span>(Sinf), linefmt<span class="op">=</span><span class="st">'b'</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Frequency'</span>)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Magnitude'</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="04_FourierTransform_files/figure-html/cell-4-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="519" height="302"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>If the signal is assumed to be only the segment we defined, and is surrounded by infinitely-long zeros, i.e.&nbsp;a <strong>truncated cosine</strong>, then the spectrum is convoluted with the spectrum of a rectangular window, and the DTFT looks as follows:</p>
+<div id="47e888fa" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the DTFT</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>FFT_points <span class="op">=</span> <span class="dv">10000</span><span class="op">*</span>n.size</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>S1 <span class="op">=</span> fft(x, FFT_points)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the frequency axis</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>freq1 <span class="op">=</span> np.linspace(fmin, fmax, <span class="bu">len</span>(S1))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the magnitude of the DTFT</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'DTFT of windowed signal'</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>plt.plot(freq1, np.<span class="bu">abs</span>(S1), <span class="st">'b'</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#plt.stem(freqinf, np.abs(Sinf), 'b')</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Frequency'</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Magnitude'</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="04_FourierTransform_files/figure-html/cell-5-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="523" height="302"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>When computing the Discrete Fourier Transform (DFT), this assumes that the given piece of the signal is would be repeated periodically. The DFT is not continous, it is discrete.</p>
+<div id="b5e26fab" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the DFT</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>S2 <span class="op">=</span> fft(x)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the frequency axis</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>freq2 <span class="op">=</span> np.linspace(fmin, fmax, <span class="bu">len</span>(S2))</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#freq2 = np.fft.fftfreq(x.size)</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the magnitude of the DTFT</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Its DFT'</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>plt.stem(freq2, np.<span class="bu">abs</span>(S2), linefmt<span class="op">=</span><span class="st">'ro'</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Frequency'</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Magnitude'</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="04_FourierTransform_files/figure-html/cell-6-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="510" height="302"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The DFT is just sampled from the DTFT:</p>
+<div id="cac1214e" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the DTFT and DFT overlaid</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>freq2 <span class="op">=</span> np.linspace(fmin, fmax, <span class="bu">len</span>(S2)<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>plt.plot(freq1, np.<span class="bu">abs</span>(S1), <span class="st">'b'</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>plt.stem(freq2[:<span class="op">-</span><span class="dv">1</span>], np.<span class="bu">abs</span>(S2), linefmt<span class="op">=</span><span class="st">'ro'</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'The DFT is just sampled from the DTFT'</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Frequency'</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Magnitude'</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="04_FourierTransform_files/figure-html/cell-7-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="523" height="302"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="a-rectangle-pulse" class="level3" data-number="2.10.2">
+<h3 data-number="2.10.2" class="anchored" data-anchor-id="a-rectangle-pulse"><span class="header-section-number">2.10.2</span> A rectangle pulse</h3>
+<p>Consider a rectangle pulse signal as below:</p>
+<div id="be2dc3e3" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the signal</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>len_1 <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>len_0 <span class="op">=</span> <span class="dv">100</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.hstack((np.ones(len_1), np.zeros(len_1)))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.hstack((x, x))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the signal</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>plt.plot(x)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Discrete time $n$'</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Signal $x[n]$'</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="04_FourierTransform_files/figure-html/cell-8-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="591" height="429"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The DTFT is:</p>
+<div id="d19dc438" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute the DTFT of the rectangle window</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>FFT_points <span class="op">=</span> <span class="dv">2000</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>W <span class="op">=</span> fft(x, FFT_points)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the frequency axis</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>freq <span class="op">=</span> np.linspace(fmin, fmax, <span class="bu">len</span>(W))</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the magnitude of the DTFT</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>plt.plot(freq, np.<span class="bu">abs</span>(W))</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Frequency'</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Magnitude'</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="04_FourierTransform_files/figure-html/cell-9-output-1.png" class="quarto-figure quarto-figure-center figure-img" width="593" height="429"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
+</section>
 </section>
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
